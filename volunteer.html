@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Volunteer – Litter Prevention Network</title>
+  <link rel="stylesheet" href="shared.css" />
+</head>
+<body>
+
+  <div class="lang-bar">
+    <button class="active" onclick="setLang('en')">English</button>
+    <button onclick="setLang('es')">Español</button>
+  </div>
+
+  <nav>
+    <div class="nav-links">
+      <a href="index.html"><span class="en">Home</span><span class="es">Inicio</span></a>
+      <a href="events.html"><span class="en">Events</span><span class="es">Eventos</span></a>
+      <a href="report-litter.html"><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
+      <a href="rewards.html"><span class="en">Rewards</span><span class="es">Recompensas</span></a>
+      <a href="volunteer.html" class="active"><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
+    </div>
+  </nav>
+
+  <section class="page-hero">
+    <h1><span class="en">Get Involved</span><span class="es">Participa</span></h1>
+    <p><span class="en">Whether you have 1 hour or every weekend, there's a role for you in keeping Willis clean.</span><span class="es">Ya sea que tengas 1 hora o cada fin de semana, hay un papel para ti en mantener Willis limpio.</span></p>
+  </section>
+
+  <section class="content" style="max-width:560px">
+    <div class="form-group">
+      <label><span class="en">Full Name</span><span class="es">Nombre Completo</span></label>
+      <input type="text" placeholder="Your name" />
+    </div>
+    <div class="form-group">
+      <label><span class="en">Email Address</span><span class="es">Correo Electrónico</span></label>
+      <input type="email" placeholder="you@email.com" />
+    </div>
+    <div class="form-group">
+      <label><span class="en">Phone Number (optional)</span><span class="es">Número de Teléfono (opcional)</span></label>
+      <input type="tel" placeholder="(936) 555-0100" />
+    </div>
+    <div class="form-group">
+      <label><span class="en">How would you like to help?</span><span class="es">¿Cómo te gustaría ayudar?</span></label>
+      <select>
+        <option><span class="en">Join cleanup events</span></option>
+        <option>Organize events</option>
+        <option>Social media / outreach</option>
+        <option>Donate supplies</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label><span class="en">Availability</span><span class="es">Disponibilidad</span></label>
+      <select>
+        <option>Weekends</option>
+        <option>Weekdays</option>
+        <option>Evenings</option>
+        <option>Flexible</option>
+      </select>
+    </div>
+    <button class="btn-submit"><span class="en">Submit</span><span class="es">Enviar</span></button>
+  </section>
+
+  <footer>
+    <p>© 2026 <span>Litter Prevention Network</span> · Willis, TX</p>
+  </footer>
+
+  <script src="shared.js"></script>
+</body>
+</html>
+```
+
+---
+
+Now create two more files that all pages share — `shared.css` and `shared.js`. In the terminal run:
+```
+touch shared.css shared.js

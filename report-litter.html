@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Report Litter – Litter Prevention Network</title>
+  <link rel="stylesheet" href="shared.css" />
+</head>
+<body>
+
+  <div class="lang-bar">
+    <button class="active" onclick="setLang('en')">English</button>
+    <button onclick="setLang('es')">Español</button>
+  </div>
+
+  <nav>
+    <div class="nav-links">
+      <a href="index.html"><span class="en">Home</span><span class="es">Inicio</span></a>
+      <a href="events.html"><span class="en">Events</span><span class="es">Eventos</span></a>
+      <a href="report-litter.html" class="active"><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
+      <a href="rewards.html"><span class="en">Rewards</span><span class="es">Recompensas</span></a>
+      <a href="volunteer.html"><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
+    </div>
+  </nav>
+
+  <section class="page-hero">
+    <h1><span class="en">Report Litter</span><span class="es">Reportar Basura</span></h1>
+    <p><span class="en">Spot litter in Willis? Report it here and earn points. Our team will handle the rest.</span><span class="es">¿Ves basura en Willis? Repórtala aquí y gana puntos. Nuestro equipo se encargará del resto.</span></p>
+  </section>
+
+  <section class="content" style="max-width:560px">
+    <div class="form-group">
+      <label><span class="en">Your Name</span><span class="es">Tu Nombre</span></label>
+      <input type="text" placeholder="Your name" />
+    </div>
+    <div class="form-group">
+      <label><span class="en">Location / Street Address</span><span class="es">Ubicación / Dirección</span></label>
+      <input type="text" placeholder="123 Main St, Willis TX" />
+    </div>
+    <div class="form-group">
+      <label><span class="en">Describe the litter</span><span class="es">Describe la basura</span></label>
+      <textarea rows="4" placeholder="Bags of trash near the stop sign..."></textarea>
+    </div>
+    <div class="form-group">
+      <label><span class="en">Upload a photo (optional)</span><span class="es">Sube una foto (opcional)</span></label>
+      <input type="file" accept="image/*" />
+    </div>
+    <button class="btn-submit"><span class="en">Submit Report</span><span class="es">Enviar Reporte</span></button>
+  </section>
+
+  <footer>
+    <p>© 2026 <span>Litter Prevention Network</span> · Willis, TX</p>
+  </footer>
+
+  <script src="shared.js"></script>
+</body>
+</html>
