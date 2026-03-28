@@ -67,7 +67,51 @@
     <p>© 2026 <span>Litter Prevention Network</span> · Willis, TX</p>
   </footer>
 
-  <script src="shared.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const _sb = window.supabase.createClient(
+  'https://elgzfppmlsrrmskgloeo.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
+);
+
+function setLang(lang) {
+  document.querySelectorAll('.lang-bar button').forEach(b => b.classList.remove('active'));
+  if (lang === 'es') {
+    document.body.classList.add('spanish');
+    document.querySelectorAll('.lang-bar button')[1].classList.add('active');
+  } else {
+    document.body.classList.remove('spanish');
+    document.querySelectorAll('.lang-bar button')[0].classList.add('active');
+  }
+}
+
+document.querySelector('.btn-submit').addEventListener('click', async () => {
+  const full_name = document.querySelectorAll('input')[0].value.trim();
+  const email = document.querySelectorAll('input')[1].value.trim();
+  const phone = document.querySelectorAll('input')[2].value.trim();
+  const help_type = document.querySelectorAll('select')[0].value;
+  const availability = document.querySelectorAll('select')[1].value;
+
+  if (!full_name || !email) {
+    alert('Please enter your name and email.');
+    return;
+  }
+
+  const { error } = await _sb.from('volunteers').insert([{ full_name, email, phone, help_type, availability }]);
+
+  if (error) {
+    alert('Something went wrong. Please try again.');
+    console.error(error);
+  } else {
+    document.querySelector('.content').innerHTML = `
+      <div style="text-align:center;padding:60px 20px">
+        <div style="font-size:60px;margin-bottom:16px">🙌</div>
+        <h2 style="font-size:28px;margin-bottom:12px;color:#1D9E75">Thank you for volunteering!</h2>
+        <p style="color:#555;font-size:16px;line-height:1.7">We'll reach out soon with opportunities<br>to get involved in Willis.</p>
+      </div>`;
+  }
+});
+</script>
 </body>
 </html>
 ```

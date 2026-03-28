@@ -52,6 +52,48 @@
     <p>© 2026 <span>Litter Prevention Network</span> · Willis, TX</p>
   </footer>
 
-  <script src="shared.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const _sb = window.supabase.createClient(
+  'https://elgzfppmlsrrmskgloeo.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
+);
+
+function setLang(lang) {
+  document.querySelectorAll('.lang-bar button').forEach(b => b.classList.remove('active'));
+  if (lang === 'es') {
+    document.body.classList.add('spanish');
+    document.querySelectorAll('.lang-bar button')[1].classList.add('active');
+  } else {
+    document.body.classList.remove('spanish');
+    document.querySelectorAll('.lang-bar button')[0].classList.add('active');
+  }
+}
+
+document.querySelector('.btn-submit').addEventListener('click', async () => {
+  const name = document.querySelectorAll('input')[0].value.trim();
+  const location = document.querySelectorAll('input')[1].value.trim();
+  const description = document.querySelector('textarea').value.trim();
+
+  if (!name || !location || !description) {
+    alert('Please fill out your name, location, and description.');
+    return;
+  }
+
+  const { error } = await _sb.from('litter_reports').insert([{ name, location, description }]);
+
+  if (error) {
+    alert('Something went wrong. Please try again.');
+    console.error(error);
+  } else {
+    document.querySelector('.content').innerHTML = `
+      <div style="text-align:center;padding:60px 20px">
+        <div style="font-size:60px;margin-bottom:16px">📍</div>
+        <h2 style="font-size:28px;margin-bottom:12px;color:#1D9E75">Report received!</h2>
+        <p style="color:#555;font-size:16px;line-height:1.7">Thank you for reporting litter in Willis.<br>Our team will follow up on your submission.</p>
+      </div>`;
+  }
+});
+</script>
 </body>
 </html>
