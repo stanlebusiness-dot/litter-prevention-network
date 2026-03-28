@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin – Litter Prevention Network</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; background: #f5f5f3; color: #1a1a1a; }
+    .admin-header {
+      background: #1D9E75;
+      color: white;
+      padding: 20px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .admin-header h1 { font-size: 22px; font-weight: 700; }
+    .admin-header span { font-size: 14px; opacity: 0.85; }
+    .login-screen {
+      max-width: 400px;
+      margin: 100px auto;
+      background: white;
+      border-radius: 12px;
+      padding: 40px;
+      box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+    .login-screen h2 { margin-bottom: 8px; font-size: 24px; }
+    .login-screen p { color: #666; margin-bottom: 28px; font-size: 15px; }
+    .login-screen input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 15px;
+      margin-bottom: 14px;
+      outline: none;
+    }
+    .login-screen input:focus { border-color: #1D9E75; }
+    .login-screen button {
+      width: 100%;
+      background: #1D9E75;
+      color: white;
+      padding: 13px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .login-screen button:hover { background: #0F6E56; }
+    .dashboard { display: none; }
+    .tabs {
+      display: flex;
+      gap: 4px;
+      padding: 24px 40px 0;
+      border-bottom: 2px solid #e5e5e3;
+      background: white;
+    }
+    .tab {
+      padding: 12px 24px;
+      border: none;
+      background: none;
+      font-size: 15px;
+      cursor: pointer;
+      color: #666;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      font-weight: 500;
+    }
+    .tab.active { color: #1D9E75; border-bottom-color: #1D9E75; }
+    .tab-content { display: none; padding: 32px 40px; }
+    .tab-content.active { display: block; }
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #1a1a1a;
+    }
+    .count-badge {
+      display: inline-block;
+      background: #E1F5EE;
+      color: #0F6E56;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-left: 8px;
+    }
+    table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 8px rgba(0,0,0,0.06); }
+    th { background: #1D9E75; color: white; padding: 14px 16px; text-align: left; font-size: 13px; font-weight: 600; }
+    td { padding: 14px 16px; font-size: 14px; border-bottom: 1px solid #f0f0ee; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f9f9f7; }
+    .empty { text-align: center; padding: 48px; color: #999; font-size: 15px; }
+    .loading { text-align: center; padding: 48px; color: #999; }
+  </style>
+</head>
+<body>
+
+<div class="admin-header">
+  <h1>LPN Admin Dashboard</h1>
+  <span>Litter Prevention Network – Willis, TX</span>
+</div>
+
+<div class="login-screen" id="login">
+  <h2>Admin Login</h2>
+  <p>Enter the admin password to access the dashboard.</p>
+  <input type="password" id="password-input" placeholder="Password" />
+  <button onclick="checkPassword()">Sign In</button>
+</div>
+
+<div class="dashboard" id="dashboard">
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('signups')">Sign-ups</button>
+    <button class="tab" onclick="showTab('volunteers')">Volunteers</button>
+    <button class="tab" onclick="showTab('reports')">Litter Reports</button>
+  </div>
+
+  <div class="tab-content active" id="tab-signups">
+    <div class="section-title">Sign-ups <span class="count-badge" id="count-signups">...</span></div>
+    <table>
+      <thead><tr><th>Name</th><th>Email</th><th>Zip Code</th><th>Language</th><th>Date</th></tr></thead>
+      <tbody id="body-signups"><tr><td colspan="5" class="loading">Loading...</td></tr></tbody>
+    </table>
+  </div>
+
+  <div class="tab-content" id="tab-volunteers">
+    <div class="section-title">Volunteers <span class="count-badge" id="count-volunteers">...</span></div>
+    <table>
+      <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>How they help</th><th>Availability</th><th>Date</th></tr></thead>
+      <tbody id="body-volunteers"><tr><td colspan="6" class="loading">Loading...</td></tr></tbody>
+    </table>
+  </div>
+
+  <div class="tab-content" id="tab-reports">
+    <div class="section-title">Litter Reports <span class="count-badge" id="count-reports">...</span></div>
+    <table>
+      <thead><tr><th>Name</th><th>Location</th><th>Description</th><th>Date</th></tr></thead>
+      <tbody id="body-reports"><tr><td colspan="4" class="loading">Loading...</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const ADMIN_PASSWORD = 'PreventLitter9102!';
+
+const _sb = window.supabase.createClient(
+  'https://elgzfppmlsrrmskgloeo.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
+);
+
+function checkPassword() {
+  const val = document.getElementById('password-input').value;
+  if (val === ADMIN_PASSWORD) {
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadAll();
+  } else {
+    alert('Incorrect password.');
+  }
+}
+
+document.getElementById('password-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') checkPassword();
+});
+
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function fmt(dateStr) {
+  return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+async function loadAll() {
+  const [s, v, r] = await Promise.all([
+    _sb.from('signups').select('*').order('created_at', { ascending: false }),
+    _sb.from('volunteers').select('*').order('created_at', { ascending: false }),
+    _sb.from('litter_reports').select('*').order('created_at', { ascending: false }),
+  ]);
+
+  document.getElementById('count-signups').textContent = s.data?.length || 0;
+  document.getElementById('count-volunteers').textContent = v.data?.length || 0;
+  document.getElementById('count-reports').textContent = r.data?.length || 0;
+
+  document.getElementById('body-signups').innerHTML = s.data?.length
+    ? s.data.map(r => `<tr><td>${r.full_name}</td><td>${r.email}</td><td>${r.zip_code}</td><td>${r.language}</td><td>${fmt(r.created_at)}</td></tr>`).join('')
+    : '<tr><td colspan="5" class="empty">No sign-ups yet.</td></tr>';
+
+  document.getElementById('body-volunteers').innerHTML = v.data?.length
+    ? v.data.map(r => `<tr><td>${r.full_name}</td><td>${r.email}</td><td>${r.phone||'—'}</td><td>${r.help_type}</td><td>${r.availability}</td><td>${fmt(r.created_at)}</td></tr>`).join('')
+    : '<tr><td colspan="6" class="empty">No volunteers yet.</td></tr>';
+
+  document.getElementById('body-reports').innerHTML = r.data?.length
+    ? r.data.map(r => `<tr><td>${r.name}</td><td>${r.location}</td><td>${r.description}</td><td>${fmt(r.created_at)}</td></tr>`).join('')
+    : '<tr><td colspan="4" class="empty">No reports yet.</td></tr>';
+}
+</script>
+</body>
+</html>
+```
+
+Save with **Ctrl+S**. The admin password is `lpnwillis2026` — you can change that to anything you want by finding that line in the code.
+
+Then in Git Bash:
+```
+git add .
+git commit -m "add admin dashboard"
+git push
