@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prize Portal – Litter Prevention Network</title>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .points-banner { background: #1D9E75; color: white; text-align: center; padding: 32px 20px; }
+    .points-banner h2 { font-size: 20px; opacity: 0.9; margin-bottom: 8px; }
+    .points-banner .big-points { font-size: 64px; font-weight: 800; line-height: 1; }
+    .points-banner p { opacity: 0.85; margin-top: 8px; }
+    .prize-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; max-width: 960px; margin: 40px auto; padding: 0 20px; }
+    .prize-card { background: white; border-radius: 14px; padding: 28px 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); text-align: center; cursor: pointer; border: 3px solid transparent; transition: all 0.2s; }
+    .prize-card:hover { border-color: #1D9E75; transform: translateY(-2px); }
+    .prize-card.selected { border-color: #1D9E75; background: #f0fdf8; }
+    .prize-icon { font-size: 48px; margin-bottom: 12px; }
+    .prize-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+    .prize-card p { font-size: 13px; color: #666; line-height: 1.6; }
+    .redeem-form { max-width: 560px; margin: 0 auto 60px; padding: 0 20px; }
+    .redeem-form h2 { font-size: 22px; font-weight: 700; margin-bottom: 24px; }
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 6px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 16px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; outline: none; font-family: inherit; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #1D9E75; }
+    .points-cost { background: #E1F5EE; border-radius: 10px; padding: 16px 20px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; }
+    .points-cost span { font-size: 14px; color: #0F6E56; font-weight: 600; }
+    .not-logged-in { text-align: center; padding: 80px 20px; }
+    .not-logged-in h2 { font-size: 24px; margin-bottom: 12px; }
+    .not-logged-in p { color: #666; margin-bottom: 24px; }
+    .btn-login { display: inline-block; background: #1D9E75; color: white; padding: 14px 32px; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 16px; }
+    .es { display: none; }
+    .gas-stations { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .gas-tag { background: #f0f0ee; border: 1px solid #ddd; padding: 6px 14px; border-radius: 20px; font-size: 13px; cursor: pointer; }
+    .gas-tag:hover { background: #E1F5EE; border-color: #1D9E75; color: #0F6E56; }
+  </style>
+</head>
+<body>
+
+<div class="lang-bar">
+  <button class="active" onclick="setLang('en')">English</button>
+  <button onclick="setLang('es')">Español</button>
+</div>
+
+<nav>
+  <div class="nav-links">
+    <a href="index.html"><span class="en">Home</span><span class="es">Inicio</span></a>
+    <a href="events.html"><span class="en">Events</span><span class="es">Eventos</span></a>
+    <a href="report-litter.html"><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
+    <a href="rewards.html"><span class="en">Rewards</span><span class="es">Recompensas</span></a>
+    <a href="volunteer.html"><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
+    <a href="submit-proof.html"><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
+    <a href="prize-portal.html" class="active"><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
+    <a href="login.html"><span class="en">Login</span><span class="es">Iniciar Sesión</span></a>
+  </div>
+</nav>
+
+<!-- Not logged in state -->
+<div id="not-logged-in" style="display:none">
+  <div class="not-logged-in">
+    <div style="font-size:60px;margin-bottom:16px">🎁</div>
+    <h2><span class="en">Sign in to redeem prizes</span><span class="es">Inicia sesión para canjear premios</span></h2>
+    <p><span class="en">You need an account to redeem your points for prizes.</span><span class="es">Necesitas una cuenta para canjear tus puntos por premios.</span></p>
+    <a href="login.html" class="btn-login"><span class="en">Sign In / Sign Up</span><span class="es">Iniciar Sesión / Registrarse</span></a>
+  </div>
+</div>
+
+<!-- Logged in state -->
+<div id="logged-in" style="display:none">
+  <div class="points-banner">
+    <h2><span class="en">Your Points Balance</span><span class="es">Tu Saldo de Puntos</span></h2>
+    <div class="big-points" id="points-display">0</div>
+    <p><span class="en">Choose a prize below to redeem</span><span class="es">Elige un premio abajo para canjear</span></p>
+  </div>
+
+  <div class="prize-grid">
+    <div class="prize-card" onclick="selectPrize('gas', this)">
+      <div class="prize-icon">⛽</div>
+      <h3><span class="en">Gas Card</span><span class="es">Tarjeta de Gas</span></h3>
+      <p><span class="en">Redeem for a gas card at your favorite station — Shell, Exxon, Chevron & more.</span><span class="es">Canjea por una tarjeta de gas en tu estación favorita.</span></p>
+    </div>
+    <div class="prize-card" onclick="selectPrize('giftcard', this)">
+      <div class="prize-icon">🎁</div>
+      <h3><span class="en">Gift Card</span><span class="es">Tarjeta de Regalo</span></h3>
+      <p><span class="en">Amazon, Walmart, Target and more — your choice.</span><span class="es">Amazon, Walmart, Target y más — tu elección.</span></p>
+    </div>
+    <div class="prize-card" onclick="selectPrize('merchandise', this)">
+      <div class="prize-icon">👕</div>
+      <h3><span class="en">Merchandise</span><span class="es">Mercancía</span></h3>
+      <p><span class="en">LPN branded gear — shirts, hats, water bottles and more.</span><span class="es">Artículos de LPN — camisetas, gorras, botellas y más.</span></p>
+    </div>
+    <div class="prize-card" onclick="selectPrize('tickets', this)">
+      <div class="prize-icon">🎟️</div>
+      <h3><span class="en">Event Tickets</span><span class="es">Boletos de Evento</span></h3>
+      <p><span class="en">Local events, community gatherings, and more in Willis, TX.</span><span class="es">Eventos locales y reuniones comunitarias en Willis, TX.</span></p>
+    </div>
+  </div>
+
+  <div class="redeem-form" id="redeem-form" style="display:none">
+    <h2><span class="en">Redeem Your Points</span><span class="es">Canjea Tus Puntos</span></h2>
+
+    <div class="points-cost">
+      <span class="en">Points to spend:</span>
+      <span class="es">Puntos a gastar:</span>
+      <span id="points-to-spend">0</span>
+    </div>
+
+    <!-- Gas card extra fields -->
+    <div id="gas-fields" style="display:none">
+      <div class="form-group">
+        <label><span class="en">Preferred gas station</span><span class="es">Estación de gas preferida</span></label>
+        <input type="text" id="gas-station" placeholder="e.g. Shell, Exxon, Chevron..." />
+        <div class="gas-stations">
+          <span class="gas-tag" onclick="setGas('Shell')">Shell</span>
+          <span class="gas-tag" onclick="setGas('Exxon')">Exxon</span>
+          <span class="gas-tag" onclick="setGas('Chevron')">Chevron</span>
+          <span class="gas-tag" onclick="setGas('Valero')">Valero</span>
+          <span class="gas-tag" onclick="setGas('Murphy USA')">Murphy USA</span>
+          <span class="gas-tag" onclick="setGas('Circle K')">Circle K</span>
+          <span class="gas-tag" onclick="setGas('Texaco')">Texaco</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gift card extra fields -->
+    <div id="giftcard-fields" style="display:none">
+      <div class="form-group">
+        <label><span class="en">Preferred gift card</span><span class="es">Tarjeta de regalo preferida</span></label>
+        <select id="gift-card-type">
+          <option>Amazon</option>
+          <option>Walmart</option>
+          <option>Target</option>
+          <option>Visa (general)</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label><span class="en">How many points to redeem?</span><span class="es">¿Cuántos puntos canjear?</span></label>
+      <input type="number" id="points-input" placeholder="Enter points amount" min="1" oninput="updatePoints(this.value)" />
+    </div>
+
+    <div class="form-group">
+      <label><span class="en">Additional notes (optional)</span><span class="es">Notas adicionales (opcional)</span></label>
+      <textarea id="redeem-notes" rows="3" placeholder="Any special requests..."></textarea>
+    </div>
+
+    <button class="btn-submit" onclick="submitRedemption()">
+      <span class="en">Submit Redemption Request</span>
+      <span class="es">Enviar Solicitud de Canje</span>
+    </button>
+
+    <div id="redeem-msg" style="display:none;margin-top:16px;padding:16px;border-radius:8px;text-align:center;"></div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 <span>Litter Prevention Network</span> · Willis, TX</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const _sb = window.supabase.createClient(
+  'https://elgzfppmlsrrmskgloeo.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
+);
+
+let currentUser = null;
+let currentPoints = 0;
+let selectedPrize = null;
+
+async function init() {
+  const { data: { session } } = await _sb.auth.getSession();
+  if (!session) {
+    document.getElementById('not-logged-in').style.display = 'block';
+    return;
+  }
+  currentUser = session.user;
+  document.getElementById('logged-in').style.display = 'block';
+
+  const { data: pts } = await _sb.from('points').select('*').eq('email', currentUser.email).single();
+  currentPoints = pts?.points || 0;
+  document.getElementById('points-display').textContent = currentPoints;
+}
+
+function selectPrize(type, el) {
+  document.querySelectorAll('.prize-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedPrize = type;
+
+  document.getElementById('redeem-form').style.display = 'block';
+  document.getElementById('gas-fields').style.display = type === 'gas' ? 'block' : 'none';
+  document.getElementById('giftcard-fields').style.display = type === 'giftcard' ? 'block' : 'none';
+  document.getElementById('points-input').value = '';
+  document.getElementById('points-to-spend').textContent = '0';
+
+  document.getElementById('redeem-form').scrollIntoView({ behavior: 'smooth' });
+}
+
+function setGas(station) {
+  document.getElementById('gas-station').value = station;
+}
+
+function updatePoints(val) {
+  document.getElementById('points-to-spend').textContent = val || 0;
+}
+
+async function submitRedemption() {
+  const pointsToSpend = parseInt(document.getElementById('points-input').value);
+  const notes = document.getElementById('redeem-notes').value.trim();
+
+  if (!selectedPrize) return alert('Please select a prize type.');
+  if (!pointsToSpend || pointsToSpend < 1) return alert('Please enter points to redeem.');
+  if (pointsToSpend > currentPoints) return alert(`You only have ${currentPoints} points available.`);
+
+  let details = notes;
+  if (selectedPrize === 'gas') {
+    const station = document.getElementById('gas-station').value;
+    details = `Gas station: ${station}. ${notes}`;
+  } else if (selectedPrize === 'giftcard') {
+    const cardType = document.getElementById('gift-card-type').value;
+    details = `Gift card: ${cardType}. ${notes}`;
+  }
+
+  const { error } = await _sb.from('redemptions').insert({
+    email: currentUser.email,
+    prize_type: selectedPrize,
+    details,
+    points_spent: pointsToSpend,
+    status: 'pending'
+  });
+
+  if (error) {
+    const msg = document.getElementById('redeem-msg');
+    msg.style.display = 'block';
+    msg.style.background = '#FDECEA';
+    msg.style.color = '#c0392b';
+    msg.textContent = 'Something went wrong. Please try again.';
+    return;
+  }
+
+  // Deduct points
+  await _sb.from('points').update({
+    points: currentPoints - pointsToSpend,
+    updated_at: new Date()
+  }).eq('email', currentUser.email);
+
+  await _sb.from('points_history').insert({
+    email: currentUser.email,
+    points: -pointsToSpend,
+    reason: `Redeemed for ${selectedPrize}`
+  });
+
+  const msg = document.getElementById('redeem-msg');
+  msg.style.display = 'block';
+  msg.style.background = '#E1F5EE';
+  msg.style.color = '#0F6E56';
+  msg.textContent = '✅ Redemption request submitted! We\'ll be in touch within 2-3 business days.';
+  document.getElementById('points-display').textContent = currentPoints - pointsToSpend;
+  currentPoints -= pointsToSpend;
+}
+
+function setLang(lang) {
+  document.querySelectorAll('.en').forEach(e => e.style.display = lang === 'en' ? '' : 'none');
+  document.querySelectorAll('.es').forEach(e => e.style.display = lang === 'es' ? '' : 'none');
+  document.querySelectorAll('.lang-bar button').forEach((b, i) => {
+    b.classList.toggle('active', (lang === 'en' && i === 0) || (lang === 'es' && i === 1));
+  });
+}
+
+init();
+</script>
+</body>
+</html>
