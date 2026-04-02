@@ -27,11 +27,21 @@
     .count-badge { display: inline-block; background: #E1F5EE; color: #0F6E56; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-left: 8px; }
     table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 8px rgba(0,0,0,0.06); }
     th { background: #1D9E75; color: white; padding: 14px 16px; text-align: left; font-size: 13px; font-weight: 600; }
-    td { padding: 14px 16px; font-size: 14px; border-bottom: 1px solid #f0f0ee; }
+    td { padding: 14px 16px; font-size: 14px; border-bottom: 1px solid #f0f0ee; vertical-align: middle; }
     tr:last-child td { border-bottom: none; }
     tr:hover td { background: #f9f9f7; }
     .empty { text-align: center; padding: 48px; color: #999; font-size: 15px; }
     .loading { text-align: center; padding: 48px; color: #999; }
+    .btn-approve { background: #1D9E75; color: white; border: none; padding: 7px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; margin-right: 6px; }
+    .btn-approve:hover { background: #0F6E56; }
+    .btn-reject { background: #e74c3c; color: white; border: none; padding: 7px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .btn-reject:hover { background: #c0392b; }
+    .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+    .status-pending { background: #FFF3CD; color: #856404; }
+    .status-approved { background: #E1F5EE; color: #0F6E56; }
+    .status-rejected { background: #FDECEA; color: #c0392b; }
+    .points-select { padding: 6px 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; margin-right: 6px; }
+    .photo-link { color: #1D9E75; text-decoration: underline; font-size: 13px; }
   </style>
 </head>
 <body>
@@ -47,30 +57,52 @@
 </div>
 <div class="dashboard" id="dashboard">
   <div class="tabs">
-    <button class="tab active" onclick="showTab('signups')">Sign-ups</button>
-    <button class="tab" onclick="showTab('volunteers')">Volunteers</button>
-    <button class="tab" onclick="showTab('reports')">Litter Reports</button>
+    <button class="tab active" onclick="showTab('signups', this)">Sign-ups</button>
+    <button class="tab" onclick="showTab('volunteers', this)">Volunteers</button>
+    <button class="tab" onclick="showTab('reports', this)">Litter Reports</button>
+    <button class="tab" onclick="showTab('proof', this)">Proof Submissions</button>
+    <button class="tab" onclick="showTab('points', this)">Points Ledger</button>
   </div>
+
   <div class="tab-content active" id="tab-signups">
     <div class="section-title">Sign-ups <span class="count-badge" id="count-signups">...</span></div>
     <table><thead><tr><th>Name</th><th>Email</th><th>Zip Code</th><th>Language</th><th>Date</th></tr></thead>
     <tbody id="body-signups"><tr><td colspan="5" class="loading">Loading...</td></tr></tbody></table>
   </div>
+
   <div class="tab-content" id="tab-volunteers">
     <div class="section-title">Volunteers <span class="count-badge" id="count-volunteers">...</span></div>
     <table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>How they help</th><th>Availability</th><th>Date</th></tr></thead>
     <tbody id="body-volunteers"><tr><td colspan="6" class="loading">Loading...</td></tr></tbody></table>
   </div>
+
   <div class="tab-content" id="tab-reports">
     <div class="section-title">Litter Reports <span class="count-badge" id="count-reports">...</span></div>
     <table><thead><tr><th>Name</th><th>Location</th><th>Description</th><th>Date</th></tr></thead>
     <tbody id="body-reports"><tr><td colspan="4" class="loading">Loading...</td></tr></tbody></table>
   </div>
+
+  <div class="tab-content" id="tab-proof">
+    <div class="section-title">Proof Submissions <span class="count-badge" id="count-proof">...</span></div>
+    <table><thead><tr><th>Name</th><th>Email</th><th>Description</th><th>Photo</th><th>Status</th><th>Points</th><th>Actions</th></tr></thead>
+    <tbody id="body-proof"><tr><td colspan="7" class="loading">Loading...</td></tr></tbody></table>
+  </div>
+
+  <div class="tab-content" id="tab-points">
+    <div class="section-title">Points Ledger <span class="count-badge" id="count-points">...</span></div>
+    <table><thead><tr><th>Email</th><th>Current Points</th><th>Total Ever Earned</th><th>Last Updated</th></tr></thead>
+    <tbody id="body-points"><tr><td colspan="4" class="loading">Loading...</td></tr></tbody></table>
+  </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const ADMIN_PASSWORD = 'PreventLitter9102!';
-const _sb = window.supabase.createClient('https://elgzfppmlsrrmskgloeo.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc');
+const _sb = window.supabase.createClient(
+  'https://elgzfppmlsrrmskgloeo.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
+);
+
 function checkPassword() {
   const val = document.getElementById('password-input').value;
   if (val === ADMIN_PASSWORD) {
@@ -80,25 +112,112 @@ function checkPassword() {
   } else { alert('Incorrect password.'); }
 }
 document.getElementById('password-input').addEventListener('keydown', e => { if (e.key === 'Enter') checkPassword(); });
-function showTab(name) {
+
+function showTab(name, el) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
-  event.target.classList.add('active');
+  el.classList.add('active');
 }
+
 function fmt(d) { return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
+
 async function loadAll() {
-  const [s, v, r] = await Promise.all([
+  const [s, v, r, p, pts] = await Promise.all([
     _sb.from('signups').select('*').order('created_at', { ascending: false }),
     _sb.from('volunteers').select('*').order('created_at', { ascending: false }),
     _sb.from('litter_reports').select('*').order('created_at', { ascending: false }),
+    _sb.from('proof_submissions').select('*').order('created_at', { ascending: false }),
+    _sb.from('points').select('*').order('total_earned', { ascending: false }),
   ]);
+
+  // Sign-ups
   document.getElementById('count-signups').textContent = s.data?.length || 0;
+  document.getElementById('body-signups').innerHTML = s.data?.length
+    ? s.data.map(r => `<tr><td>${r.full_name}</td><td>${r.email}</td><td>${r.zip_code}</td><td>${r.language}</td><td>${fmt(r.created_at)}</td></tr>`).join('')
+    : '<tr><td colspan="5" class="empty">No sign-ups yet.</td></tr>';
+
+  // Volunteers
   document.getElementById('count-volunteers').textContent = v.data?.length || 0;
+  document.getElementById('body-volunteers').innerHTML = v.data?.length
+    ? v.data.map(r => `<tr><td>${r.full_name}</td><td>${r.email}</td><td>${r.phone||'—'}</td><td>${r.help_type}</td><td>${r.availability}</td><td>${fmt(r.created_at)}</td></tr>`).join('')
+    : '<tr><td colspan="6" class="empty">No volunteers yet.</td></tr>';
+
+  // Litter Reports
   document.getElementById('count-reports').textContent = r.data?.length || 0;
-  document.getElementById('body-signups').innerHTML = s.data?.length ? s.data.map(r => `<tr><td>${r.full_name}</td><td>${r.email}</td><td>${r.zip_code}</td><td>${r.language}</td><td>${fmt(r.created_at)}</td></tr>`).join('') : '<tr><td colspan="5" class="empty">No sign-ups yet.</td></tr>';
-  document.getElementById('body-volunteers').innerHTML = v.data?.length ? v.data.map(r => `<tr><td>${r.full_name}</td><td>${r.email}</td><td>${r.phone||'—'}</td><td>${r.help_type}</td><td>${r.availability}</td><td>${fmt(r.created_at)}</td></tr>`).join('') : '<tr><td colspan="6" class="empty">No volunteers yet.</td></tr>';
-  document.getElementById('body-reports').innerHTML = r.data?.length ? r.data.map(r => `<tr><td>${r.name}</td><td>${r.location}</td><td>${r.description}</td><td>${fmt(r.created_at)}</td></tr>`).join('') : '<tr><td colspan="4" class="empty">No reports yet.</td></tr>';
+  document.getElementById('body-reports').innerHTML = r.data?.length
+    ? r.data.map(r => `<tr><td>${r.name}</td><td>${r.location}</td><td>${r.description}</td><td>${fmt(r.created_at)}</td></tr>`).join('')
+    : '<tr><td colspan="4" class="empty">No reports yet.</td></tr>';
+
+  // Proof Submissions
+  document.getElementById('count-proof').textContent = p.data?.length || 0;
+  document.getElementById('body-proof').innerHTML = p.data?.length
+    ? p.data.map(row => {
+        const status = row.status || 'pending';
+        const isPending = status === 'pending';
+        const photoLink = row.photo_url
+          ? `<a class="photo-link" href="${row.photo_url}" target="_blank">View Photo</a>`
+          : '—';
+        const actions = isPending ? `
+          <select class="points-select" id="pts-${row.id}">
+            <option value="10">10 pts</option>
+            <option value="15">15 pts</option>
+            <option value="20">20 pts</option>
+            <option value="25">25 pts</option>
+            <option value="30">30 pts</option>
+            <option value="35">35 pts</option>
+            <option value="40">40 pts</option>
+            <option value="45">45 pts</option>
+            <option value="50">50 pts</option>
+          </select>
+          <button class="btn-approve" onclick="approveSubmission('${row.id}', '${row.email}')">Approve</button>
+          <button class="btn-reject" onclick="rejectSubmission('${row.id}')">Reject</button>
+        ` : '—';
+        return `<tr>
+          <td>${row.name || '—'}</td>
+          <td>${row.email || '—'}</td>
+          <td>${row.description || '—'}</td>
+          <td>${photoLink}</td>
+          <td><span class="status-badge status-${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</span></td>
+          <td>${row.points_awarded || '—'}</td>
+          <td>${actions}</td>
+        </tr>`;
+      }).join('')
+    : '<tr><td colspan="7" class="empty">No proof submissions yet.</td></tr>';
+
+  // Points Ledger
+  document.getElementById('count-points').textContent = pts.data?.length || 0;
+  document.getElementById('body-points').innerHTML = pts.data?.length
+    ? pts.data.map(r => `<tr><td>${r.email}</td><td>${r.points}</td><td>${r.total_earned}</td><td>${fmt(r.updated_at)}</td></tr>`).join('')
+    : '<tr><td colspan="4" class="empty">No points awarded yet.</td></tr>';
+}
+
+async function approveSubmission(id, email) {
+  const pointsToAward = parseInt(document.getElementById('pts-' + id).value);
+
+  await _sb.from('proof_submissions').update({ status: 'approved', points_awarded: pointsToAward }).eq('id', id);
+
+  const { data: existing } = await _sb.from('points').select('*').eq('email', email).single();
+  if (existing) {
+    await _sb.from('points').update({
+      points: existing.points + pointsToAward,
+      total_earned: existing.total_earned + pointsToAward,
+      updated_at: new Date()
+    }).eq('email', email);
+  } else {
+    await _sb.from('points').insert({ email, points: pointsToAward, total_earned: pointsToAward });
+  }
+
+  await _sb.from('points_history').insert({ email, points: pointsToAward, reason: 'Approved proof submission' });
+
+  alert(`✅ Approved! ${pointsToAward} points awarded to ${email}`);
+  loadAll();
+}
+
+async function rejectSubmission(id) {
+  await _sb.from('proof_submissions').update({ status: 'rejected' }).eq('id', id);
+  alert('❌ Submission rejected.');
+  loadAll();
 }
 </script>
 </body>
