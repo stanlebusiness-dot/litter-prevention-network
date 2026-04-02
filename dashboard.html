@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1D9E75" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Dashboard – Litter Prevention Network</title>
   <style>
@@ -44,6 +46,7 @@
   <a href="rewards.html"><span class="en">Rewards</span><span class="es">Recompensas</span></a>
   <a href="volunteer.html"><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
   <a href="submit-proof.html"><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
+  <a href="prize-portal.html"><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
   <a href="dashboard.html" class="active"><span class="en">My Dashboard</span><span class="es">Mi Panel</span></a>
   <button class="logout-btn" onclick="handleLogout()">
     <span class="en">Log Out</span><span class="es">Cerrar Sesión</span>
@@ -98,41 +101,30 @@ const _sb = window.supabase.createClient(
   'https://elgzfppmlsrrmskgloeo.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
 );
-
 function fmt(d) { return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
-
 async function init() {
   const { data: { session } } = await _sb.auth.getSession();
   if (!session) return window.location.href = 'login.html';
-
   const user = session.user;
   const name = user.user_metadata?.full_name || user.email;
   document.getElementById('user-name').textContent = name;
   document.getElementById('user-name-es').textContent = name;
-
-  // Load points
   const { data: pts } = await _sb.from('points').select('*').eq('email', user.email).single();
   if (pts) {
     document.getElementById('current-points').textContent = pts.points;
     document.getElementById('total-points').textContent = pts.total_earned;
   }
-
-  // Load submission count
   const { data: subs } = await _sb.from('proof_submissions').select('id').eq('email', user.email);
   document.getElementById('submission-count').textContent = subs?.length || 0;
-
-  // Load points history
   const { data: history } = await _sb.from('points_history').select('*').eq('email', user.email).order('created_at', { ascending: false });
   document.getElementById('history-body').innerHTML = history?.length
     ? history.map(h => `<tr><td>${h.reason}</td><td>+${h.points}</td><td>${fmt(h.created_at)}</td></tr>`).join('')
     : '<tr><td colspan="3" class="empty">No points earned yet — submit proof to get started!</td></tr>';
 }
-
 async function handleLogout() {
   await _sb.auth.signOut();
   window.location.href = 'login.html';
 }
-
 function setLang(lang) {
   document.querySelectorAll('.en').forEach(e => e.style.display = lang === 'en' ? '' : 'none');
   document.querySelectorAll('.es').forEach(e => e.style.display = lang === 'es' ? '' : 'none');
@@ -140,8 +132,12 @@ function setLang(lang) {
     b.classList.toggle('active', (lang === 'en' && i === 0) || (lang === 'es' && i === 1));
   });
 }
-
 init();
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js');
+  }
 </script>
 </body>
 </html>

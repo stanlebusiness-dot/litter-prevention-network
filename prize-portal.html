@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1D9E75" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Prize Portal – Litter Prevention Network</title>
   <link rel="stylesheet" href="shared.css" />
@@ -55,7 +57,6 @@
   </div>
 </nav>
 
-<!-- Not logged in state -->
 <div id="not-logged-in" style="display:none">
   <div class="not-logged-in">
     <div style="font-size:60px;margin-bottom:16px">🎁</div>
@@ -65,7 +66,6 @@
   </div>
 </div>
 
-<!-- Logged in state -->
 <div id="logged-in" style="display:none">
   <div class="points-banner">
     <h2><span class="en">Your Points Balance</span><span class="es">Tu Saldo de Puntos</span></h2>
@@ -98,14 +98,11 @@
 
   <div class="redeem-form" id="redeem-form" style="display:none">
     <h2><span class="en">Redeem Your Points</span><span class="es">Canjea Tus Puntos</span></h2>
-
     <div class="points-cost">
       <span class="en">Points to spend:</span>
       <span class="es">Puntos a gastar:</span>
       <span id="points-to-spend">0</span>
     </div>
-
-    <!-- Gas card extra fields -->
     <div id="gas-fields" style="display:none">
       <div class="form-group">
         <label><span class="en">Preferred gas station</span><span class="es">Estación de gas preferida</span></label>
@@ -121,8 +118,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Gift card extra fields -->
     <div id="giftcard-fields" style="display:none">
       <div class="form-group">
         <label><span class="en">Preferred gift card</span><span class="es">Tarjeta de regalo preferida</span></label>
@@ -135,22 +130,18 @@
         </select>
       </div>
     </div>
-
     <div class="form-group">
       <label><span class="en">How many points to redeem?</span><span class="es">¿Cuántos puntos canjear?</span></label>
       <input type="number" id="points-input" placeholder="Enter points amount" min="1" oninput="updatePoints(this.value)" />
     </div>
-
     <div class="form-group">
       <label><span class="en">Additional notes (optional)</span><span class="es">Notas adicionales (opcional)</span></label>
       <textarea id="redeem-notes" rows="3" placeholder="Any special requests..."></textarea>
     </div>
-
     <button class="btn-submit" onclick="submitRedemption()">
       <span class="en">Submit Redemption Request</span>
       <span class="es">Enviar Solicitud de Canje</span>
     </button>
-
     <div id="redeem-msg" style="display:none;margin-top:16px;padding:16px;border-radius:8px;text-align:center;"></div>
   </div>
 </div>
@@ -163,113 +154,64 @@
 <script>
 const _sb = window.supabase.createClient(
   'https://elgzfppmlsrrmskgloeo.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub28iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
 );
-
 let currentUser = null;
 let currentPoints = 0;
 let selectedPrize = null;
-
 async function init() {
   const { data: { session } } = await _sb.auth.getSession();
-  if (!session) {
-    document.getElementById('not-logged-in').style.display = 'block';
-    return;
-  }
+  if (!session) { document.getElementById('not-logged-in').style.display = 'block'; return; }
   currentUser = session.user;
   document.getElementById('logged-in').style.display = 'block';
-
   const { data: pts } = await _sb.from('points').select('*').eq('email', currentUser.email).single();
   currentPoints = pts?.points || 0;
   document.getElementById('points-display').textContent = currentPoints;
 }
-
 function selectPrize(type, el) {
   document.querySelectorAll('.prize-card').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
   selectedPrize = type;
-
   document.getElementById('redeem-form').style.display = 'block';
   document.getElementById('gas-fields').style.display = type === 'gas' ? 'block' : 'none';
   document.getElementById('giftcard-fields').style.display = type === 'giftcard' ? 'block' : 'none';
   document.getElementById('points-input').value = '';
   document.getElementById('points-to-spend').textContent = '0';
-
   document.getElementById('redeem-form').scrollIntoView({ behavior: 'smooth' });
 }
-
-function setGas(station) {
-  document.getElementById('gas-station').value = station;
-}
-
-function updatePoints(val) {
-  document.getElementById('points-to-spend').textContent = val || 0;
-}
-
+function setGas(station) { document.getElementById('gas-station').value = station; }
+function updatePoints(val) { document.getElementById('points-to-spend').textContent = val || 0; }
 async function submitRedemption() {
   const pointsToSpend = parseInt(document.getElementById('points-input').value);
   const notes = document.getElementById('redeem-notes').value.trim();
-
   if (!selectedPrize) return alert('Please select a prize type.');
   if (!pointsToSpend || pointsToSpend < 1) return alert('Please enter points to redeem.');
   if (pointsToSpend > currentPoints) return alert(`You only have ${currentPoints} points available.`);
-
   let details = notes;
-  if (selectedPrize === 'gas') {
-    const station = document.getElementById('gas-station').value;
-    details = `Gas station: ${station}. ${notes}`;
-  } else if (selectedPrize === 'giftcard') {
-    const cardType = document.getElementById('gift-card-type').value;
-    details = `Gift card: ${cardType}. ${notes}`;
-  }
-
-  const { error } = await _sb.from('redemptions').insert({
-    email: currentUser.email,
-    prize_type: selectedPrize,
-    details,
-    points_spent: pointsToSpend,
-    status: 'pending'
-  });
-
-  if (error) {
-    const msg = document.getElementById('redeem-msg');
-    msg.style.display = 'block';
-    msg.style.background = '#FDECEA';
-    msg.style.color = '#c0392b';
-    msg.textContent = 'Something went wrong. Please try again.';
-    return;
-  }
-
-  // Deduct points
-  await _sb.from('points').update({
-    points: currentPoints - pointsToSpend,
-    updated_at: new Date()
-  }).eq('email', currentUser.email);
-
-  await _sb.from('points_history').insert({
-    email: currentUser.email,
-    points: -pointsToSpend,
-    reason: `Redeemed for ${selectedPrize}`
-  });
-
+  if (selectedPrize === 'gas') details = `Gas station: ${document.getElementById('gas-station').value}. ${notes}`;
+  else if (selectedPrize === 'giftcard') details = `Gift card: ${document.getElementById('gift-card-type').value}. ${notes}`;
+  const { error } = await _sb.from('redemptions').insert({ email: currentUser.email, prize_type: selectedPrize, details, points_spent: pointsToSpend, status: 'pending' });
   const msg = document.getElementById('redeem-msg');
   msg.style.display = 'block';
-  msg.style.background = '#E1F5EE';
-  msg.style.color = '#0F6E56';
+  if (error) { msg.style.background = '#FDECEA'; msg.style.color = '#c0392b'; msg.textContent = 'Something went wrong. Please try again.'; return; }
+  await _sb.from('points').update({ points: currentPoints - pointsToSpend, updated_at: new Date() }).eq('email', currentUser.email);
+  await _sb.from('points_history').insert({ email: currentUser.email, points: -pointsToSpend, reason: `Redeemed for ${selectedPrize}` });
+  msg.style.background = '#E1F5EE'; msg.style.color = '#0F6E56';
   msg.textContent = '✅ Redemption request submitted! We\'ll be in touch within 2-3 business days.';
   document.getElementById('points-display').textContent = currentPoints - pointsToSpend;
   currentPoints -= pointsToSpend;
 }
-
 function setLang(lang) {
   document.querySelectorAll('.en').forEach(e => e.style.display = lang === 'en' ? '' : 'none');
   document.querySelectorAll('.es').forEach(e => e.style.display = lang === 'es' ? '' : 'none');
-  document.querySelectorAll('.lang-bar button').forEach((b, i) => {
-    b.classList.toggle('active', (lang === 'en' && i === 0) || (lang === 'es' && i === 1));
-  });
+  document.querySelectorAll('.lang-bar button').forEach((b, i) => { b.classList.toggle('active', (lang === 'en' && i === 0) || (lang === 'es' && i === 1)); });
 }
-
 init();
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js');
+  }
 </script>
 </body>
 </html>
