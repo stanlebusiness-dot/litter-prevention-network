@@ -31,11 +31,18 @@
     .not-logged-in h2 { font-size: 24px; margin-bottom: 12px; }
     .not-logged-in p { color: #666; margin-bottom: 24px; }
     .btn-login { display: inline-block; background: #1D9E75; color: white; padding: 14px 32px; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 16px; }
-    .es { display: none; }
     .gas-stations { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
     .gas-tag { background: #f0f0ee; border: 1px solid #ddd; padding: 6px 14px; border-radius: 20px; font-size: 13px; cursor: pointer; }
     .gas-tag:hover { background: #E1F5EE; border-color: #1D9E75; color: #0F6E56; }
+    .es { display: none; }
   </style>
+  <script>
+    // Apply language BEFORE page renders to prevent blink
+    (function() {
+      const saved = localStorage.getItem('lpn-lang');
+      if (saved === 'es') document.documentElement.setAttribute('data-lang', 'es');
+    })();
+  </script>
 </head>
 <body>
 
@@ -156,18 +163,26 @@ const _sb = window.supabase.createClient(
   'https://elgzfppmlsrrmskgloeo.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub28iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
 );
+
 let currentUser = null;
 let currentPoints = 0;
 let selectedPrize = null;
+
 async function init() {
   const { data: { session } } = await _sb.auth.getSession();
-  if (!session) { document.getElementById('not-logged-in').style.display = 'block'; return; }
-  currentUser = session.user;
-  document.getElementById('logged-in').style.display = 'block';
-  const { data: pts } = await _sb.from('points').select('*').eq('email', currentUser.email).single();
-  currentPoints = pts?.points || 0;
-  document.getElementById('points-display').textContent = currentPoints;
+  if (!session) { document.getElementById('not-logged-in').style.display = 'block'; }
+  else {
+    currentUser = session.user;
+    document.getElementById('logged-in').style.display = 'block';
+    const { data: pts } = await _sb.from('points').select('*').eq('email', currentUser.email).single();
+    currentPoints = pts?.points || 0;
+    document.getElementById('points-display').textContent = currentPoints;
+  }
+  // Apply language after content loads
+  const saved = localStorage.getItem('lpn-lang');
+  if (saved) setLang(saved);
 }
+
 function selectPrize(type, el) {
   document.querySelectorAll('.prize-card').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
@@ -179,8 +194,10 @@ function selectPrize(type, el) {
   document.getElementById('points-to-spend').textContent = '0';
   document.getElementById('redeem-form').scrollIntoView({ behavior: 'smooth' });
 }
+
 function setGas(station) { document.getElementById('gas-station').value = station; }
 function updatePoints(val) { document.getElementById('points-to-spend').textContent = val || 0; }
+
 async function submitRedemption() {
   const pointsToSpend = parseInt(document.getElementById('points-input').value);
   const notes = document.getElementById('redeem-notes').value.trim();
@@ -201,11 +218,16 @@ async function submitRedemption() {
   document.getElementById('points-display').textContent = currentPoints - pointsToSpend;
   currentPoints -= pointsToSpend;
 }
+
 function setLang(lang) {
+  localStorage.setItem('lpn-lang', lang);
   document.querySelectorAll('.en').forEach(e => e.style.display = lang === 'en' ? '' : 'none');
   document.querySelectorAll('.es').forEach(e => e.style.display = lang === 'es' ? '' : 'none');
-  document.querySelectorAll('.lang-bar button').forEach((b, i) => { b.classList.toggle('active', (lang === 'en' && i === 0) || (lang === 'es' && i === 1)); });
+  document.querySelectorAll('.lang-bar button').forEach((b, i) => {
+    b.classList.toggle('active', (lang === 'en' && i === 0) || (lang === 'es' && i === 1));
+  });
 }
+
 init();
 </script>
 <script>
