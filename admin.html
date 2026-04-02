@@ -134,7 +134,7 @@ async function loadAll() {
   // Sign-ups
   document.getElementById('count-signups').textContent = s.data?.length || 0;
   document.getElementById('body-signups').innerHTML = s.data?.length
-    ? s.data.map(r => `<tr><td>${r.full_name}</td><td>${r.email}</td><td>${r.zip_code}</td><td>${r.language}</td><td>${fmt(r.created_at)}</td></tr>`).join('')
+    ? s.data.map(r => `<tr><td>#${r.member_number}</td><td>${r.full_name}</td><td>${r.email}</td><td>${r.zip_code}</td><td>${r.language}</td><td>${fmt(r.created_at)}</td></tr>`).join('')
     : '<tr><td colspan="5" class="empty">No sign-ups yet.</td></tr>';
 
   // Volunteers
