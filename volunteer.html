@@ -9,10 +9,34 @@
   <link rel="stylesheet" href="shared.css" />
 </head>
 <body>
-
   <div class="lang-bar">
     <button class="active" onclick="setLang('en')">English</button>
     <button onclick="setLang('es')">Español</button>
+  </div>
+
+  <nav>
+    <a href="index.html" class="nav-logo"><img src="/icons/icon-192.png" alt="LPN" /><span>LPN Willis</span></a>
+    <button class="hamburger" onclick="openDrawer()"><span></span><span></span><span></span></button>
+  </nav>
+  <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">
+      <div class="drawer-logo"><img src="/icons/icon-192.png" alt="LPN" />Litter Prevention Network</div>
+      <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    </div>
+    <div class="drawer-nav">
+      <a href="index.html"><span class="nav-icon">🏠</span><span class="en">Home</span><span class="es">Inicio</span></a>
+      <a href="events.html"><span class="nav-icon">📅</span><span class="en">Events</span><span class="es">Eventos</span></a>
+      <a href="report-litter.html"><span class="nav-icon">📍</span><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
+      <a href="rewards.html"><span class="nav-icon">🏆</span><span class="en">Rewards</span><span class="es">Recompensas</span></a>
+      <a href="volunteer.html" class="active"><span class="nav-icon">🙌</span><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
+      <a href="submit-proof.html"><span class="nav-icon">📸</span><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
+      <a href="prize-portal.html"><span class="nav-icon">🎁</span><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
+      <div class="drawer-divider"></div>
+      <a href="dashboard.html"><span class="nav-icon">📊</span><span class="en">My Dashboard</span><span class="es">Mi Panel</span></a>
+      <a href="login.html"><span class="nav-icon">🔐</span><span class="en">Login</span><span class="es">Iniciar Sesión</span></a>
+    </div>
+    <div class="drawer-footer-note">© 2026 Litter Prevention Network · Willis, TX</div>
   </div>
 
   <section class="page-hero">
@@ -55,55 +79,73 @@
     <button class="btn-submit"><span class="en">Submit</span><span class="es">Enviar</span></button>
   </section>
 
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="/icons/icon-192.png" alt="LPN Logo" />
+        <h3>Litter Prevention Network</h3>
+        <p class="en">Keeping Willis, TX clean — one cleanup at a time.</p>
+        <p class="es">Manteniendo Willis, TX limpio — una limpieza a la vez.</p>
+        <div class="footer-contact">📍 Willis, TX<br/>📧 <a href="mailto:stanley@litterpreventionnetwork.org">stanley@litterpreventionnetwork.org</a></div>
+        <div class="footer-social">
+          <a href="https://facebook.com/litterpreventionnetwork" target="_blank">f</a>
+          <a href="https://instagram.com/litterpreventionnetwork" target="_blank">ig</a>
+          <a href="https://tiktok.com/@litterpreventionnetwork" target="_blank">tt</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">Navigate</span><span class="es">Navegar</span></h4>
+        <a href="index.html"><span class="en">Home</span><span class="es">Inicio</span></a>
+        <a href="events.html"><span class="en">Events</span><span class="es">Eventos</span></a>
+        <a href="report-litter.html"><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
+        <a href="rewards.html"><span class="en">Rewards</span><span class="es">Recompensas</span></a>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">Get Involved</span><span class="es">Participa</span></h4>
+        <a href="volunteer.html"><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
+        <a href="submit-proof.html"><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
+        <a href="prize-portal.html"><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
+        <a href="login.html"><span class="en">Sign In</span><span class="es">Iniciar Sesión</span></a>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">About</span><span class="es">Acerca de</span></h4>
+        <a href="about.html"><span class="en">Our Mission</span><span class="es">Nuestra Misión</span></a>
+        <a href="faq.html">FAQ</a>
+        <a href="contact.html"><span class="en">Contact Us</span><span class="es">Contáctanos</span></a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Litter Prevention Network · Willis, TX</span>
+      <div style="display:flex;gap:20px;"><a href="faq.html">FAQ</a><a href="about.html"><span class="en">About</span><span class="es">Acerca de</span></a><a href="contact.html"><span class="en">Contact</span><span class="es">Contacto</span></a></div>
+    </div>
+  </footer>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const _sb = window.supabase.createClient(
-  'https://elgzfppmlsrrmskgloeo.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
-);
-
-function setLang(lang) {
-  document.querySelectorAll('.lang-bar button').forEach(b => b.classList.remove('active'));
-  if (lang === 'es') {
-    document.body.classList.add('spanish');
-    document.querySelectorAll('.lang-bar button')[1].classList.add('active');
-  } else {
-    document.body.classList.remove('spanish');
-    document.querySelectorAll('.lang-bar button')[0].classList.add('active');
-  }
-}
-
-document.querySelector('.btn-submit').addEventListener('click', async () => {
-  const full_name = document.querySelectorAll('input')[0].value.trim();
-  const email = document.querySelectorAll('input')[1].value.trim();
-  const phone = document.querySelectorAll('input')[2].value.trim();
-  const help_type = document.querySelectorAll('select')[0].value;
-  const availability = document.querySelectorAll('select')[1].value;
-
-  if (!full_name || !email) {
-    alert('Please enter your name and email.');
-    return;
-  }
-
-  const { error } = await _sb.from('volunteers').insert([{ full_name, email, phone, help_type, availability }]);
-
-  if (error) {
-    alert('Something went wrong. Please try again.');
-    console.error(error);
-  } else {
-    document.querySelector('.content').innerHTML = `
-      <div style="text-align:center;padding:60px 20px">
-        <div style="font-size:60px;margin-bottom:16px">🙌</div>
-        <h2 style="font-size:28px;margin-bottom:12px;color:#1D9E75">Thank you for volunteering!</h2>
-        <p style="color:#555;font-size:16px;line-height:1.7">We'll reach out soon with opportunities<br>to get involved in Willis.</p>
-      </div>`;
-  }
-});
-</script>
   <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/service-worker.js');
+  const _sb = window.supabase.createClient(
+    'https://elgzfppmlsrrmskgloeo.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
+  );
+  document.querySelector('.btn-submit').addEventListener('click', async () => {
+    const full_name = document.querySelectorAll('input')[0].value.trim();
+    const email = document.querySelectorAll('input')[1].value.trim();
+    const phone = document.querySelectorAll('input')[2].value.trim();
+    const help_type = document.querySelectorAll('select')[0].value;
+    const availability = document.querySelectorAll('select')[1].value;
+    if (!full_name || !email) { alert('Please enter your name and email.'); return; }
+    const { error } = await _sb.from('volunteers').insert([{ full_name, email, phone, help_type, availability }]);
+    if (error) { alert('Something went wrong. Please try again.'); console.error(error); }
+    else {
+      document.querySelector('.content').innerHTML = `
+        <div style="text-align:center;padding:60px 20px">
+          <div style="font-size:60px;margin-bottom:16px">🙌</div>
+          <h2 style="font-size:28px;margin-bottom:12px;color:#1D9E75">Thank you for volunteering!</h2>
+          <p style="color:#555;font-size:16px;line-height:1.7">We'll reach out soon with opportunities<br>to get involved in Willis.</p>
+        </div>`;
     }
+  });
   </script>
+  <script src="shared.js"></script>
+  <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js');</script>
 </body>
 </html>

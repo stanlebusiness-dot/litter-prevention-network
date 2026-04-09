@@ -9,10 +9,34 @@
   <link rel="stylesheet" href="shared.css" />
 </head>
 <body>
-
   <div class="lang-bar">
     <button class="active" onclick="setLang('en')">English</button>
     <button onclick="setLang('es')">Español</button>
+  </div>
+
+  <nav>
+    <a href="index.html" class="nav-logo"><img src="/icons/icon-192.png" alt="LPN" /><span>LPN Willis</span></a>
+    <button class="hamburger" onclick="openDrawer()"><span></span><span></span><span></span></button>
+  </nav>
+  <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">
+      <div class="drawer-logo"><img src="/icons/icon-192.png" alt="LPN" />Litter Prevention Network</div>
+      <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    </div>
+    <div class="drawer-nav">
+      <a href="index.html"><span class="nav-icon">🏠</span><span class="en">Home</span><span class="es">Inicio</span></a>
+      <a href="events.html"><span class="nav-icon">📅</span><span class="en">Events</span><span class="es">Eventos</span></a>
+      <a href="report-litter.html"><span class="nav-icon">📍</span><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
+      <a href="rewards.html" class="active"><span class="nav-icon">🏆</span><span class="en">Rewards</span><span class="es">Recompensas</span></a>
+      <a href="volunteer.html"><span class="nav-icon">🙌</span><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
+      <a href="submit-proof.html"><span class="nav-icon">📸</span><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
+      <a href="prize-portal.html"><span class="nav-icon">🎁</span><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
+      <div class="drawer-divider"></div>
+      <a href="dashboard.html"><span class="nav-icon">📊</span><span class="en">My Dashboard</span><span class="es">Mi Panel</span></a>
+      <a href="login.html"><span class="nav-icon">🔐</span><span class="en">Login</span><span class="es">Iniciar Sesión</span></a>
+    </div>
+    <div class="drawer-footer-note">© 2026 Litter Prevention Network · Willis, TX</div>
   </div>
 
   <section class="page-hero">
@@ -22,7 +46,6 @@
 
   <section class="content">
     <h2 style="text-align:center;margin-bottom:32px"><span class="en">How to earn points</span><span class="es">Cómo ganar puntos</span></h2>
-
     <div class="reward-grid">
       <div class="reward-card">
         <div class="reward-points">+50 pts</div>
@@ -45,7 +68,6 @@
         <p><span class="en">They sign up, you earn points.</span><span class="es">Ellos se registran, tú ganas puntos.</span></p>
       </div>
     </div>
-
     <div class="redeem-box">
       <h2><span class="en">Redeem your points</span><span class="es">Canjea tus puntos</span></h2>
       <p><span class="en">Once you hit 100 points you can redeem for cash via PayPal, a gift card, or a prize. Sign in to see your balance.</span><span class="es">Una vez que alcances 100 puntos puedes canjearlos por dinero en efectivo vía PayPal, una tarjeta de regalo o un premio. Inicia sesión para ver tu saldo.</span></p>
@@ -53,11 +75,48 @@
     </div>
   </section>
 
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="/icons/icon-192.png" alt="LPN Logo" />
+        <h3>Litter Prevention Network</h3>
+        <p class="en">Keeping Willis, TX clean — one cleanup at a time.</p>
+        <p class="es">Manteniendo Willis, TX limpio — una limpieza a la vez.</p>
+        <div class="footer-contact">📍 Willis, TX<br/>📧 <a href="mailto:stanley@litterpreventionnetwork.org">stanley@litterpreventionnetwork.org</a></div>
+        <div class="footer-social">
+          <a href="https://facebook.com/litterpreventionnetwork" target="_blank">f</a>
+          <a href="https://instagram.com/litterpreventionnetwork" target="_blank">ig</a>
+          <a href="https://tiktok.com/@litterpreventionnetwork" target="_blank">tt</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">Navigate</span><span class="es">Navegar</span></h4>
+        <a href="index.html"><span class="en">Home</span><span class="es">Inicio</span></a>
+        <a href="events.html"><span class="en">Events</span><span class="es">Eventos</span></a>
+        <a href="report-litter.html"><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
+        <a href="rewards.html"><span class="en">Rewards</span><span class="es">Recompensas</span></a>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">Get Involved</span><span class="es">Participa</span></h4>
+        <a href="volunteer.html"><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
+        <a href="submit-proof.html"><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
+        <a href="prize-portal.html"><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
+        <a href="login.html"><span class="en">Sign In</span><span class="es">Iniciar Sesión</span></a>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">About</span><span class="es">Acerca de</span></h4>
+        <a href="about.html"><span class="en">Our Mission</span><span class="es">Nuestra Misión</span></a>
+        <a href="faq.html">FAQ</a>
+        <a href="contact.html"><span class="en">Contact Us</span><span class="es">Contáctanos</span></a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Litter Prevention Network · Willis, TX</span>
+      <div style="display:flex;gap:20px;"><a href="faq.html">FAQ</a><a href="about.html"><span class="en">About</span><span class="es">Acerca de</span></a><a href="contact.html"><span class="en">Contact</span><span class="es">Contacto</span></a></div>
+    </div>
+  </footer>
+
   <script src="shared.js"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/service-worker.js');
-    }
-  </script>
+  <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js');</script>
 </body>
 </html>
