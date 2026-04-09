@@ -382,6 +382,9 @@ nav {
 .footer-bottom a { color: #666; text-decoration: none; }
 .footer-bottom a:hover { color: #1D9E75; }
 
+/* ── HIDE OLD NAV LINKS ── */
+.nav-links { display: none !important; }
+
 /* ── LANGUAGE ── */
 .en { display: inline; }
 .es { display: none; }
