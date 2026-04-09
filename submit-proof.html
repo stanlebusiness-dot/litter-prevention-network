@@ -1,4 +1,4 @@
-html<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -21,14 +21,12 @@ html<!DOCTYPE html>
   </section>
 
   <section class="content" style="max-width:560px" id="proof-form">
-
     <div style="background:#E1F5EE;border-radius:10px;padding:20px 24px;margin-bottom:32px">
       <p style="color:#0F6E56;font-size:15px;line-height:1.7">
         <span class="en">After submitting your proof, our team will review it within 24 hours. Once approved, points will be added to your account automatically.</span>
         <span class="es">Después de enviar tu prueba, nuestro equipo la revisará en 24 horas. Una vez aprobada, los puntos se agregarán a tu cuenta automáticamente.</span>
       </p>
     </div>
-
     <div class="form-group">
       <label><span class="en">Your Name</span><span class="es">Tu Nombre</span></label>
       <input type="text" id="proof-name" placeholder="Your name" />
@@ -45,7 +43,6 @@ html<!DOCTYPE html>
       <label><span class="en">Upload your photo proof</span><span class="es">Sube tu foto como prueba</span></label>
       <input type="file" id="proof-photo" accept="image/*" />
     </div>
-
     <div id="upload-progress" style="display:none;margin-bottom:16px">
       <div style="background:#eee;border-radius:8px;height:8px;overflow:hidden">
         <div id="progress-bar" style="background:#1D9E75;height:100%;width:0%;transition:width 0.3s"></div>
@@ -54,7 +51,6 @@ html<!DOCTYPE html>
         <span class="en">Uploading photo...</span><span class="es">Subiendo foto...</span>
       </p>
     </div>
-
     <button class="btn-submit" id="submit-btn" onclick="submitProof()">
       <span class="en">Submit Proof</span><span class="es">Enviar Prueba</span>
     </button>
@@ -67,44 +63,20 @@ html<!DOCTYPE html>
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
     );
 
-    function setLang(lang) {
-      document.querySelectorAll('.lang-bar button').forEach(b => b.classList.remove('active'));
-      if (lang === 'es') {
-        document.body.classList.add('spanish');
-        document.querySelectorAll('.lang-bar button')[1].classList.add('active');
-      } else {
-        document.body.classList.remove('spanish');
-        document.querySelectorAll('.lang-bar button')[0].classList.add('active');
-      }
-    }
-
     async function submitProof() {
       const name = document.getElementById('proof-name').value.trim();
       const email = document.getElementById('proof-email').value.trim();
       const description = document.getElementById('proof-description').value.trim();
       const photoFile = document.getElementById('proof-photo').files[0];
-
-      if (!name || !email || !description) {
-        alert('Please fill out all fields.');
-        return;
-      }
-      if (!photoFile) {
-        alert('Please upload a photo.');
-        return;
-      }
-
+      if (!name || !email || !description) { alert('Please fill out all fields.'); return; }
+      if (!photoFile) { alert('Please upload a photo.'); return; }
       const btn = document.getElementById('submit-btn');
       btn.disabled = true;
       btn.textContent = 'Submitting...';
-
       document.getElementById('upload-progress').style.display = 'block';
       document.getElementById('progress-bar').style.width = '40%';
-
       const fileName = `${Date.now()}-${photoFile.name}`;
-      const { data: uploadData, error: uploadError } = await _sb.storage
-        .from('proof-photos')
-        .upload(fileName, photoFile);
-
+      const { error: uploadError } = await _sb.storage.from('proof-photos').upload(fileName, photoFile);
       if (uploadError) {
         alert('Photo upload failed. Please try again.');
         btn.disabled = false;
@@ -113,18 +85,13 @@ html<!DOCTYPE html>
         console.error(uploadError);
         return;
       }
-
       document.getElementById('progress-bar').style.width = '80%';
-
       const { data: urlData } = _sb.storage.from('proof-photos').getPublicUrl(fileName);
       const photo_url = urlData.publicUrl;
-
       const { error: dbError } = await _sb.from('proof_submissions').insert([{
         name, email, task_description: description, photo_url, status: 'pending'
       }]);
-
       document.getElementById('progress-bar').style.width = '100%';
-
       if (dbError) {
         alert('Something went wrong. Please try again.');
         btn.disabled = false;
@@ -132,7 +99,6 @@ html<!DOCTYPE html>
         console.error(dbError);
         return;
       }
-
       document.getElementById('proof-form').innerHTML = `
         <div style="text-align:center;padding:60px 20px">
           <div style="font-size:60px;margin-bottom:16px">📸</div>
@@ -141,6 +107,7 @@ html<!DOCTYPE html>
         </div>`;
     }
   </script>
+  <script src="shared.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/service-worker.js');
