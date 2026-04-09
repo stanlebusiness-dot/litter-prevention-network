@@ -2,88 +2,56 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-<link rel="manifest" href="/manifest.json" />
-<meta name="theme-color" content="#1D9E75" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1D9E75" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Litter Prevention Network – Willis, TX</title>
-  <link rel="stylesheet" href="shared.css" /><style>
-    .nav-links { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; padding: 14px 20px; }
-    
-.hero {
-  background: linear-gradient(135deg, #1D9E75 0%, #0F6E56 100%);
-  color: white;
-  padding: 80px 40px;
-  text-align: center;
-}
-.hero h1 { font-size: 48px; font-weight: 800; margin-bottom: 16px; line-height: 1.2; }
-.hero p { font-size: 20px; opacity: 0.9; max-width: 600px; margin: 0 auto 32px; line-height: 1.6; }
-.hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-.btn-primary { background: white; color: #1D9E75; padding: 14px 32px; border-radius: 8px; font-weight: 700; font-size: 16px; text-decoration: none; }
-.btn-secondary { background: transparent; color: white; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 16px; text-decoration: none; border: 2px solid white; }
-.stats { display: flex; justify-content: center; gap: 60px; padding: 48px 40px; background: #f9f9f7; flex-wrap: wrap; }
-.stat { text-align: center; }
-.stat-number { font-size: 40px; font-weight: 800; color: #1D9E75; }
-.stat-label { font-size: 15px; color: #666; margin-top: 4px; }
-.mission { max-width: 760px; margin: 0 auto; padding: 64px 40px; text-align: center; }
-.section-tag { display: inline-block; background: #E1F5EE; color: #0F6E56; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 6px 14px; border-radius: 20px; margin-bottom: 20px; }
-.mission h2 { font-size: 32px; margin-bottom: 20px; }
-.mission p { font-size: 17px; color: #555; line-height: 1.8; }
-.how { background: #f9f9f7; padding: 64px 40px; text-align: center; }
-.how h2 { font-size: 32px; margin-bottom: 48px; }
-.steps { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; max-width: 960px; margin: 0 auto; }
-.step { background: white; border-radius: 12px; padding: 32px 24px; width: 200px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-.step-num { width: 40px; height: 40px; background: #1D9E75; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; margin: 0 auto 16px; }
-.step h3 { font-size: 15px; margin-bottom: 8px; }
-.step p { font-size: 13px; color: #777; line-height: 1.6; }
-.signup { max-width: 520px; margin: 0 auto; padding: 64px 40px; text-align: center; }
-.signup h2 { font-size: 32px; margin-bottom: 12px; }
-.signup p { color: #666; margin-bottom: 32px; font-size: 16px; }
-</style>
+  <link rel="stylesheet" href="shared.css" />
+  <style>
+    .hero { background: linear-gradient(135deg, #1D9E75 0%, #0F6E56 100%); color: white; padding: 80px 40px; text-align: center; }
+    .hero h1 { font-size: 48px; font-weight: 800; margin-bottom: 16px; line-height: 1.2; }
+    .hero p { font-size: 20px; opacity: 0.9; max-width: 600px; margin: 0 auto 32px; line-height: 1.6; }
+    .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary { background: white; color: #1D9E75; padding: 14px 32px; border-radius: 8px; font-weight: 700; font-size: 16px; text-decoration: none; }
+    .btn-secondary { background: transparent; color: white; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 16px; text-decoration: none; border: 2px solid white; }
+    .stats { display: flex; justify-content: center; gap: 60px; padding: 48px 40px; background: #f9f9f7; flex-wrap: wrap; }
+    .stat { text-align: center; }
+    .stat-number { font-size: 40px; font-weight: 800; color: #1D9E75; }
+    .stat-label { font-size: 15px; color: #666; margin-top: 4px; }
+    .mission { max-width: 760px; margin: 0 auto; padding: 64px 40px; text-align: center; }
+    .section-tag { display: inline-block; background: #E1F5EE; color: #0F6E56; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 6px 14px; border-radius: 20px; margin-bottom: 20px; }
+    .mission h2 { font-size: 32px; margin-bottom: 20px; }
+    .mission p { font-size: 17px; color: #555; line-height: 1.8; }
+    .how { background: #f9f9f7; padding: 64px 40px; text-align: center; }
+    .how h2 { font-size: 32px; margin-bottom: 48px; }
+    .steps { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; max-width: 960px; margin: 0 auto; }
+    .step { background: white; border-radius: 12px; padding: 32px 24px; width: 200px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .step-num { width: 40px; height: 40px; background: #1D9E75; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; margin: 0 auto 16px; }
+    .step h3 { font-size: 15px; margin-bottom: 8px; }
+    .step p { font-size: 13px; color: #777; line-height: 1.6; }
+    .signup { max-width: 520px; margin: 0 auto; padding: 64px 40px; text-align: center; }
+    .signup h2 { font-size: 32px; margin-bottom: 12px; }
+    .signup p { color: #666; margin-bottom: 32px; font-size: 16px; }
+  </style>
 </head>
 <body>
-
-  <!-- LANGUAGE BAR -->
   <div class="lang-bar">
     <button class="active" onclick="setLang('en')">English</button>
     <button onclick="setLang('es')">Español</button>
   </div>
 
-  <!-- NAV -->
-  <nav>
-  <div class="nav-links">
-    <a href="index.html" class="active"><span class="en">Home</span><span class="es">Inicio</span></a>
-    <a href="events.html"><span class="en">Events</span><span class="es">Eventos</span></a>
-    <a href="report-litter.html"><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
-    <a href="rewards.html"><span class="en">Rewards</span><span class="es">Recompensas</span></a>
-    <a href="volunteer.html"><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
-    <a href="submit-proof.html"><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
-    <a href="prize-portal.html"><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
-    <a href="login.html"><span class="en">Login</span><span class="es">Iniciar Sesión</span></a>
-  </div>
-</nav>
-  <!-- HERO -->
   <section class="hero">
-    <h1>
-      <span class="en">Keep Willis Clean.</span>
-      <span class="es">Mantén Willis Limpio.</span>
-    </h1>
+    <h1><span class="en">Keep Willis Clean.</span><span class="es">Mantén Willis Limpio.</span></h1>
     <p>
       <span class="en">Join your neighbors in protecting our community. Report litter, attend cleanups, earn rewards.</span>
       <span class="es">Únete a tus vecinos para proteger nuestra comunidad. Reporta basura, asiste a limpiezas, gana recompensas.</span>
     </p>
     <div class="hero-buttons">
-      <a href="#signup" class="btn-primary">
-        <span class="en">Join the Network</span>
-        <span class="es">Únete a la Red</span>
-      </a>
-      <a href="#how" class="btn-secondary">
-        <span class="en">How It Works</span>
-        <span class="es">Cómo Funciona</span>
-      </a>
+      <a href="#signup" class="btn-primary"><span class="en">Join the Network</span><span class="es">Únete a la Red</span></a>
+      <a href="#how" class="btn-secondary"><span class="en">How It Works</span><span class="es">Cómo Funciona</span></a>
     </div>
   </section>
 
-  <!-- STATS -->
   <section class="stats">
     <div class="stat">
       <div class="stat-number">Willis, TX</div>
@@ -99,7 +67,6 @@
     </div>
   </section>
 
-  <!-- MISSION -->
   <section class="mission">
     <span class="section-tag"><span class="en">Our Mission</span><span class="es">Nuestra Misión</span></span>
     <h2><span class="en">A Cleaner Willis for Everyone</span><span class="es">Un Willis más Limpio para Todos</span></h2>
@@ -109,7 +76,6 @@
     </p>
   </section>
 
-  <!-- HOW IT WORKS -->
   <section class="how" id="how">
     <h2><span class="en">How It Works</span><span class="es">Cómo Funciona</span></h2>
     <div class="steps">
@@ -136,7 +102,6 @@
     </div>
   </section>
 
-  <!-- SIGN UP FORM -->
   <section class="signup" id="signup">
     <h2><span class="en">Join Today</span><span class="es">Únete Hoy</span></h2>
     <p><span class="en">Free to join. Start earning rewards for keeping Willis clean.</span><span class="es">Gratis para unirse. Comienza a ganar recompensas por mantener Willis limpio.</span></p>
@@ -154,70 +119,40 @@
     </div>
     <div class="form-group">
       <label><span class="en">Preferred Language</span><span class="es">Idioma Preferido</span></label>
-      <select>
-        <option>English</option>
-        <option>Español</option>
-      </select>
+      <select><option>English</option><option>Español</option></select>
     </div>
-    <button class="btn-submit">
-      <span class="en">Create My Account</span>
-      <span class="es">Crear Mi Cuenta</span>
-    </button>
+    <button class="btn-submit"><span class="en">Create My Account</span><span class="es">Crear Mi Cuenta</span></button>
   </section>
 
-  <!-- FOOTER -->
-  <footer>
-    <p>© 2026 <span>Litter Prevention Network</span> · Willis, TX · <span class="en">Keeping our community clean.</span><span class="es">Manteniendo nuestra comunidad limpia.</span></p>
-  </footer>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const _sb = window.supabase.createClient(
-  'https://elgzfppmlsrrmskgloeo.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
-);
-
-function setLang(lang) {
-  document.querySelectorAll('.lang-bar button').forEach(b => b.classList.remove('active'));
-  if (lang === 'es') {
-    document.body.classList.add('spanish');
-    document.querySelectorAll('.lang-bar button')[1].classList.add('active');
-  } else {
-    document.body.classList.remove('spanish');
-    document.querySelectorAll('.lang-bar button')[0].classList.add('active');
-  }
-}
-
-document.querySelector('.btn-submit').addEventListener('click', async () => {
-  const full_name = document.querySelectorAll('input')[0].value.trim();
-  const email = document.querySelectorAll('input')[1].value.trim();
-  const zip_code = document.querySelectorAll('input')[2].value.trim();
-  const language = document.querySelector('select').value;
-
-  if (!full_name || !email) {
-    alert('Please enter your name and email.');
-    return;
-  }
-
-  const { error } = await _sb.from('signups').insert([{ full_name, email, zip_code, language }]);
-
-  if (error) {
-    alert('Something went wrong. Please try again.');
-    console.error(error);
-  } else {
-    document.querySelector('.signup').innerHTML = `
-      <div style="text-align:center;padding:40px 20px">
-        <div style="font-size:60px;margin-bottom:16px">🎉</div>
-        <h2 style="font-size:28px;margin-bottom:12px;color:#1D9E75">You're in!</h2>
-        <p style="color:#555;font-size:16px;line-height:1.7">Welcome to the Litter Prevention Network.<br>We'll be in touch soon with ways to get involved.</p>
-      </div>`;
-  }
-});
-</script>
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js');
-  }
-</script>
+  <script>
+  const _sb = window.supabase.createClient(
+    'https://elgzfppmlsrrmskgloeo.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
+  );
+  document.querySelector('.btn-submit').addEventListener('click', async () => {
+    const full_name = document.querySelectorAll('input')[0].value.trim();
+    const email = document.querySelectorAll('input')[1].value.trim();
+    const zip_code = document.querySelectorAll('input')[2].value.trim();
+    const language = document.querySelector('select').value;
+    if (!full_name || !email) { alert('Please enter your name and email.'); return; }
+    const { error } = await _sb.from('signups').insert([{ full_name, email, zip_code, language }]);
+    if (error) { alert('Something went wrong. Please try again.'); console.error(error); }
+    else {
+      document.querySelector('.signup').innerHTML = `
+        <div style="text-align:center;padding:40px 20px">
+          <div style="font-size:60px;margin-bottom:16px">🎉</div>
+          <h2 style="font-size:28px;margin-bottom:12px;color:#1D9E75">You're in!</h2>
+          <p style="color:#555;font-size:16px;line-height:1.7">Welcome to the Litter Prevention Network.<br>We'll be in touch soon with ways to get involved.</p>
+        </div>`;
+    }
+  });
+  </script>
+  <script src="shared.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js');
+    }
+  </script>
 </body>
 </html>

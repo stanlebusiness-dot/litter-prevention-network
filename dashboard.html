@@ -6,19 +6,12 @@
   <meta name="theme-color" content="#1D9E75" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Dashboard – Litter Prevention Network</title>
+  <link rel="stylesheet" href="shared.css" />
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', sans-serif; background: #f5f5f3; color: #1a1a1a; }
-    .lang-bar { background: #1D9E75; padding: 8px 20px; text-align: right; }
-    .lang-bar button { background: none; border: 1px solid white; color: white; padding: 4px 12px; border-radius: 20px; cursor: pointer; font-size: 13px; margin-left: 6px; }
-    .lang-bar button.active { background: white; color: #1D9E75; }
-    nav { background: white; padding: 14px 40px; display: flex; gap: 24px; align-items: center; box-shadow: 0 1px 4px rgba(0,0,0,0.06); flex-wrap: wrap; }
-    nav a { text-decoration: none; color: #444; font-size: 15px; font-weight: 500; }
-    nav a.active { color: #1D9E75; }
     .hero { background: #1D9E75; color: white; padding: 40px; }
     .hero h1 { font-size: 26px; font-weight: 700; }
     .hero p { opacity: 0.85; margin-top: 6px; font-size: 15px; }
-    .content { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+    .dash-content { max-width: 900px; margin: 40px auto; padding: 0 20px; }
     .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }
     .card { background: white; border-radius: 12px; padding: 28px; box-shadow: 0 1px 8px rgba(0,0,0,0.06); text-align: center; }
     .card .number { font-size: 48px; font-weight: 800; color: #1D9E75; }
@@ -29,115 +22,105 @@
     td { padding: 14px 16px; font-size: 14px; border-bottom: 1px solid #f0f0ee; }
     tr:last-child td { border-bottom: none; }
     .empty { text-align: center; padding: 40px; color: #999; }
-    .logout-btn { background: none; border: 1px solid #ddd; padding: 8px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; color: #666; margin-left: auto; }
+    .logout-btn { background: none; border: 1px solid #ddd; padding: 8px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; color: #666; }
     .logout-btn:hover { background: #f5f5f3; }
-    .es { display: none; }
+    .dash-actions { display: flex; gap: 12px; margin-bottom: 32px; flex-wrap: wrap; }
+    .dash-actions a { background: #1D9E75; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px; }
+    .dash-actions a:hover { background: #0F6E56; }
   </style>
 </head>
 <body>
-<div class="lang-bar">
-  <button class="active" onclick="setLang('en')">English</button>
-  <button onclick="setLang('es')">Español</button>
-</div>
-<nav>
-  <a href="index.html"><span class="en">Home</span><span class="es">Inicio</span></a>
-  <a href="events.html"><span class="en">Events</span><span class="es">Eventos</span></a>
-  <a href="report-litter.html"><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
-  <a href="rewards.html"><span class="en">Rewards</span><span class="es">Recompensas</span></a>
-  <a href="volunteer.html"><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
-  <a href="submit-proof.html"><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
-  <a href="prize-portal.html"><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
-  <a href="dashboard.html" class="active"><span class="en">My Dashboard</span><span class="es">Mi Panel</span></a>
-  <button class="logout-btn" onclick="handleLogout()">
-    <span class="en">Log Out</span><span class="es">Cerrar Sesión</span>
-  </button>
-</nav>
-
-<div class="hero">
-  <h1 class="en">Welcome back, <span id="user-name">...</span>!</h1>
-  <h1 class="es">¡Bienvenido, <span id="user-name-es">...</span>!</h1>
-  <p class="en">Here's your impact so far.</p>
-  <p class="es">Aquí está tu impacto hasta ahora.</p>
-</div>
-
-<div class="content">
-  <div class="cards">
-    <div class="card">
-      <div class="number" id="current-points">0</div>
-      <div class="label en">Current Points</div>
-      <div class="label es">Puntos Actuales</div>
-    </div>
-    <div class="card">
-      <div class="number" id="total-points">0</div>
-      <div class="label en">Total Ever Earned</div>
-      <div class="label es">Total Ganado</div>
-    </div>
-    <div class="card">
-      <div class="number" id="submission-count">0</div>
-      <div class="label en">Submissions</div>
-      <div class="label es">Envíos</div>
-    </div>
+  <div class="lang-bar">
+    <button class="active" onclick="setLang('en')">English</button>
+    <button onclick="setLang('es')">Español</button>
   </div>
 
-  <div class="section-title en">Points History</div>
-  <div class="section-title es">Historial de Puntos</div>
-  <table>
-    <thead>
-      <tr>
-        <th><span class="en">Reason</span><span class="es">Razón</span></th>
-        <th><span class="en">Points</span><span class="es">Puntos</span></th>
-        <th><span class="en">Date</span><span class="es">Fecha</span></th>
-      </tr>
-    </thead>
-    <tbody id="history-body">
-      <tr><td colspan="3" class="empty">Loading...</td></tr>
-    </tbody>
-  </table>
-</div>
+  <div class="hero">
+    <h1 class="en">Welcome back, <span id="user-name">...</span>!</h1>
+    <h1 class="es">¡Bienvenido, <span id="user-name-es">...</span>!</h1>
+    <p class="en">Here's your impact so far.</p>
+    <p class="es">Aquí está tu impacto hasta ahora.</p>
+  </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-const _sb = window.supabase.createClient(
-  'https://elgzfppmlsrrmskgloeo.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
-);
-function fmt(d) { return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
-async function init() {
-  const { data: { session } } = await _sb.auth.getSession();
-  if (!session) return window.location.href = 'login.html';
-  const user = session.user;
-  const name = user.user_metadata?.full_name || user.email;
-  document.getElementById('user-name').textContent = name;
-  document.getElementById('user-name-es').textContent = name;
-  const { data: pts } = await _sb.from('points').select('*').eq('email', user.email).single();
-  if (pts) {
-    document.getElementById('current-points').textContent = pts.points;
-    document.getElementById('total-points').textContent = pts.total_earned;
+  <div class="dash-content">
+    <div class="cards">
+      <div class="card">
+        <div class="number" id="current-points">0</div>
+        <div class="label en">Current Points</div>
+        <div class="label es">Puntos Actuales</div>
+      </div>
+      <div class="card">
+        <div class="number" id="total-points">0</div>
+        <div class="label en">Total Ever Earned</div>
+        <div class="label es">Total Ganado</div>
+      </div>
+      <div class="card">
+        <div class="number" id="submission-count">0</div>
+        <div class="label en">Submissions</div>
+        <div class="label es">Envíos</div>
+      </div>
+    </div>
+
+    <div class="dash-actions">
+      <a href="submit-proof.html"><span class="en">📸 Submit Proof</span><span class="es">📸 Enviar Prueba</span></a>
+      <a href="prize-portal.html"><span class="en">🎁 Redeem Points</span><span class="es">🎁 Canjear Puntos</span></a>
+      <a href="events.html"><span class="en">📅 View Events</span><span class="es">📅 Ver Eventos</span></a>
+      <button class="logout-btn" onclick="handleLogout()"><span class="en">Log Out</span><span class="es">Cerrar Sesión</span></button>
+    </div>
+
+    <div class="section-title en">Points History</div>
+    <div class="section-title es">Historial de Puntos</div>
+    <table>
+      <thead>
+        <tr>
+          <th><span class="en">Reason</span><span class="es">Razón</span></th>
+          <th><span class="en">Points</span><span class="es">Puntos</span></th>
+          <th><span class="en">Date</span><span class="es">Fecha</span></th>
+        </tr>
+      </thead>
+      <tbody id="history-body">
+        <tr><td colspan="3" class="empty">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+  const _sb = window.supabase.createClient(
+    'https://elgzfppmlsrrmskgloeo.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
+  );
+  function fmt(d) { return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
+  async function init() {
+    const { data: { session } } = await _sb.auth.getSession();
+    if (!session) return window.location.href = 'login.html';
+    const user = session.user;
+    const name = user.user_metadata?.full_name || user.email;
+    document.getElementById('user-name').textContent = name;
+    document.getElementById('user-name-es').textContent = name;
+    const { data: pts } = await _sb.from('points').select('*').eq('email', user.email).single();
+    if (pts) {
+      document.getElementById('current-points').textContent = pts.points;
+      document.getElementById('total-points').textContent = pts.total_earned;
+    }
+    const { data: subs } = await _sb.from('proof_submissions').select('id').eq('email', user.email);
+    document.getElementById('submission-count').textContent = subs?.length || 0;
+    const { data: history } = await _sb.from('points_history').select('*').eq('email', user.email).order('created_at', { ascending: false });
+    document.getElementById('history-body').innerHTML = history?.length
+      ? history.map(h => `<tr><td>${h.reason}</td><td>+${h.points}</td><td>${fmt(h.created_at)}</td></tr>`).join('')
+      : '<tr><td colspan="3" class="empty">No points earned yet — submit proof to get started!</td></tr>';
   }
-  const { data: subs } = await _sb.from('proof_submissions').select('id').eq('email', user.email);
-  document.getElementById('submission-count').textContent = subs?.length || 0;
-  const { data: history } = await _sb.from('points_history').select('*').eq('email', user.email).order('created_at', { ascending: false });
-  document.getElementById('history-body').innerHTML = history?.length
-    ? history.map(h => `<tr><td>${h.reason}</td><td>+${h.points}</td><td>${fmt(h.created_at)}</td></tr>`).join('')
-    : '<tr><td colspan="3" class="empty">No points earned yet — submit proof to get started!</td></tr>';
-}
-async function handleLogout() {
-  await _sb.auth.signOut();
-  window.location.href = 'login.html';
-}
-function setLang(lang) {
-  document.querySelectorAll('.en').forEach(e => e.style.display = lang === 'en' ? '' : 'none');
-  document.querySelectorAll('.es').forEach(e => e.style.display = lang === 'es' ? '' : 'none');
-  document.querySelectorAll('.lang-bar button').forEach((b, i) => {
-    b.classList.toggle('active', (lang === 'en' && i === 0) || (lang === 'es' && i === 1));
-  });
-}
-init();
-</script>
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js');
+  async function handleLogout() {
+    await _sb.auth.signOut();
+    window.location.href = 'login.html';
   }
-</script>
+  init();
+  </script>
+  <script src="shared.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js');
+    }
+  </script>
 </body>
 </html>

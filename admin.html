@@ -18,7 +18,7 @@
     .login-screen button { width: 100%; background: #1D9E75; color: white; padding: 13px; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer; }
     .login-screen button:hover { background: #0F6E56; }
     .dashboard { display: none; }
-    .tabs { display: flex; gap: 4px; padding: 24px 40px 0; border-bottom: 2px solid #e5e5e3; background: white; }
+    .tabs { display: flex; gap: 4px; padding: 24px 40px 0; border-bottom: 2px solid #e5e5e3; background: white; flex-wrap: wrap; }
     .tab { padding: 12px 24px; border: none; background: none; font-size: 15px; cursor: pointer; color: #666; border-bottom: 3px solid transparent; margin-bottom: -2px; font-weight: 500; }
     .tab.active { color: #1D9E75; border-bottom-color: #1D9E75; }
     .tab-content { display: none; padding: 32px 40px; }
@@ -62,12 +62,13 @@
     <button class="tab" onclick="showTab('reports', this)">Litter Reports</button>
     <button class="tab" onclick="showTab('proof', this)">Proof Submissions</button>
     <button class="tab" onclick="showTab('points', this)">Points Ledger</button>
+    <button class="tab" onclick="showTab('redemptions', this)">Redemptions</button>
   </div>
 
   <div class="tab-content active" id="tab-signups">
     <div class="section-title">Sign-ups <span class="count-badge" id="count-signups">...</span></div>
     <table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Zip Code</th><th>Language</th><th>Date</th></tr></thead>
-    <tbody id="body-signups"><tr><td colspan="5" class="loading">Loading...</td></tr></tbody></table>
+    <tbody id="body-signups"><tr><td colspan="6" class="loading">Loading...</td></tr></tbody></table>
   </div>
 
   <div class="tab-content" id="tab-volunteers">
@@ -92,6 +93,12 @@
     <div class="section-title">Points Ledger <span class="count-badge" id="count-points">...</span></div>
     <table><thead><tr><th>Email</th><th>Current Points</th><th>Total Ever Earned</th><th>Last Updated</th></tr></thead>
     <tbody id="body-points"><tr><td colspan="4" class="loading">Loading...</td></tr></tbody></table>
+  </div>
+
+  <div class="tab-content" id="tab-redemptions">
+    <div class="section-title">Redemptions <span class="count-badge" id="count-redemptions">...</span></div>
+    <table><thead><tr><th>Email</th><th>Prize Type</th><th>Details</th><th>Points Spent</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+    <tbody id="body-redemptions"><tr><td colspan="7" class="loading">Loading...</td></tr></tbody></table>
   </div>
 </div>
 
@@ -123,19 +130,20 @@ function showTab(name, el) {
 function fmt(d) { return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
 
 async function loadAll() {
-  const [s, v, r, p, pts] = await Promise.all([
+  const [s, v, r, p, pts, red] = await Promise.all([
     _sb.from('signups').select('*').order('created_at', { ascending: false }),
     _sb.from('volunteers').select('*').order('created_at', { ascending: false }),
     _sb.from('litter_reports').select('*').order('created_at', { ascending: false }),
     _sb.from('proof_submissions').select('*').order('created_at', { ascending: false }),
     _sb.from('points').select('*').order('total_earned', { ascending: false }),
+    _sb.from('redemptions').select('*').order('created_at', { ascending: false }),
   ]);
 
   // Sign-ups
   document.getElementById('count-signups').textContent = s.data?.length || 0;
   document.getElementById('body-signups').innerHTML = s.data?.length
     ? s.data.map(r => `<tr><td>#${r.member_number}</td><td>${r.full_name}</td><td>${r.email}</td><td>${r.zip_code}</td><td>${r.language}</td><td>${fmt(r.created_at)}</td></tr>`).join('')
-: '<tr><td colspan="6" class="empty">No sign-ups yet.</td></tr>';
+    : '<tr><td colspan="6" class="empty">No sign-ups yet.</td></tr>';
 
   // Volunteers
   document.getElementById('count-volunteers').textContent = v.data?.length || 0;
@@ -155,33 +163,22 @@ async function loadAll() {
     ? p.data.map(row => {
         const status = row.status || 'pending';
         const isPending = status === 'pending';
-        const photoLink = row.photo_url
-          ? `<a class="photo-link" href="${row.photo_url}" target="_blank">View Photo</a>`
-          : '—';
+        const photoLink = row.photo_url ? `<a class="photo-link" href="${row.photo_url}" target="_blank">View Photo</a>` : '—';
         const actions = isPending ? `
           <select class="points-select" id="pts-${row.id}">
-            <option value="10">10 pts</option>
-            <option value="15">15 pts</option>
-            <option value="20">20 pts</option>
-            <option value="25">25 pts</option>
-            <option value="30">30 pts</option>
-            <option value="35">35 pts</option>
-            <option value="40">40 pts</option>
-            <option value="45">45 pts</option>
+            <option value="10">10 pts</option><option value="15">15 pts</option>
+            <option value="20">20 pts</option><option value="25">25 pts</option>
+            <option value="30">30 pts</option><option value="35">35 pts</option>
+            <option value="40">40 pts</option><option value="45">45 pts</option>
             <option value="50">50 pts</option>
           </select>
           <button class="btn-approve" onclick="approveSubmission('${row.id}', '${row.email}')">Approve</button>
-          <button class="btn-reject" onclick="rejectSubmission('${row.id}')">Reject</button>
-        ` : '—';
+          <button class="btn-reject" onclick="rejectSubmission('${row.id}')">Reject</button>` : '—';
         return `<tr>
-          <td>${row.name || '—'}</td>
-          <td>${row.email || '—'}</td>
-          <td>${row.description || '—'}</td>
+          <td>${row.name||'—'}</td><td>${row.email||'—'}</td><td>${row.description||'—'}</td>
           <td>${photoLink}</td>
-          <td><span class="status-badge status-${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</span></td>
-          <td>${row.points_awarded || '—'}</td>
-          <td>${actions}</td>
-        </tr>`;
+          <td><span class="status-badge status-${status}">${status.charAt(0).toUpperCase()+status.slice(1)}</span></td>
+          <td>${row.points_awarded||'—'}</td><td>${actions}</td></tr>`;
       }).join('')
     : '<tr><td colspan="7" class="empty">No proof submissions yet.</td></tr>';
 
@@ -190,26 +187,38 @@ async function loadAll() {
   document.getElementById('body-points').innerHTML = pts.data?.length
     ? pts.data.map(r => `<tr><td>${r.email}</td><td>${r.points}</td><td>${r.total_earned}</td><td>${fmt(r.updated_at)}</td></tr>`).join('')
     : '<tr><td colspan="4" class="empty">No points awarded yet.</td></tr>';
+
+  // Redemptions
+  document.getElementById('count-redemptions').textContent = red.data?.length || 0;
+  document.getElementById('body-redemptions').innerHTML = red.data?.length
+    ? red.data.map(row => {
+        const status = row.status || 'pending';
+        const isPending = status === 'pending';
+        const actions = isPending ? `
+          <button class="btn-approve" onclick="fulfillRedemption('${row.id}')">Mark Fulfilled</button>
+          <button class="btn-reject" onclick="cancelRedemption('${row.id}')">Cancel</button>` : '—';
+        return `<tr>
+          <td>${row.email}</td>
+          <td>${row.prize_type}</td>
+          <td>${row.details||'—'}</td>
+          <td>${row.points_spent}</td>
+          <td><span class="status-badge status-${status}">${status.charAt(0).toUpperCase()+status.slice(1)}</span></td>
+          <td>${fmt(row.created_at)}</td>
+          <td>${actions}</td></tr>`;
+      }).join('')
+    : '<tr><td colspan="7" class="empty">No redemptions yet.</td></tr>';
 }
 
 async function approveSubmission(id, email) {
   const pointsToAward = parseInt(document.getElementById('pts-' + id).value);
-
   await _sb.from('proof_submissions').update({ status: 'approved', points_awarded: pointsToAward }).eq('id', id);
-
   const { data: existing } = await _sb.from('points').select('*').eq('email', email).single();
   if (existing) {
-    await _sb.from('points').update({
-      points: existing.points + pointsToAward,
-      total_earned: existing.total_earned + pointsToAward,
-      updated_at: new Date()
-    }).eq('email', email);
+    await _sb.from('points').update({ points: existing.points + pointsToAward, total_earned: existing.total_earned + pointsToAward, updated_at: new Date() }).eq('email', email);
   } else {
     await _sb.from('points').insert({ email, points: pointsToAward, total_earned: pointsToAward });
   }
-
   await _sb.from('points_history').insert({ email, points: pointsToAward, reason: 'Approved proof submission' });
-
   alert(`✅ Approved! ${pointsToAward} points awarded to ${email}`);
   loadAll();
 }
@@ -219,6 +228,18 @@ async function rejectSubmission(id) {
   alert('❌ Submission rejected.');
   loadAll();
 }
-</script>
+
+async function fulfillRedemption(id) {
+  await _sb.from('redemptions').update({ status: 'fulfilled' }).eq('id', id);
+  alert('✅ Redemption marked as fulfilled!');
+  loadAll();
+}
+
+async function cancelRedemption(id) {
+  await _sb.from('redemptions').update({ status: 'cancelled' }).eq('id', id);
+  alert('❌ Redemption cancelled.');
+  loadAll();
+}
+<script src="shared.js"></script>
 </body>
 </html>
