@@ -41,6 +41,11 @@ nav {
   z-index: 100;
 }
 .nav-logo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.nav-logo {
   display: flex;
   align-items: center;
   gap: 10px;
