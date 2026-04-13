@@ -1,27 +1,37 @@
-const CACHE_NAME = 'lpn-cache-v2';
-const URLS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/events.html',
-  '/report-litter.html',
-  '/rewards.html',
-  '/volunteer.html',
-  '/submit-proof.html',
-  '/login.html',
-  '/dashboard.html',
-  '/prize-portal.html',
+const CACHE_NAME = 'lpn-cache-v3';
+const ASSETS_TO_CACHE = [
   '/shared.css',
-  '/shared.js'
+  '/shared.js',
+  '/manifest.json',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png'
 ];
 
+// Install — only cache static assets, never HTML
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS_TO_CACHE))
+  );
+  self.skipWaiting();
+});
+
+// Activate — delete old caches immediately
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key)))
+    )
+  );
+  self.clients.claim();
+});
+
+// Fetch — HTML always from network, assets from cache
 self.addEventListener('fetch', event => {
-  if (event.request.mode === 'navigate') {
+  if (event.request.mode === 'navigate' || event.request.url.endsWith('.html')) {
     event.respondWith(fetch(event.request));
     return;
   }
   event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request);
-    })
+    caches.match(event.request).then(response => response || fetch(event.request))
   );
 });
