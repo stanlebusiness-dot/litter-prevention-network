@@ -7,7 +7,6 @@ const ASSETS_TO_CACHE = [
   '/icons/icon-512.png'
 ];
 
-// Install — only cache static assets, never HTML
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS_TO_CACHE))
@@ -15,7 +14,6 @@ self.addEventListener('install', event => {
   self.skipWaiting();
 });
 
-// Activate — delete old caches immediately
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
@@ -25,7 +23,6 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-// Fetch — HTML always from network, assets from cache
 self.addEventListener('fetch', event => {
   if (event.request.mode === 'navigate' || event.request.url.endsWith('.html')) {
     event.respondWith(fetch(event.request));
