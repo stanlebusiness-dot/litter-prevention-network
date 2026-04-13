@@ -7,7 +7,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Submit Proof – Litter Prevention Network</title>
   <link rel="stylesheet" href="shared.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <script src="shared.js" defer></script>
+  <style>
+    .proof-type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 28px; }
+    .proof-type-card { background: #f9f9f7; border-radius: 10px; padding: 20px; text-align: center; border: 2px solid transparent; cursor: pointer; transition: all 0.2s; }
+    .proof-type-card:hover, .proof-type-card.selected { border-color: #1D9E75; background: #f0fdf8; }
+    .proof-type-card .icon { font-size: 32px; margin-bottom: 8px; }
+    .proof-type-card h3 { font-size: 14px; font-weight: 700; color: #0F2318; font-family: 'Outfit', sans-serif; margin-bottom: 4px; }
+    .proof-type-card p { font-size: 12px; color: #777; line-height: 1.5; }
+    .proof-type-card .pts { font-size: 13px; font-weight: 800; color: #1D9E75; margin-top: 8px; }
+    .before-after-note { background: #FFF8E1; border-left: 4px solid #FFB300; border-radius: 8px; padding: 14px 18px; margin-bottom: 20px; font-size: 13px; color: #7B5E00; line-height: 1.6; display: none; }
+  </style>
 </head>
 <body>
   <div class="lang-bar">
@@ -16,13 +27,15 @@
   </div>
 
   <nav>
-    <a href="index.html" class="nav-logo"><img src="/icons/icon-192.png" alt="LPN" /><span>LPN Willis</span></a>
+    <a href="index.html" class="nav-logo">
+      <span style="font-family:'Outfit',sans-serif;font-weight:800;font-size:18px;color:#0F6E56;">LPN Willis</span>
+    </a>
     <button class="hamburger" onclick="openDrawer()"><span></span><span></span><span></span></button>
   </nav>
   <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
   <div class="drawer" id="drawer">
     <div class="drawer-header">
-      <div class="drawer-logo"><img src="/icons/icon-192.png" alt="LPN" />Litter Prevention Network</div>
+      <div class="drawer-logo" style="font-family:'Outfit',sans-serif;">Litter Prevention Network</div>
       <button class="drawer-close" onclick="closeDrawer()">✕</button>
     </div>
     <div class="drawer-nav">
@@ -42,16 +55,39 @@
 
   <section class="page-hero">
     <h1><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></h1>
-    <p><span class="en">Completed a cleanup task? Submit your photo proof here to earn your points.</span><span class="es">¿Completaste una tarea de limpieza? Envía tu foto aquí para ganar tus puntos.</span></p>
+    <p><span class="en">Completed a cleanup? Submit your proof and earn points once approved by our team.</span><span class="es">¿Completaste una limpieza? Envía tu prueba y gana puntos una vez aprobado por nuestro equipo.</span></p>
   </section>
 
   <section class="content" style="max-width:560px" id="proof-form">
-    <div style="background:#E1F5EE;border-radius:10px;padding:20px 24px;margin-bottom:32px">
-      <p style="color:#0F6E56;font-size:15px;line-height:1.7">
-        <span class="en">After submitting your proof, our team will review it within 24 hours. Once approved, points will be added to your account automatically.</span>
-        <span class="es">Después de enviar tu prueba, nuestro equipo la revisará en 24 horas. Una vez aprobada, los puntos se agregarán a tu cuenta automáticamente.</span>
-      </p>
+
+    <div style="background:#E1F5EE;border-radius:10px;padding:16px 20px;margin-bottom:24px;font-size:14px;color:#0F6E56;line-height:1.7;">
+      <strong><span class="en">How it works:</span><span class="es">Cómo funciona:</span></strong><br/>
+      <span class="en">Submit your proof below. Our admin team reviews every submission before points are awarded. Reviews typically happen within 24 hours.</span>
+      <span class="es">Envía tu prueba abajo. Nuestro equipo revisa cada envío antes de otorgar puntos. Las revisiones suelen ocurrir en 24 horas.</span>
     </div>
+
+    <!-- Proof Type Selection -->
+    <p style="font-size:14px;font-weight:700;color:#333;margin-bottom:12px;font-family:'Outfit',sans-serif;"><span class="en">What are you submitting proof for?</span><span class="es">¿Para qué estás enviando prueba?</span></p>
+    <div class="proof-type-grid">
+      <div class="proof-type-card" onclick="selectType('event', this)">
+        <div class="icon">📅</div>
+        <h3><span class="en">LPN Cleanup Event</span><span class="es">Evento de Limpieza LPN</span></h3>
+        <p><span class="en">You attended one of our organized events</span><span class="es">Asististe a uno de nuestros eventos</span></p>
+        <div class="pts">+50 pts</div>
+      </div>
+      <div class="proof-type-card" onclick="selectType('own', this)">
+        <div class="icon">🧹</div>
+        <h3><span class="en">My Own Cleanup</span><span class="es">Mi Propia Limpieza</span></h3>
+        <p><span class="en">You organized your own cleanup solo or with others</span><span class="es">Organizaste tu propia limpieza solo o con otros</span></p>
+        <div class="pts">+75 pts</div>
+      </div>
+    </div>
+
+    <div class="before-after-note" id="before-after-note">
+      📸 <span class="en"><strong>Before & After required:</strong> For your own cleanup you must upload both a BEFORE photo and an AFTER photo. Submit this form twice — once for each photo — and note which is which in the description.</span>
+      <span class="es"><strong>Antes y después requerido:</strong> Para tu propia limpieza debes subir una foto ANTES y una DESPUÉS. Envía este formulario dos veces — una por cada foto — e indica cuál es cuál en la descripción.</span>
+    </div>
+
     <div class="form-group">
       <label><span class="en">Your Name</span><span class="es">Tu Nombre</span></label>
       <input type="text" id="proof-name" placeholder="Your name" />
@@ -62,10 +98,10 @@
     </div>
     <div class="form-group">
       <label><span class="en">Describe what you did</span><span class="es">Describe lo que hiciste</span></label>
-      <textarea id="proof-description" rows="4" placeholder="I cleaned up litter at the park for 1 hour..."></textarea>
+      <textarea id="proof-description" rows="4" placeholder="I cleaned up litter at Willis City Park for 1 hour with 2 friends..."></textarea>
     </div>
     <div class="form-group">
-      <label><span class="en">Upload your photo proof</span><span class="es">Sube tu foto como prueba</span></label>
+      <label><span class="en">Upload your photo proof <span style="color:#e74c3c">*required</span></span><span class="es">Sube tu foto como prueba <span style="color:#e74c3c">*requerida</span></span></label>
       <input type="file" id="proof-photo" accept="image/*" />
     </div>
     <div id="upload-progress" style="display:none;margin-bottom:16px">
@@ -82,11 +118,14 @@
   <footer class="site-footer">
     <div class="footer-grid">
       <div class="footer-brand">
-        <img src="/icons/icon-192.png" alt="LPN Logo" />
-        <h3>Litter Prevention Network</h3>
+        <h3 style="font-family:'Outfit',sans-serif;">Litter Prevention Network</h3>
         <p class="en">Keeping Willis, TX clean — one cleanup at a time.</p>
         <p class="es">Manteniendo Willis, TX limpio — una limpieza a la vez.</p>
-        <div class="footer-contact">📍 Willis, TX<br/>📧 <a href="mailto:stanley@litterpreventionnetwork.org">stanley@litterpreventionnetwork.org</a></div>
+        <div class="footer-contact">
+          📍 Willis, TX<br/>
+          📞 <a href="tel:2819359097">(281) 935-9097</a><br/>
+          📧 <a href="mailto:stanley@litterpreventionnetwork.org">stanley@litterpreventionnetwork.org</a>
+        </div>
         <div class="footer-social">
           <a href="https://facebook.com/litterpreventionnetwork" target="_blank">f</a>
           <a href="https://instagram.com/litterpreventionnetwork" target="_blank">ig</a>
@@ -126,11 +165,22 @@
       'https://elgzfppmlsrrmskgloeo.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
     );
+
+    let selectedType = null;
+
+    function selectType(type, el) {
+      document.querySelectorAll('.proof-type-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedType = type;
+      document.getElementById('before-after-note').style.display = type === 'own' ? 'block' : 'none';
+    }
+
     async function submitProof() {
       const name = document.getElementById('proof-name').value.trim();
       const email = document.getElementById('proof-email').value.trim();
       const description = document.getElementById('proof-description').value.trim();
       const photoFile = document.getElementById('proof-photo').files[0];
+      if (!selectedType) { alert('Please select what you are submitting proof for.'); return; }
       if (!name || !email || !description) { alert('Please fill out all fields.'); return; }
       if (!photoFile) { alert('Please upload a photo.'); return; }
       const btn = document.getElementById('submit-btn');
@@ -148,19 +198,21 @@
       document.getElementById('progress-bar').style.width = '80%';
       const { data: urlData } = _sb.storage.from('proof-photos').getPublicUrl(fileName);
       const { error: dbError } = await _sb.from('proof_submissions').insert([{
-        name, email, task_description: description, photo_url: urlData.publicUrl, status: 'pending'
+        name, email,
+        task_description: `[${selectedType === 'event' ? 'LPN Event' : 'Own Cleanup'}] ${description}`,
+        photo_url: urlData.publicUrl,
+        status: 'pending'
       }]);
       document.getElementById('progress-bar').style.width = '100%';
       if (dbError) { alert('Something went wrong. Please try again.'); btn.disabled = false; btn.textContent = 'Submit Proof'; return; }
       document.getElementById('proof-form').innerHTML = `
         <div style="text-align:center;padding:60px 20px">
           <div style="font-size:60px;margin-bottom:16px">📸</div>
-          <h2 style="font-size:28px;margin-bottom:12px;color:#1D9E75">Proof submitted!</h2>
+          <h2 style="font-size:28px;margin-bottom:12px;color:#1D9E75;font-family:'Outfit',sans-serif;">Proof submitted!</h2>
           <p style="color:#555;font-size:16px;line-height:1.7">Thank you! Our team will review your submission within 24 hours.<br>Points will be added to your account once approved.</p>
         </div>`;
     }
   </script>
-  <script src="shared.js"></script>
   <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js');</script>
 </body>
 </html>

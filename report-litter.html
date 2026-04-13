@@ -7,7 +7,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Report Litter – Litter Prevention Network</title>
   <link rel="stylesheet" href="shared.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <script src="shared.js" defer></script>
+  <style>
+    .safety-banner { background: #FFF8E1; border-left: 4px solid #FFB300; border-radius: 10px; padding: 20px 24px; margin-bottom: 28px; }
+    .safety-banner h3 { font-size: 15px; font-weight: 700; color: #7B5E00; margin-bottom: 10px; font-family: 'Outfit', sans-serif; }
+    .safety-banner ul { list-style: none; padding: 0; margin: 0; }
+    .safety-banner ul li { font-size: 13px; color: #5a4200; padding: 4px 0; line-height: 1.6; }
+    .safety-banner ul li::before { content: "⚠️ "; }
+    .points-badge { display: inline-block; background: #E1F5EE; color: #0F6E56; font-size: 13px; font-weight: 700; padding: 6px 14px; border-radius: 20px; margin-bottom: 24px; }
+  </style>
 </head>
 <body>
   <div class="lang-bar">
@@ -16,13 +25,15 @@
   </div>
 
   <nav>
-    <a href="index.html" class="nav-logo"><img src="/icons/icon-192.png" alt="LPN" /><span>LPN Willis</span></a>
+    <a href="index.html" class="nav-logo">
+      <span style="font-family:'Outfit',sans-serif;font-weight:800;font-size:18px;color:#0F6E56;">LPN Willis</span>
+    </a>
     <button class="hamburger" onclick="openDrawer()"><span></span><span></span><span></span></button>
   </nav>
   <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
   <div class="drawer" id="drawer">
     <div class="drawer-header">
-      <div class="drawer-logo"><img src="/icons/icon-192.png" alt="LPN" />Litter Prevention Network</div>
+      <div class="drawer-logo" style="font-family:'Outfit',sans-serif;">Litter Prevention Network</div>
       <button class="drawer-close" onclick="closeDrawer()">✕</button>
     </div>
     <div class="drawer-nav">
@@ -42,37 +53,54 @@
 
   <section class="page-hero">
     <h1><span class="en">Report Litter</span><span class="es">Reportar Basura</span></h1>
-    <p><span class="en">Spot litter in Willis? Report it here and earn points. Our team will handle the rest.</span><span class="es">¿Ves basura en Willis? Repórtala aquí y gana puntos. Nuestro equipo se encargará del resto.</span></p>
+    <p><span class="en">Spot litter in Willis? Report it safely and earn 10 points. Your safety always comes first.</span><span class="es">¿Ves basura en Willis? Repórtala de forma segura y gana 10 puntos. Tu seguridad siempre es primero.</span></p>
   </section>
 
   <section class="content" style="max-width:560px">
+
+    <div class="points-badge">📍 <span class="en">Earn +10 points per approved report</span><span class="es">Gana +10 puntos por reporte aprobado</span></div>
+
+    <div class="safety-banner">
+      <h3><span class="en">⚠️ Safety Guidelines — Read Before Reporting</span><span class="es">⚠️ Normas de Seguridad — Lee Antes de Reportar</span></h3>
+      <ul>
+        <li><span class="en">Always report from a safe location — your car, sidewalk, or a safe distance away.</span><span class="es">Siempre reporta desde un lugar seguro — tu auto, acera o a distancia segura.</span></li>
+        <li><span class="en">Never stop in traffic or enter a roadway to photograph litter.</span><span class="es">Nunca te detengas en el tráfico ni entres a la carretera para fotografiar basura.</span></li>
+        <li><span class="en">Do not attempt to pick up hazardous materials — needles, chemicals, or unknown substances. Report only.</span><span class="es">No intentes recoger materiales peligrosos — jeringas, químicos o sustancias desconocidas. Solo repórtalos.</span></li>
+        <li><span class="en">If litter is on private property, report it from public ground only.</span><span class="es">Si la basura está en propiedad privada, repórtala solo desde terreno público.</span></li>
+      </ul>
+    </div>
+
     <div class="form-group">
       <label><span class="en">Your Name</span><span class="es">Tu Nombre</span></label>
-      <input type="text" placeholder="Your name" />
+      <input type="text" id="report-name" placeholder="Your name" />
     </div>
     <div class="form-group">
       <label><span class="en">Location / Street Address</span><span class="es">Ubicación / Dirección</span></label>
-      <input type="text" placeholder="123 Main St, Willis TX" />
+      <input type="text" id="report-location" placeholder="123 Main St, Willis TX" />
     </div>
     <div class="form-group">
       <label><span class="en">Describe the litter</span><span class="es">Describe la basura</span></label>
-      <textarea rows="4" placeholder="Bags of trash near the stop sign..."></textarea>
+      <textarea id="report-description" rows="4" placeholder="Bags of trash near the stop sign..."></textarea>
     </div>
     <div class="form-group">
-      <label><span class="en">Upload a photo (optional)</span><span class="es">Sube una foto (opcional)</span></label>
-      <input type="file" accept="image/*" />
+      <label><span class="en">Upload a photo <span style="color:#e74c3c">*required</span></span><span class="es">Sube una foto <span style="color:#e74c3c">*requerida</span></span></label>
+      <input type="file" id="report-photo" accept="image/*" />
+      <p style="font-size:12px;color:#888;margin-top:6px;"><span class="en">Photo must be taken from a safe location. +10 points awarded upon admin approval.</span><span class="es">La foto debe tomarse desde un lugar seguro. +10 puntos otorgados tras aprobación del administrador.</span></p>
     </div>
-    <button class="btn-submit"><span class="en">Submit Report</span><span class="es">Enviar Reporte</span></button>
+    <button class="btn-submit" id="report-btn"><span class="en">Submit Report</span><span class="es">Enviar Reporte</span></button>
   </section>
 
   <footer class="site-footer">
     <div class="footer-grid">
       <div class="footer-brand">
-        <img src="/icons/icon-192.png" alt="LPN Logo" />
-        <h3>Litter Prevention Network</h3>
+        <h3 style="font-family:'Outfit',sans-serif;">Litter Prevention Network</h3>
         <p class="en">Keeping Willis, TX clean — one cleanup at a time.</p>
         <p class="es">Manteniendo Willis, TX limpio — una limpieza a la vez.</p>
-        <div class="footer-contact">📍 Willis, TX<br/>📧 <a href="mailto:stanley@litterpreventionnetwork.org">stanley@litterpreventionnetwork.org</a></div>
+        <div class="footer-contact">
+          📍 Willis, TX<br/>
+          📞 <a href="tel:2819359097">(281) 935-9097</a><br/>
+          📧 <a href="mailto:stanley@litterpreventionnetwork.org">stanley@litterpreventionnetwork.org</a>
+        </div>
         <div class="footer-social">
           <a href="https://facebook.com/litterpreventionnetwork" target="_blank">f</a>
           <a href="https://instagram.com/litterpreventionnetwork" target="_blank">ig</a>
@@ -112,24 +140,45 @@
     'https://elgzfppmlsrrmskgloeo.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
   );
-  document.querySelector('.btn-submit').addEventListener('click', async () => {
-    const name = document.querySelectorAll('input')[0].value.trim();
-    const location = document.querySelectorAll('input')[1].value.trim();
-    const description = document.querySelector('textarea').value.trim();
+  document.getElementById('report-btn').addEventListener('click', async () => {
+    const name = document.getElementById('report-name').value.trim();
+    const location = document.getElementById('report-location').value.trim();
+    const description = document.getElementById('report-description').value.trim();
+    const photoFile = document.getElementById('report-photo').files[0];
     if (!name || !location || !description) { alert('Please fill out your name, location, and description.'); return; }
-    const { error } = await _sb.from('litter_reports').insert([{ name, location, description }]);
-    if (error) { alert('Something went wrong. Please try again.'); console.error(error); }
-    else {
+    if (!photoFile) { alert('A photo is required to submit a litter report.'); return; }
+
+    const btn = document.getElementById('report-btn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+
+    const fileName = `${Date.now()}-${photoFile.name}`;
+    const { error: uploadError } = await _sb.storage.from('proof-photos').upload(fileName, photoFile);
+    if (uploadError) {
+      alert('Photo upload failed. Please try again.');
+      btn.disabled = false;
+      btn.innerHTML = '<span class="en">Submit Report</span><span class="es">Enviar Reporte</span>';
+      return;
+    }
+    const { data: urlData } = _sb.storage.from('proof-photos').getPublicUrl(fileName);
+    const photo_url = urlData.publicUrl;
+
+    const { error } = await _sb.from('litter_reports').insert([{ name, location, description, photo_url }]);
+    if (error) {
+      alert('Something went wrong. Please try again.');
+      console.error(error);
+      btn.disabled = false;
+      btn.innerHTML = '<span class="en">Submit Report</span><span class="es">Enviar Reporte</span>';
+    } else {
       document.querySelector('.content').innerHTML = `
         <div style="text-align:center;padding:60px 20px">
           <div style="font-size:60px;margin-bottom:16px">📍</div>
-          <h2 style="font-size:28px;margin-bottom:12px;color:#1D9E75">Report received!</h2>
-          <p style="color:#555;font-size:16px;line-height:1.7">Thank you for reporting litter in Willis.<br>Our team will follow up on your submission.</p>
+          <h2 style="font-size:28px;margin-bottom:12px;color:#1D9E75;font-family:'Outfit',sans-serif;">Report received!</h2>
+          <p style="color:#555;font-size:16px;line-height:1.7">Thank you for reporting litter in Willis.<br>Once approved you'll earn <strong>+10 points</strong>.</p>
         </div>`;
     }
   });
   </script>
-  <script src="shared.js"></script>
   <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js');</script>
 </body>
 </html>

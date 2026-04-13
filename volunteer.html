@@ -7,7 +7,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Volunteer – Litter Prevention Network</title>
   <link rel="stylesheet" href="shared.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <script src="shared.js" defer></script>
+  <style>
+    .vest-box { background: #E1F5EE; border-radius: 10px; padding: 20px 24px; margin-bottom: 28px; }
+    .vest-box h3 { font-size: 15px; font-weight: 700; color: #0F6E56; margin-bottom: 8px; font-family: 'Outfit', sans-serif; }
+    .vest-box p { font-size: 14px; color: #444; line-height: 1.7; }
+    .how-help-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 28px; }
+    .how-help-card { background: #f9f9f7; border-radius: 10px; padding: 18px; text-align: center; border: 2px solid transparent; cursor: pointer; transition: all 0.2s; }
+    .how-help-card:hover { border-color: #1D9E75; background: #f0fdf8; }
+    .how-help-card .icon { font-size: 28px; margin-bottom: 8px; }
+    .how-help-card p { font-size: 13px; color: #555; font-weight: 600; }
+  </style>
 </head>
 <body>
   <div class="lang-bar">
@@ -16,13 +27,15 @@
   </div>
 
   <nav>
-    <a href="index.html" class="nav-logo"><img src="/icons/icon-192.png" alt="LPN" /><span>LPN Willis</span></a>
+    <a href="index.html" class="nav-logo">
+      <span style="font-family:'Outfit',sans-serif;font-weight:800;font-size:18px;color:#0F6E56;">LPN Willis</span>
+    </a>
     <button class="hamburger" onclick="openDrawer()"><span></span><span></span><span></span></button>
   </nav>
   <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
   <div class="drawer" id="drawer">
     <div class="drawer-header">
-      <div class="drawer-logo"><img src="/icons/icon-192.png" alt="LPN" />Litter Prevention Network</div>
+      <div class="drawer-logo" style="font-family:'Outfit',sans-serif;">Litter Prevention Network</div>
       <button class="drawer-close" onclick="closeDrawer()">✕</button>
     </div>
     <div class="drawer-nav">
@@ -46,48 +59,75 @@
   </section>
 
   <section class="content" style="max-width:560px">
+
+    <div class="vest-box">
+      <h3>🦺 <span class="en">Request a Safety Vest</span><span class="es">Solicitar un Chaleco de Seguridad</span></h3>
+      <p><span class="en">LPN provides branded safety vests for volunteers at cleanup events. Request yours below and we'll have it ready for your first event.</span><span class="es">LPN proporciona chalecos de seguridad con nuestra marca para voluntarios en eventos de limpieza. Solicita el tuyo abajo y lo tendremos listo para tu primer evento.</span></p>
+    </div>
+
     <div class="form-group">
       <label><span class="en">Full Name</span><span class="es">Nombre Completo</span></label>
-      <input type="text" placeholder="Your name" />
+      <input type="text" id="vol-name" placeholder="Your name" />
     </div>
     <div class="form-group">
       <label><span class="en">Email Address</span><span class="es">Correo Electrónico</span></label>
-      <input type="email" placeholder="you@email.com" />
+      <input type="email" id="vol-email" placeholder="you@email.com" />
     </div>
     <div class="form-group">
       <label><span class="en">Phone Number (optional)</span><span class="es">Número de Teléfono (opcional)</span></label>
-      <input type="tel" placeholder="xxx-xxx-xxxx" />
+      <input type="tel" id="vol-phone" placeholder="xxx-xxx-xxxx" />
     </div>
     <div class="form-group">
       <label><span class="en">How would you like to help?</span><span class="es">¿Cómo te gustaría ayudar?</span></label>
-      <select>
-        <option>Join cleanup events</option>
-        <option>Organize events</option>
-        <option>Social media / outreach</option>
-        <option>Donate supplies</option>
-        <option>Other</option>
+      <select id="vol-help">
+        <option value="Join cleanup events"><span class="en">Join cleanup events</span></option>
+        <option value="Organize events"><span class="en">Organize events</span></option>
+        <option value="Social media / outreach"><span class="en">Social media / outreach</span></option>
+        <option value="Donate supplies"><span class="en">Donate supplies</span></option>
+        <option value="Pass the word in my community"><span class="en">Pass the word in my community</span></option>
+        <option value="Car trash can distribution"><span class="en">Help distribute car trash cans</span></option>
+        <option value="Donate money / campaigns"><span class="en">Donate money / campaigns</span></option>
+        <option value="Other"><span class="en">Other</span></option>
       </select>
     </div>
     <div class="form-group">
       <label><span class="en">Availability</span><span class="es">Disponibilidad</span></label>
-      <select>
+      <select id="vol-availability">
         <option>Weekends</option>
         <option>Weekdays</option>
         <option>Evenings</option>
         <option>Flexible</option>
       </select>
     </div>
-    <button class="btn-submit"><span class="en">Submit</span><span class="es">Enviar</span></button>
+    <div class="form-group">
+      <label><span class="en">Request a safety vest?</span><span class="es">¿Solicitar un chaleco de seguridad?</span></label>
+      <select id="vol-vest">
+        <option value="no">No thanks</option>
+        <option value="yes-S">Yes — Small</option>
+        <option value="yes-M">Yes — Medium</option>
+        <option value="yes-L">Yes — Large</option>
+        <option value="yes-XL">Yes — XL</option>
+        <option value="yes-XXL">Yes — XXL</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label><span class="en">Anything else you'd like us to know?</span><span class="es">¿Algo más que quieras que sepamos?</span></label>
+      <textarea id="vol-notes" rows="3" placeholder="Optional notes..."></textarea>
+    </div>
+    <button class="btn-submit" id="vol-btn"><span class="en">Submit</span><span class="es">Enviar</span></button>
   </section>
 
   <footer class="site-footer">
     <div class="footer-grid">
       <div class="footer-brand">
-        <img src="/icons/icon-192.png" alt="LPN Logo" />
-        <h3>Litter Prevention Network</h3>
+        <h3 style="font-family:'Outfit',sans-serif;">Litter Prevention Network</h3>
         <p class="en">Keeping Willis, TX clean — one cleanup at a time.</p>
         <p class="es">Manteniendo Willis, TX limpio — una limpieza a la vez.</p>
-        <div class="footer-contact">📍 Willis, TX<br/>📧 <a href="mailto:stanley@litterpreventionnetwork.org">stanley@litterpreventionnetwork.org</a></div>
+        <div class="footer-contact">
+          📍 Willis, TX<br/>
+          📞 <a href="tel:2819359097">(281) 935-9097</a><br/>
+          📧 <a href="mailto:stanley@litterpreventionnetwork.org">stanley@litterpreventionnetwork.org</a>
+        </div>
         <div class="footer-social">
           <a href="https://facebook.com/litterpreventionnetwork" target="_blank">f</a>
           <a href="https://instagram.com/litterpreventionnetwork" target="_blank">ig</a>
@@ -127,26 +167,27 @@
     'https://elgzfppmlsrrmskgloeo.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
   );
-  document.querySelector('.btn-submit').addEventListener('click', async () => {
-    const full_name = document.querySelectorAll('input')[0].value.trim();
-    const email = document.querySelectorAll('input')[1].value.trim();
-    const phone = document.querySelectorAll('input')[2].value.trim();
-    const help_type = document.querySelectorAll('select')[0].value;
-    const availability = document.querySelectorAll('select')[1].value;
+  document.getElementById('vol-btn').addEventListener('click', async () => {
+    const full_name = document.getElementById('vol-name').value.trim();
+    const email = document.getElementById('vol-email').value.trim();
+    const phone = document.getElementById('vol-phone').value.trim();
+    const help_type = document.getElementById('vol-help').value;
+    const availability = document.getElementById('vol-availability').value;
+    const vest_request = document.getElementById('vol-vest').value;
+    const notes = document.getElementById('vol-notes').value.trim();
     if (!full_name || !email) { alert('Please enter your name and email.'); return; }
-    const { error } = await _sb.from('volunteers').insert([{ full_name, email, phone, help_type, availability }]);
+    const { error } = await _sb.from('volunteers').insert([{ full_name, email, phone, help_type, availability, vest_request, notes }]);
     if (error) { alert('Something went wrong. Please try again.'); console.error(error); }
     else {
       document.querySelector('.content').innerHTML = `
         <div style="text-align:center;padding:60px 20px">
           <div style="font-size:60px;margin-bottom:16px">🙌</div>
-          <h2 style="font-size:28px;margin-bottom:12px;color:#1D9E75">Thank you for volunteering!</h2>
+          <h2 style="font-size:28px;margin-bottom:12px;color:#1D9E75;font-family:'Outfit',sans-serif;">Thank you for volunteering!</h2>
           <p style="color:#555;font-size:16px;line-height:1.7">We'll reach out soon with opportunities<br>to get involved in Willis.</p>
         </div>`;
     }
   });
   </script>
-  <script src="shared.js"></script>
   <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js');</script>
 </body>
 </html>
