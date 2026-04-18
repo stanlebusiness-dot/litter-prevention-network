@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1D9E75" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAQ – Litter Prevention Network</title>
+  <link rel="stylesheet" href="shared.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <script src="shared.js" defer></script>
+  <style>
+    .faq-section { max-width: 760px; margin: 0 auto; padding: 56px 40px; }
+    .faq-category { margin-bottom: 48px; }
+    .faq-category h2 { font-size: 20px; font-weight: 800; font-family: 'Outfit', sans-serif; color: #0F6E56; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #E1F5EE; }
+    .faq-item { margin-bottom: 12px; border-radius: 12px; overflow: hidden; border: 1px solid #eee; }
+    .faq-question { width: 100%; background: white; border: none; padding: 18px 24px; text-align: left; font-size: 15px; font-weight: 700; color: #0F2318; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-family: 'Outfit', sans-serif; transition: background 0.2s; }
+    .faq-question:hover { background: #f0fdf8; }
+    .faq-question.open { background: #f0fdf8; color: #0F6E56; }
+    .faq-arrow { font-size: 18px; transition: transform 0.3s; }
+    .faq-question.open .faq-arrow { transform: rotate(180deg); }
+    .faq-answer { display: none; padding: 0 24px 20px; background: #f0fdf8; font-size: 15px; color: #555; line-height: 1.8; }
+    .faq-answer.open { display: block; }
+    .faq-answer a { color: #1D9E75; text-decoration: none; font-weight: 600; }
+    .faq-answer a:hover { text-decoration: underline; }
+    .still-have-questions { background: #f9f9f7; border-radius: 16px; padding: 40px; text-align: center; margin-top: 48px; border: 1px solid #eee; }
+    .still-have-questions h2 { font-size: 24px; font-weight: 800; font-family: 'Outfit', sans-serif; color: #0F2318; margin-bottom: 10px; }
+    .still-have-questions p { color: #666; font-size: 15px; margin-bottom: 24px; line-height: 1.7; }
+  </style>
+</head>
+<body>
+  <div class="lang-bar">
+    <button class="active" onclick="setLang('en')">English</button>
+    <button onclick="setLang('es')">Español</button>
+  </div>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <span style="font-family:'Outfit',sans-serif;font-weight:800;font-size:18px;color:#0F6E56;">LPN Willis</span>
+    </a>
+    <button class="hamburger" onclick="openDrawer()"><span></span><span></span><span></span></button>
+  </nav>
+  <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">
+      <div class="drawer-logo" style="font-family:'Outfit',sans-serif;">Litter Prevention Network</div>
+      <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    </div>
+    <div class="drawer-nav">
+      <a href="index.html"><span class="nav-icon">🏠</span><span class="en">Home</span><span class="es">Inicio</span></a>
+      <a href="events.html"><span class="nav-icon">📅</span><span class="en">Events</span><span class="es">Eventos</span></a>
+      <a href="report-litter.html"><span class="nav-icon">📍</span><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
+      <a href="rewards.html"><span class="nav-icon">🏆</span><span class="en">Rewards</span><span class="es">Recompensas</span></a>
+      <a href="volunteer.html"><span class="nav-icon">🙌</span><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
+      <a href="submit-proof.html"><span class="nav-icon">📸</span><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
+      <a href="prize-portal.html"><span class="nav-icon">🎁</span><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
+      <a href="sponsors.html"><span class="nav-icon">🤝</span><span class="en">Sponsors</span><span class="es">Patrocinadores</span></a>
+      <div class="drawer-divider"></div>
+      <a href="dashboard.html"><span class="nav-icon">📊</span><span class="en">My Dashboard</span><span class="es">Mi Panel</span></a>
+      <a href="login.html"><span class="nav-icon">🔐</span><span class="en">Login</span><span class="es">Iniciar Sesión</span></a>
+    </div>
+    <div class="drawer-footer-note">© 2026 Litter Prevention Network · Willis, TX</div>
+  </div>
+
+  <section class="page-hero">
+    <h1>FAQ</h1>
+    <p><span class="en">Answers to the most common questions about LPN Willis.</span><span class="es">Respuestas a las preguntas más comunes sobre LPN Willis.</span></p>
+  </section>
+
+  <section class="faq-section">
+
+    <!-- General -->
+    <div class="faq-category">
+      <h2><span class="en">General</span><span class="es">General</span></h2>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="en">What is the Litter Prevention Network?</span>
+          <span class="es">¿Qué es la Red de Prevención de Basura?</span>
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-answer">
+          <span class="en">The Litter Prevention Network (LPN) is a community-led organization based in Willis, TX focused on preventing litter and building a culture of environmental stewardship. We connect volunteers, reward action, and make it easy for every resident to get involved.</span>
+          <span class="es">La Red de Prevención de Basura (LPN) es una organización comunitaria con sede en Willis, TX enfocada en prevenir la basura y construir una cultura de responsabilidad ambiental. Conectamos voluntarios, recompensamos la acción y facilitamos que cada residente participe.</span>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="en">Is it free to join?</span>
+          <span class="es">¿Es gratis unirse?</span>
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-answer">
+          <span class="en">Yes! Joining the Litter Prevention Network is completely free. There are no fees, no subscriptions, and no costs to participate in events or earn rewards.</span>
+          <span class="es">¡Sí! Unirse a la Red de Prevención de Basura es completamente gratis. No hay tarifas, suscripciones ni costos para participar en eventos o ganar recompensas.</span>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="en">Do I have to live in Willis, TX to join?</span>
+          <span class="es">¿Tengo que vivir en Willis, TX para unirme?</span>
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-answer">
+          <span class="en">Our focus is on the Willis, TX community but anyone who wants to help keep Willis clean is welcome to join. Events and cleanups are held in and around Willis.</span>
+          <span class="es">Nuestro enfoque está en la comunidad de Willis, TX, pero cualquiera que quiera ayudar a mantener Willis limpio es bienvenido. Los eventos y limpiezas se realizan en Willis y sus alrededores.</span>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="en">Can kids participate?</span>
+          <span class="es">¿Pueden participar los niños?</span>
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-answer">
+          <span class="en">Yes! Kids are welcome at cleanup events with a parent or guardian present. Anyone under 18 must have a parent or guardian complete their registration on their behalf.</span>
+          <span class="es">¡Sí! Los niños son bienvenidos en los eventos de limpieza con un padre o tutor presente. Cualquier persona menor de 18 años debe tener a un padre o tutor que complete su registro.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Points & Rewards -->
+    <div class="faq-category">
+      <h2><span class="en">Points & Rewards</span><span class="es">Puntos y Recompensas</span></h2>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="en">How do I earn points?</span>
+          <span class="es">¿Cómo gano puntos?</span>
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-answer">
+          <span class="en">You earn points by: attending an LPN cleanup event (+50 pts), leading your own cleanup with before & after photos (+75 pts), reporting litter with a photo (+10 pts), and referring a friend who signs up (+25 pts).</span>
+          <span class="es">Ganas puntos por: asistir a un evento de limpieza LPN (+50 pts), liderar tu propia limpieza con fotos antes y después (+75 pts), reportar basura con foto (+10 pts) y referir a un amigo que se registre (+25 pts).</span>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="en">How do I redeem my points?</span>
+          <span class="es">¿Cómo canjeo mis puntos?</span>
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-answer">
+          <span class="en">Once you have 100 or more points you can redeem them through the <a href="prize-portal.html">Prize Portal</a>. You can choose from gas cards, gift cards, LPN merchandise, or event tickets.</span>
+          <span class="es">Una vez que tengas 100 o más puntos puedes canjearlos a través del <a href="prize-portal.html">Portal de Premios</a>. Puedes elegir entre tarjetas de gas, tarjetas de regalo, mercancía LPN o boletos de eventos.</span>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="en">How long does it take to get approved?</span>
+          <span class="es">¿Cuánto tiempo tarda la aprobación?</span>
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-answer">
+          <span class="en">Our admin team reviews all proof submissions within 24 hours. Once approved, points are automatically added to your account. Redemption requests are typically fulfilled within 2-3 business days.</span>
+          <span class="es">Nuestro equipo revisa todos los envíos de prueba en 24 horas. Una vez aprobados, los puntos se agregan automáticamente a tu cuenta. Las solicitudes de canje generalmente se cumplen en 2-3 días hábiles.</span>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="en">Do points expire?</span>
+          <span class="es">¿Expiran los puntos?</span>
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-answer">
+          <span class="en">Point expiration policy is being finalized. We'll update this page and notify members when the policy is set. For now, points do not expire.</span>
+          <span class="es">La política de vencimiento de puntos está siendo finalizada. Actualizaremos esta página y notificaremos a los miembros cuando se establezca la política. Por ahora, los puntos no expiran.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Events & Cleanups -->
+    <div class="faq-category">
+      <h2><span class="en">Events & Cleanups</span><span class="es">Eventos y Limpiezas</span></h2>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="en">What should I bring to a cleanup event?</span>
+          <span class="es">¿Qué debo traer a un evento de limpieza?</span>
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-answer">
+          <span class="en">Gloves and trash bags are provided at LPN events. We recommend wearing closed-toe shoes, sunscreen, and comfortable clothes. Bring a water bottle and your phone to submit proof photos.</span>
+          <span class="es">Los guantes y bolsas de basura se proporcionan en los eventos LPN. Recomendamos usar zapatos cerrados, protector solar y ropa cómoda. Trae una botella de agua y tu teléfono para enviar fotos de prueba.</span>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="en">Can I organize my own cleanup?</span>
+          <span class="es">¿Puedo organizar mi propia limpieza?</span>
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-answer">
+          <span class="en">Absolutely! You can organize your own cleanup solo or with a group. Just submit a before photo and an after photo through the <a href="submit-proof.html">Submit Proof</a> page and earn 75 points once approved. Always prioritize safety.</span>
+          <span class="es">¡Por supuesto! Puedes organizar tu propia limpieza solo o en grupo. Solo envía una foto antes y una foto después a través de la página <a href="submit-proof.html">Enviar Prueba</a> y gana 75 puntos una vez aprobado. Siempre prioriza la seguridad.</span>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="en">What safety rules should I follow?</span>
+          <span class="es">¿Qué reglas de seguridad debo seguir?</span>
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-answer">
+          <span class="en">Always park safely before starting. Never stop in traffic to pick up or photograph litter. Wear gloves at all times. Do not pick up hazardous materials — report them instead. Stay on sidewalks and public areas only.</span>
+          <span class="es">Siempre estaciona de forma segura antes de comenzar. Nunca te detengas en el tráfico para recoger o fotografiar basura. Usa guantes en todo momento. No recojas materiales peligrosos — repórtalos. Permanece solo en aceras y áreas públicas.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Account -->
+    <div class="faq-category">
+      <h2><span class="en">Account & Privacy</span><span class="es">Cuenta y Privacidad</span></h2>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="en">How do I create an account?</span>
+          <span class="es">¿Cómo creo una cuenta?</span>
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-answer">
+          <span class="en">You can sign up on the <a href="index.html#signup">home page</a> or through the <a href="login.html">Login page</a>. You'll need a valid email address and a password to create your account.</span>
+          <span class="es">Puedes registrarte en la <a href="index.html#signup">página de inicio</a> o a través de la <a href="login.html">página de inicio de sesión</a>. Necesitarás una dirección de correo electrónico válida y una contraseña para crear tu cuenta.</span>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="en">Is my information safe?</span>
+          <span class="es">¿Está segura mi información?</span>
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-answer">
+          <span class="en">Yes. We take privacy seriously. Your information is stored securely and is never sold or shared with third parties. A full Privacy Policy is coming soon.</span>
+          <span class="es">Sí. Nos tomamos la privacidad en serio. Tu información se almacena de forma segura y nunca se vende ni se comparte con terceros. Próximamente habrá una Política de Privacidad completa.</span>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="en">How do I request my data be deleted?</span>
+          <span class="es">¿Cómo solicito que se eliminen mis datos?</span>
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-answer">
+          <span class="en">To request deletion of your account and data, please contact us at <a href="mailto:stanley@litterpreventionnetwork.org">stanley@litterpreventionnetwork.org</a> with the subject line "Data Deletion Request".</span>
+          <span class="es">Para solicitar la eliminación de tu cuenta y datos, contáctanos en <a href="mailto:stanley@litterpreventionnetwork.org">stanley@litterpreventionnetwork.org</a> con el asunto "Solicitud de Eliminación de Datos".</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Still have questions -->
+    <div class="still-have-questions">
+      <h2><span class="en">Still have questions?</span><span class="es">¿Todavía tienes preguntas?</span></h2>
+      <p><span class="en">We're happy to help. Reach out to us directly and we'll get back to you as soon as possible.</span><span class="es">Estamos felices de ayudar. Contáctanos directamente y te responderemos lo antes posible.</span></p>
+      <a href="contact.html" class="btn-green"><span class="en">Contact Us</span><span class="es">Contáctanos</span></a>
+    </div>
+
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3 style="font-family:'Outfit',sans-serif;">Litter Prevention Network</h3>
+        <p class="en">Keeping Willis, TX clean — one cleanup at a time.</p>
+        <p class="es">Manteniendo Willis, TX limpio — una limpieza a la vez.</p>
+        <div class="footer-contact">
+          📍 Willis, TX<br/>
+          📞 <a href="tel:2819359097">(281) 935-9097</a><br/>
+          📧 <a href="mailto:stanley@litterpreventionnetwork.org">stanley@litterpreventionnetwork.org</a>
+        </div>
+        <div class="footer-social">
+          <a href="https://facebook.com/litterpreventionnetwork" target="_blank">f</a>
+          <a href="https://instagram.com/litterpreventionnetwork" target="_blank">ig</a>
+          <a href="https://tiktok.com/@litterpreventionnetwork" target="_blank">tt</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">Navigate</span><span class="es">Navegar</span></h4>
+        <a href="index.html"><span class="en">Home</span><span class="es">Inicio</span></a>
+        <a href="events.html"><span class="en">Events</span><span class="es">Eventos</span></a>
+        <a href="report-litter.html"><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
+        <a href="rewards.html"><span class="en">Rewards</span><span class="es">Recompensas</span></a>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">Get Involved</span><span class="es">Participa</span></h4>
+        <a href="volunteer.html"><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
+        <a href="submit-proof.html"><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
+        <a href="prize-portal.html"><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
+        <a href="sponsors.html"><span class="en">Sponsors</span><span class="es">Patrocinadores</span></a>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">About</span><span class="es">Acerca de</span></h4>
+        <a href="about.html"><span class="en">Our Mission</span><span class="es">Nuestra Misión</span></a>
+        <a href="faq.html">FAQ</a>
+        <a href="contact.html"><span class="en">Contact Us</span><span class="es">Contáctanos</span></a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Litter Prevention Network · Willis, TX</span>
+      <div style="display:flex;gap:20px;">
+        <a href="faq.html">FAQ</a>
+        <a href="about.html"><span class="en">About</span><span class="es">Acerca de</span></a>
+        <a href="contact.html"><span class="en">Contact</span><span class="es">Contacto</span></a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    function toggleFaq(btn) {
+      const answer = btn.nextElementSibling;
+      const isOpen = btn.classList.contains('open');
+      document.querySelectorAll('.faq-question').forEach(q => q.classList.remove('open'));
+      document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
+      if (!isOpen) {
+        btn.classList.add('open');
+        answer.classList.add('open');
+      }
+    }
+  </script>
+  <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js');</script>
+</body>
+</html>
