@@ -86,6 +86,7 @@
     <button class="tab" onclick="showTab('redemptions', this)">Redemptions</button>
     <button class="tab" onclick="showTab('sponsors', this)">🤝 Sponsors</button>
     <button class="tab" onclick="showTab('messages', this)">✉️ Messages</button>
+    <button class="tab" onclick="showTab('events', this)">📅 Events</button>
   </div>
 
   <!-- Sign-ups -->
@@ -222,8 +223,71 @@
       <button class="btn-csv" onclick="exportCSV('body-messages', 'contact-messages')">⬇ Export CSV</button>
     </div>
     <table>
-      <thead><tr><th>Name</th><th>Email</th><th>Subject</th><th>Message</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+<thead><tr><th>Name</th><th>Email</th><th>Subject</th><th>Message</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
       <tbody id="body-messages"><tr><td colspan="7" class="loading">Loading...</td></tr></tbody>
+    </table>
+  </div>
+
+  <!-- Events Manager -->
+  <div class="tab-content" id="tab-events">
+    <div class="section-title">Events Manager <span class="count-badge" id="count-events">...</span></div>
+    <div style="background:white;border-radius:12px;padding:28px;box-shadow:0 1px 8px rgba(0,0,0,0.06);margin-bottom:28px;">
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:20px;color:#0F2318;">➕ Add New Event</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+        <div>
+          <label style="font-size:13px;font-weight:600;color:#333;display:block;margin-bottom:6px;">Title (English)</label>
+          <input id="ev-title" type="text" placeholder="Willis Park Cleanup" style="width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none;" />
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:600;color:#333;display:block;margin-bottom:6px;">Title (Spanish)</label>
+          <input id="ev-title-es" type="text" placeholder="Limpieza del Parque de Willis" style="width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none;" />
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;">
+        <div>
+          <label style="font-size:13px;font-weight:600;color:#333;display:block;margin-bottom:6px;">Date</label>
+          <input id="ev-date" type="date" style="width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none;" />
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:600;color:#333;display:block;margin-bottom:6px;">Start Time</label>
+          <input id="ev-start" type="text" placeholder="9:00 AM" style="width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none;" />
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:600;color:#333;display:block;margin-bottom:6px;">End Time</label>
+          <input id="ev-end" type="text" placeholder="12:00 PM" style="width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none;" />
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px;">
+        <div>
+          <label style="font-size:13px;font-weight:600;color:#333;display:block;margin-bottom:6px;">Location</label>
+          <input id="ev-location" type="text" placeholder="Willis City Park" style="width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none;" />
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:600;color:#333;display:block;margin-bottom:6px;">Points</label>
+          <input id="ev-points" type="number" value="50" style="width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none;" />
+        </div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="font-size:13px;font-weight:600;color:#333;display:block;margin-bottom:6px;">Description (optional)</label>
+        <input id="ev-desc" type="text" placeholder="Gloves and bags provided..." style="width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none;" />
+      </div>
+      <button onclick="addEvent()" style="background:#1D9E75;color:white;border:none;padding:11px 28px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;">➕ Add Event</button>
+      <span id="ev-msg" style="margin-left:16px;font-size:13px;color:#0F6E56;"></span>
+    </div>
+    <div class="tab-toolbar">
+      <div class="tab-toolbar-left">
+        <input class="search-input" placeholder="🔍 Search events..." oninput="filterTable('body-events', this.value, [0,2])" />
+        <select class="filter-select" onchange="filterByStatus('body-events', this.value)">
+          <option value="">All statuses</option>
+          <option value="upcoming">Upcoming</option>
+          <option value="past">Past</option>
+        </select>
+      </div>
+      <button class="btn-csv" onclick="exportCSV('body-events', 'events')">⬇ Export CSV</button>
+    </div>
+    <table>
+      <thead><tr><th>Title</th><th>Date</th><th>Time</th><th>Location</th><th>Points</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody id="body-events"><tr><td colspan="7" class="loading">Loading...</td></tr></tbody>
     </table>
   </div>
 </div>
@@ -305,6 +369,7 @@ async function loadAll() {
     _sb.from('sponsors').select('*').order('created_at', { ascending: false }),
     _sb.from('contact_messages').select('*').order('created_at', { ascending: false }),
   ]);
+  loadEvents();
 
   // Sign-ups
   document.getElementById('count-signups').textContent = s.data?.length || 0;
@@ -468,6 +533,50 @@ async function declineSponsor(id) {
 async function markMessageRead(id) {
   await _sb.from('contact_messages').update({ status: 'read' }).eq('id', id);
   loadAll();
+}
+
+async function loadEvents() {
+  const today = new Date().toISOString().slice(0, 10);
+  const { data } = await _sb.from('events').select('*').order('date', { ascending: false });
+  document.getElementById('count-events').textContent = data?.length || 0;
+  document.getElementById('body-events').innerHTML = data?.length
+    ? data.map(e => {
+        const status = e.date >= today && e.status !== 'past' ? 'upcoming' : 'past';
+        return `<tr>
+          <td><strong>${e.title}</strong>${e.title_es ? `<br/><span style="font-size:12px;color:#888;">${e.title_es}</span>` : ''}</td>
+          <td>${e.date}</td>
+          <td>${e.time_start||'—'}${e.time_end ? ' – ' + e.time_end : ''}</td>
+          <td>${e.location||'—'}</td>
+          <td>${e.points||50} pts</td>
+          <td><span class="status-badge status-${status}">${status.charAt(0).toUpperCase()+status.slice(1)}</span></td>
+          <td><button class="btn-reject" onclick="deleteEvent('${e.id}')">Delete</button></td></tr>`;
+      }).join('')
+    : '<tr><td colspan="7" class="empty">No events yet. Add one above!</td></tr>';
+}
+
+async function addEvent() {
+  const title = document.getElementById('ev-title').value.trim();
+  const title_es = document.getElementById('ev-title-es').value.trim();
+  const date = document.getElementById('ev-date').value;
+  const time_start = document.getElementById('ev-start').value.trim();
+  const time_end = document.getElementById('ev-end').value.trim();
+  const location = document.getElementById('ev-location').value.trim();
+  const points = parseInt(document.getElementById('ev-points').value) || 50;
+  const description = document.getElementById('ev-desc').value.trim();
+  if (!title || !date) { alert('Title and date are required.'); return; }
+  const { error } = await _sb.from('events').insert([{ title, title_es, date, time_start, time_end, location, points, description }]);
+  if (error) { alert('Error adding event.'); console.error(error); return; }
+  document.getElementById('ev-msg').textContent = '✅ Event added!';
+  setTimeout(() => document.getElementById('ev-msg').textContent = '', 3000);
+  ['ev-title','ev-title-es','ev-date','ev-start','ev-end','ev-location','ev-desc'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('ev-points').value = '50';
+  loadEvents();
+}
+
+async function deleteEvent(id) {
+  if (!confirm('Delete this event?')) return;
+  await _sb.from('events').delete().eq('id', id);
+  loadEvents();
 }
 </script>
 </body>
