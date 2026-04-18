@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1D9E75" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About – Litter Prevention Network</title>
+  <link rel="stylesheet" href="shared.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <script src="shared.js" defer></script>
+  <style>
+    .about-section { max-width: 860px; margin: 0 auto; padding: 56px 40px; }
+    .about-block { margin-bottom: 64px; }
+    .about-block h2 { font-size: 28px; font-weight: 800; font-family: 'Outfit', sans-serif; color: #0F2318; margin-bottom: 16px; }
+    .about-block p { font-size: 16px; color: #555; line-height: 1.9; margin-bottom: 14px; }
+    .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 20px; margin-top: 32px; }
+    .stat-box { background: #f9f9f7; border-radius: 12px; padding: 28px 20px; text-align: center; border: 1px solid #eee; }
+    .stat-box .num { font-size: 36px; font-weight: 800; color: #0F6E56; font-family: 'Outfit', sans-serif; }
+    .stat-box .lbl { font-size: 13px; color: #777; margin-top: 6px; }
+    .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; margin-top: 32px; }
+    .team-card { background: #f9f9f7; border-radius: 14px; padding: 28px 20px; text-align: center; border: 1px solid #eee; }
+    .team-avatar { width: 72px; height: 72px; border-radius: 50%; background: #E1F5EE; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 14px; }
+    .team-card h3 { font-size: 16px; font-weight: 800; font-family: 'Outfit', sans-serif; color: #0F2318; margin-bottom: 4px; }
+    .team-card p { font-size: 13px; color: #777; }
+    .placeholder-notice { background: #FFF8E1; border: 1px solid #FFD54F; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #7B5E00; margin-bottom: 20px; }
+    .cta-box { background: linear-gradient(135deg, #1D9E75 0%, #0F6E56 100%); border-radius: 16px; padding: 48px 40px; text-align: center; color: white; }
+    .cta-box h2 { font-size: 28px; font-weight: 800; font-family: 'Outfit', sans-serif; margin-bottom: 12px; }
+    .cta-box p { font-size: 16px; opacity: 0.9; margin-bottom: 28px; max-width: 500px; margin-left: auto; margin-right: auto; line-height: 1.7; }
+    .btn-white { background: white; color: #1D9E75; padding: 14px 32px; border-radius: 8px; font-weight: 700; font-size: 15px; text-decoration: none; display: inline-block; font-family: 'Outfit', sans-serif; }
+  </style>
+</head>
+<body>
+  <div class="lang-bar">
+    <button class="active" onclick="setLang('en')">English</button>
+    <button onclick="setLang('es')">Español</button>
+  </div>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <span style="font-family:'Outfit',sans-serif;font-weight:800;font-size:18px;color:#0F6E56;">LPN Willis</span>
+    </a>
+    <button class="hamburger" onclick="openDrawer()"><span></span><span></span><span></span></button>
+  </nav>
+  <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">
+      <div class="drawer-logo" style="font-family:'Outfit',sans-serif;">Litter Prevention Network</div>
+      <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    </div>
+    <div class="drawer-nav">
+      <a href="index.html"><span class="nav-icon">🏠</span><span class="en">Home</span><span class="es">Inicio</span></a>
+      <a href="events.html"><span class="nav-icon">📅</span><span class="en">Events</span><span class="es">Eventos</span></a>
+      <a href="report-litter.html"><span class="nav-icon">📍</span><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
+      <a href="rewards.html"><span class="nav-icon">🏆</span><span class="en">Rewards</span><span class="es">Recompensas</span></a>
+      <a href="volunteer.html"><span class="nav-icon">🙌</span><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
+      <a href="submit-proof.html"><span class="nav-icon">📸</span><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
+      <a href="prize-portal.html"><span class="nav-icon">🎁</span><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
+      <a href="sponsors.html"><span class="nav-icon">🤝</span><span class="en">Sponsors</span><span class="es">Patrocinadores</span></a>
+      <div class="drawer-divider"></div>
+      <a href="dashboard.html"><span class="nav-icon">📊</span><span class="en">My Dashboard</span><span class="es">Mi Panel</span></a>
+      <a href="login.html"><span class="nav-icon">🔐</span><span class="en">Login</span><span class="es">Iniciar Sesión</span></a>
+    </div>
+    <div class="drawer-footer-note">© 2026 Litter Prevention Network · Willis, TX</div>
+  </div>
+
+  <section class="page-hero">
+    <h1><span class="en">About Us</span><span class="es">Sobre Nosotros</span></h1>
+    <p><span class="en">Who we are, why we started, and what we're building in Willis, TX.</span><span class="es">Quiénes somos, por qué empezamos y qué estamos construyendo en Willis, TX.</span></p>
+  </section>
+
+  <section class="about-section">
+
+    <!-- Mission -->
+    <div class="about-block">
+      <h2><span class="en">Our Mission</span><span class="es">Nuestra Misión</span></h2>
+      <p>
+        <span class="en">Our mission is simple and focused: to empower people to prevent litter by taking responsibility for waste and leading a culture of environmental stewardship in their homes and communities.</span>
+        <span class="es">Nuestra misión es simple y enfocada: empoderar a las personas para prevenir la basura asumiendo responsabilidad por los residuos y liderando una cultura de responsabilidad ambiental en sus hogares y comunidades.</span>
+      </p>
+      <p style="font-style:italic;color:#0F6E56;font-weight:600;">
+        <span class="en">The first step of many. 🌿</span>
+        <span class="es">El primer paso de muchos. 🌿</span>
+      </p>
+    </div>
+
+    <!-- Our Story -->
+    <div class="about-block">
+      <h2><span class="en">Our Story</span><span class="es">Nuestra Historia</span></h2>
+      <div class="placeholder-notice">
+        <span class="en">📝 Content coming soon — this section will tell the story of how LPN Willis was founded.</span>
+        <span class="es">📝 Contenido próximamente — esta sección contará la historia de cómo se fundó LPN Willis.</span>
+      </div>
+      <p>
+        <span class="en">The Litter Prevention Network was founded in Willis, TX with a simple belief: that a cleaner community starts with empowered residents. More details about our founding story coming soon.</span>
+        <span class="es">La Red de Prevención de Basura fue fundada en Willis, TX con una creencia simple: que una comunidad más limpia comienza con residentes empoderados. Más detalles sobre nuestra historia de fundación próximamente.</span>
+      </p>
+    </div>
+
+    <!-- Impact Stats -->
+    <div class="about-block">
+      <h2><span class="en">Our Community</span><span class="es">Nuestra Comunidad</span></h2>
+      <p><span class="en">We are a 100% community-driven organization based in Willis, TX. Every cleanup, every report, every referral moves us closer to a cleaner community.</span>
+      <span class="es">Somos una organización 100% impulsada por la comunidad con sede en Willis, TX. Cada limpieza, cada reporte, cada referido nos acerca a una comunidad más limpia.</span></p>
+      <div class="stat-row">
+        <div class="stat-box">
+          <div class="num">$0</div>
+          <div class="lbl"><span class="en">Cost to join</span><span class="es">Costo de unirse</span></div>
+        </div>
+        <div class="stat-box">
+          <div class="num">100%</div>
+          <div class="lbl"><span class="en">Community driven</span><span class="es">Impulsado por la comunidad</span></div>
+        </div>
+        <div class="stat-box">
+          <div class="num">Willis</div>
+          <div class="lbl"><span class="en">TX — Our home</span><span class="es">TX — Nuestro hogar</span></div>
+        </div>
+        <div class="stat-box">
+          <div class="num">🌿</div>
+          <div class="lbl"><span class="en">First step of many</span><span class="es">Primer paso de muchos</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Team -->
+    <div class="about-block">
+      <h2><span class="en">Our Team</span><span class="es">Nuestro Equipo</span></h2>
+      <div class="placeholder-notice">
+        <span class="en">📝 Team bios and photos coming soon.</span>
+        <span class="es">📝 Biografías y fotos del equipo próximamente.</span>
+      </div>
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="team-avatar">👤</div>
+          <h3><span class="en">Founder</span><span class="es">Fundadora</span></h3>
+          <p><span class="en">Name & bio coming soon</span><span class="es">Nombre y bio próximamente</span></p>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">👤</div>
+          <h3><span class="en">Team Member</span><span class="es">Miembro del Equipo</span></h3>
+          <p><span class="en">Name & bio coming soon</span><span class="es">Nombre y bio próximamente</span></p>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">👤</div>
+          <h3><span class="en">Team Member</span><span class="es">Miembro del Equipo</span></h3>
+          <p><span class="en">Name & bio coming soon</span><span class="es">Nombre y bio próximamente</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-box">
+      <h2><span class="en">Ready to Make a Difference?</span><span class="es">¿Listo para Hacer la Diferencia?</span></h2>
+      <p><span class="en">Join the Litter Prevention Network today. It's free, it's local, and every action counts.</span><span class="es">Únete a la Red de Prevención de Basura hoy. Es gratis, es local y cada acción cuenta.</span></p>
+      <a href="index.html#signup" class="btn-white"><span class="en">Join the Network →</span><span class="es">Únete a la Red →</span></a>
+    </div>
+
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3 style="font-family:'Outfit',sans-serif;">Litter Prevention Network</h3>
+        <p class="en">Keeping Willis, TX clean — one cleanup at a time.</p>
+        <p class="es">Manteniendo Willis, TX limpio — una limpieza a la vez.</p>
+        <div class="footer-contact">
+          📍 Willis, TX<br/>
+          📞 <a href="tel:2819359097">(281) 935-9097</a><br/>
+          📧 <a href="mailto:stanley@litterpreventionnetwork.org">stanley@litterpreventionnetwork.org</a>
+        </div>
+        <div class="footer-social">
+          <a href="https://facebook.com/litterpreventionnetwork" target="_blank">f</a>
+          <a href="https://instagram.com/litterpreventionnetwork" target="_blank">ig</a>
+          <a href="https://tiktok.com/@litterpreventionnetwork" target="_blank">tt</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">Navigate</span><span class="es">Navegar</span></h4>
+        <a href="index.html"><span class="en">Home</span><span class="es">Inicio</span></a>
+        <a href="events.html"><span class="en">Events</span><span class="es">Eventos</span></a>
+        <a href="report-litter.html"><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
+        <a href="rewards.html"><span class="en">Rewards</span><span class="es">Recompensas</span></a>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">Get Involved</span><span class="es">Participa</span></h4>
+        <a href="volunteer.html"><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
+        <a href="submit-proof.html"><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
+        <a href="prize-portal.html"><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
+        <a href="sponsors.html"><span class="en">Sponsors</span><span class="es">Patrocinadores</span></a>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">About</span><span class="es">Acerca de</span></h4>
+        <a href="about.html" class="active"><span class="en">Our Mission</span><span class="es">Nuestra Misión</span></a>
+        <a href="faq.html">FAQ</a>
+        <a href="contact.html"><span class="en">Contact Us</span><span class="es">Contáctanos</span></a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Litter Prevention Network · Willis, TX</span>
+      <div style="display:flex;gap:20px;">
+        <a href="faq.html">FAQ</a>
+        <a href="about.html"><span class="en">About</span><span class="es">Acerca de</span></a>
+        <a href="contact.html"><span class="en">Contact</span><span class="es">Contacto</span></a>
+      </div>
+    </div>
+  </footer>
+
+  <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js');</script>
+</body>
+</html>
