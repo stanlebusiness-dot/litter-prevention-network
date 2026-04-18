@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1D9E75" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact – Litter Prevention Network</title>
+  <link rel="stylesheet" href="shared.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <script src="shared.js" defer></script>
+  <style>
+    .contact-wrap { max-width: 960px; margin: 0 auto; padding: 56px 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+    @media (max-width: 700px) { .contact-wrap { grid-template-columns: 1fr; } }
+    .contact-info h2 { font-size: 26px; font-weight: 800; font-family: 'Outfit', sans-serif; color: #0F2318; margin-bottom: 20px; }
+    .contact-info p { font-size: 15px; color: #555; line-height: 1.8; margin-bottom: 28px; }
+    .contact-detail { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; }
+    .contact-detail .icon { font-size: 22px; margin-top: 2px; }
+    .contact-detail h4 { font-size: 13px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; font-family: 'Outfit', sans-serif; }
+    .contact-detail p { font-size: 15px; color: #333; margin: 0; line-height: 1.6; }
+    .contact-detail a { color: #1D9E75; text-decoration: none; font-weight: 600; }
+    .contact-detail a:hover { text-decoration: underline; }
+    .social-row { display: flex; gap: 12px; margin-top: 28px; }
+    .social-btn { display: flex; align-items: center; gap: 8px; background: #f9f9f7; border: 1px solid #eee; padding: 10px 18px; border-radius: 8px; text-decoration: none; color: #333; font-size: 14px; font-weight: 600; transition: all 0.2s; font-family: 'Outfit', sans-serif; }
+    .social-btn:hover { background: #E1F5EE; border-color: #1D9E75; color: #0F6E56; }
+    .contact-form-box { background: #f9f9f7; border-radius: 16px; padding: 36px; border: 1px solid #eee; }
+    .contact-form-box h2 { font-size: 22px; font-weight: 800; font-family: 'Outfit', sans-serif; color: #0F2318; margin-bottom: 24px; }
+  </style>
+</head>
+<body>
+  <div class="lang-bar">
+    <button class="active" onclick="setLang('en')">English</button>
+    <button onclick="setLang('es')">Español</button>
+  </div>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <span style="font-family:'Outfit',sans-serif;font-weight:800;font-size:18px;color:#0F6E56;">LPN Willis</span>
+    </a>
+    <button class="hamburger" onclick="openDrawer()"><span></span><span></span><span></span></button>
+  </nav>
+  <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">
+      <div class="drawer-logo" style="font-family:'Outfit',sans-serif;">Litter Prevention Network</div>
+      <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    </div>
+    <div class="drawer-nav">
+      <a href="index.html"><span class="nav-icon">🏠</span><span class="en">Home</span><span class="es">Inicio</span></a>
+      <a href="events.html"><span class="nav-icon">📅</span><span class="en">Events</span><span class="es">Eventos</span></a>
+      <a href="report-litter.html"><span class="nav-icon">📍</span><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
+      <a href="rewards.html"><span class="nav-icon">🏆</span><span class="en">Rewards</span><span class="es">Recompensas</span></a>
+      <a href="volunteer.html"><span class="nav-icon">🙌</span><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
+      <a href="submit-proof.html"><span class="nav-icon">📸</span><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
+      <a href="prize-portal.html"><span class="nav-icon">🎁</span><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
+      <a href="sponsors.html"><span class="nav-icon">🤝</span><span class="en">Sponsors</span><span class="es">Patrocinadores</span></a>
+      <div class="drawer-divider"></div>
+      <a href="dashboard.html"><span class="nav-icon">📊</span><span class="en">My Dashboard</span><span class="es">Mi Panel</span></a>
+      <a href="login.html"><span class="nav-icon">🔐</span><span class="en">Login</span><span class="es">Iniciar Sesión</span></a>
+    </div>
+    <div class="drawer-footer-note">© 2026 Litter Prevention Network · Willis, TX</div>
+  </div>
+
+  <section class="page-hero">
+    <h1><span class="en">Contact Us</span><span class="es">Contáctanos</span></h1>
+    <p><span class="en">We'd love to hear from you. Reach out with questions, ideas, or partnership inquiries.</span><span class="es">Nos encantaría saber de ti. Contáctanos con preguntas, ideas o consultas de asociación.</span></p>
+  </section>
+
+  <div class="contact-wrap">
+
+    <!-- Contact Info -->
+    <div class="contact-info">
+      <h2><span class="en">Get In Touch</span><span class="es">Ponte en Contacto</span></h2>
+      <p><span class="en">Whether you have a question, want to get involved, or are interested in sponsoring LPN Willis — we're here and happy to help.</span><span class="es">Ya sea que tengas una pregunta, quieras involucrarte o estés interesado en patrocinar LPN Willis, estamos aquí y felices de ayudar.</span></p>
+
+      <div class="contact-detail">
+        <div class="icon">📍</div>
+        <div>
+          <h4><span class="en">Location</span><span class="es">Ubicación</span></h4>
+          <p>Willis, TX 77378</p>
+        </div>
+      </div>
+
+      <div class="contact-detail">
+        <div class="icon">📞</div>
+        <div>
+          <h4><span class="en">Phone</span><span class="es">Teléfono</span></h4>
+          <p><a href="tel:2819359097">(281) 935-9097</a></p>
+        </div>
+      </div>
+
+      <div class="contact-detail">
+        <div class="icon">📧</div>
+        <div>
+          <h4><span class="en">Email</span><span class="es">Correo</span></h4>
+          <p><a href="mailto:stanley@litterpreventionnetwork.org">stanley@litterpreventionnetwork.org</a></p>
+        </div>
+      </div>
+
+      <div class="contact-detail">
+        <div class="icon">🕐</div>
+        <div>
+          <h4><span class="en">Response Time</span><span class="es">Tiempo de Respuesta</span></h4>
+          <p><span class="en">We typically respond within 1-2 business days.</span><span class="es">Generalmente respondemos en 1-2 días hábiles.</span></p>
+        </div>
+      </div>
+
+      <div class="social-row">
+        <a href="https://facebook.com/litterpreventionnetwork" target="_blank" class="social-btn">f Facebook</a>
+        <a href="https://instagram.com/litterpreventionnetwork" target="_blank" class="social-btn">ig Instagram</a>
+        <a href="https://tiktok.com/@litterpreventionnetwork" target="_blank" class="social-btn">tt TikTok</a>
+      </div>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="contact-form-box">
+      <h2><span class="en">Send a Message</span><span class="es">Enviar un Mensaje</span></h2>
+      <div id="contact-form">
+        <div class="form-group">
+          <label><span class="en">Your Name</span><span class="es">Tu Nombre</span></label>
+          <input type="text" id="ct-name" placeholder="Jane Smith" />
+        </div>
+        <div class="form-group">
+          <label><span class="en">Email Address</span><span class="es">Correo Electrónico</span></label>
+          <input type="email" id="ct-email" placeholder="you@email.com" />
+        </div>
+        <div class="form-group">
+          <label><span class="en">Subject</span><span class="es">Asunto</span></label>
+          <select id="ct-subject">
+            <option value="general"><span class="en">General Question</span></option>
+            <option value="volunteer"><span class="en">Volunteering</span></option>
+            <option value="sponsor"><span class="en">Sponsorship / Partnership</span></option>
+            <option value="event"><span class="en">Events</span></option>
+            <option value="rewards"><span class="en">Points & Rewards</span></option>
+            <option value="media"><span class="en">Media / Press</span></option>
+            <option value="other"><span class="en">Other</span></option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label><span class="en">Message</span><span class="es">Mensaje</span></label>
+          <textarea id="ct-message" rows="5" placeholder="How can we help you?"></textarea>
+        </div>
+        <button class="btn-submit" id="ct-btn">
+          <span class="en">Send Message</span><span class="es">Enviar Mensaje</span>
+        </button>
+        <div id="ct-msg" style="display:none;margin-top:16px;padding:14px;border-radius:8px;font-size:14px;text-align:center;"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3 style="font-family:'Outfit',sans-serif;">Litter Prevention Network</h3>
+        <p class="en">Keeping Willis, TX clean — one cleanup at a time.</p>
+        <p class="es">Manteniendo Willis, TX limpio — una limpieza a la vez.</p>
+        <div class="footer-contact">
+          📍 Willis, TX<br/>
+          📞 <a href="tel:2819359097">(281) 935-9097</a><br/>
+          📧 <a href="mailto:stanley@litterpreventionnetwork.org">stanley@litterpreventionnetwork.org</a>
+        </div>
+        <div class="footer-social">
+          <a href="https://facebook.com/litterpreventionnetwork" target="_blank">f</a>
+          <a href="https://instagram.com/litterpreventionnetwork" target="_blank">ig</a>
+          <a href="https://tiktok.com/@litterpreventionnetwork" target="_blank">tt</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">Navigate</span><span class="es">Navegar</span></h4>
+        <a href="index.html"><span class="en">Home</span><span class="es">Inicio</span></a>
+        <a href="events.html"><span class="en">Events</span><span class="es">Eventos</span></a>
+        <a href="report-litter.html"><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
+        <a href="rewards.html"><span class="en">Rewards</span><span class="es">Recompensas</span></a>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">Get Involved</span><span class="es">Participa</span></h4>
+        <a href="volunteer.html"><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
+        <a href="submit-proof.html"><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
+        <a href="prize-portal.html"><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
+        <a href="sponsors.html"><span class="en">Sponsors</span><span class="es">Patrocinadores</span></a>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">About</span><span class="es">Acerca de</span></h4>
+        <a href="about.html"><span class="en">Our Mission</span><span class="es">Nuestra Misión</span></a>
+        <a href="faq.html">FAQ</a>
+        <a href="contact.html"><span class="en">Contact Us</span><span class="es">Contáctanos</span></a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Litter Prevention Network · Willis, TX</span>
+      <div style="display:flex;gap:20px;">
+        <a href="faq.html">FAQ</a>
+        <a href="about.html"><span class="en">About</span><span class="es">Acerca de</span></a>
+        <a href="contact.html"><span class="en">Contact</span><span class="es">Contacto</span></a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+  const _sb = window.supabase.createClient(
+    'https://elgzfppmlsrrmskgloeo.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
+  );
+
+  document.getElementById('ct-btn').addEventListener('click', async () => {
+    const name = document.getElementById('ct-name').value.trim();
+    const email = document.getElementById('ct-email').value.trim();
+    const subject = document.getElementById('ct-subject').value;
+    const message = document.getElementById('ct-message').value.trim();
+
+    if (!name || !email || !message) {
+      alert('Please fill out your name, email, and message.');
+      return;
+    }
+
+    const btn = document.getElementById('ct-btn');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+
+    const { error } = await _sb.from('contact_messages').insert([{
+      name, email, subject, message, status: 'unread'
+    }]);
+
+    const msg = document.getElementById('ct-msg');
+    msg.style.display = 'block';
+
+    if (error) {
+      msg.style.background = '#FDECEA';
+      msg.style.color = '#c0392b';
+      msg.textContent = 'Something went wrong. Please try again.';
+      btn.disabled = false;
+      btn.innerHTML = '<span class="en">Send Message</span><span class="es">Enviar Mensaje</span>';
+      console.error(error);
+    } else {
+      msg.style.background = '#E1F5EE';
+      msg.style.color = '#0F6E56';
+      msg.textContent = '✅ Message sent! We\'ll get back to you within 1-2 business days.';
+      btn.style.display = 'none';
+    }
+  });
+  </script>
+  <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js');</script>
+</body>
+</html>
