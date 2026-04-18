@@ -36,12 +36,18 @@
     .btn-approve:hover { background: #0F6E56; }
     .btn-reject { background: #e74c3c; color: white; border: none; padding: 7px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
     .btn-reject:hover { background: #c0392b; }
+    .btn-neutral { background: #888; color: white; border: none; padding: 7px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; margin-right: 6px; }
+    .btn-neutral:hover { background: #666; }
     .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
     .status-pending { background: #FFF3CD; color: #856404; }
     .status-approved { background: #E1F5EE; color: #0F6E56; }
     .status-rejected { background: #FDECEA; color: #c0392b; }
+    .status-fulfilled { background: #E1F5EE; color: #0F6E56; }
+    .status-cancelled { background: #FDECEA; color: #c0392b; }
+    .status-contacted { background: #E3F2FD; color: #1565C0; }
     .points-select { padding: 6px 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; margin-right: 6px; }
     .photo-link { color: #1D9E75; text-decoration: underline; font-size: 13px; }
+    .sponsor-msg { font-size: 13px; color: #555; max-width: 300px; white-space: pre-wrap; word-break: break-word; }
   </style>
 </head>
 <body>
@@ -63,6 +69,7 @@
     <button class="tab" onclick="showTab('proof', this)">Proof Submissions</button>
     <button class="tab" onclick="showTab('points', this)">Points Ledger</button>
     <button class="tab" onclick="showTab('redemptions', this)">Redemptions</button>
+    <button class="tab" onclick="showTab('sponsors', this)">🤝 Sponsors</button>
   </div>
 
   <div class="tab-content active" id="tab-signups">
@@ -73,14 +80,14 @@
 
   <div class="tab-content" id="tab-volunteers">
     <div class="section-title">Volunteers <span class="count-badge" id="count-volunteers">...</span></div>
-    <table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>How they help</th><th>Availability</th><th>Date</th></tr></thead>
-    <tbody id="body-volunteers"><tr><td colspan="6" class="loading">Loading...</td></tr></tbody></table>
+    <table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>How they help</th><th>Availability</th><th>Vest</th><th>Date</th></tr></thead>
+    <tbody id="body-volunteers"><tr><td colspan="7" class="loading">Loading...</td></tr></tbody></table>
   </div>
 
   <div class="tab-content" id="tab-reports">
     <div class="section-title">Litter Reports <span class="count-badge" id="count-reports">...</span></div>
-    <table><thead><tr><th>Name</th><th>Location</th><th>Description</th><th>Date</th></tr></thead>
-    <tbody id="body-reports"><tr><td colspan="4" class="loading">Loading...</td></tr></tbody></table>
+    <table><thead><tr><th>Name</th><th>Location</th><th>Description</th><th>Photo</th><th>Date</th></tr></thead>
+    <tbody id="body-reports"><tr><td colspan="5" class="loading">Loading...</td></tr></tbody></table>
   </div>
 
   <div class="tab-content" id="tab-proof">
@@ -99,6 +106,27 @@
     <div class="section-title">Redemptions <span class="count-badge" id="count-redemptions">...</span></div>
     <table><thead><tr><th>Email</th><th>Prize Type</th><th>Details</th><th>Points Spent</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
     <tbody id="body-redemptions"><tr><td colspan="7" class="loading">Loading...</td></tr></tbody></table>
+  </div>
+
+  <div class="tab-content" id="tab-sponsors">
+    <div class="section-title">Sponsor Inquiries <span class="count-badge" id="count-sponsors">...</span></div>
+    <table>
+      <thead>
+        <tr>
+          <th>Company</th>
+          <th>Contact</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Website</th>
+          <th>Type</th>
+          <th>Message</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="body-sponsors"><tr><td colspan="10" class="loading">Loading...</td></tr></tbody>
+    </table>
   </div>
 </div>
 
@@ -130,32 +158,36 @@ function showTab(name, el) {
 function fmt(d) { return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
 
 async function loadAll() {
-  const [s, v, r, p, pts, red] = await Promise.all([
+  const [s, v, r, p, pts, red, sp] = await Promise.all([
     _sb.from('signups').select('*').order('created_at', { ascending: false }),
     _sb.from('volunteers').select('*').order('created_at', { ascending: false }),
     _sb.from('litter_reports').select('*').order('created_at', { ascending: false }),
     _sb.from('proof_submissions').select('*').order('created_at', { ascending: false }),
     _sb.from('points').select('*').order('total_earned', { ascending: false }),
     _sb.from('redemptions').select('*').order('created_at', { ascending: false }),
+    _sb.from('sponsors').select('*').order('created_at', { ascending: false }),
   ]);
 
   // Sign-ups
   document.getElementById('count-signups').textContent = s.data?.length || 0;
   document.getElementById('body-signups').innerHTML = s.data?.length
-    ? s.data.map(r => `<tr><td>#${r.member_number}</td><td>${r.full_name}</td><td>${r.email}</td><td>${r.zip_code}</td><td>${r.language}</td><td>${fmt(r.created_at)}</td></tr>`).join('')
+    ? s.data.map(r => `<tr><td>#${r.member_number||'—'}</td><td>${r.full_name}</td><td>${r.email}</td><td>${r.zip_code||'—'}</td><td>${r.language||'—'}</td><td>${fmt(r.created_at)}</td></tr>`).join('')
     : '<tr><td colspan="6" class="empty">No sign-ups yet.</td></tr>';
 
   // Volunteers
   document.getElementById('count-volunteers').textContent = v.data?.length || 0;
   document.getElementById('body-volunteers').innerHTML = v.data?.length
-    ? v.data.map(r => `<tr><td>${r.full_name}</td><td>${r.email}</td><td>${r.phone||'—'}</td><td>${r.help_type}</td><td>${r.availability}</td><td>${fmt(r.created_at)}</td></tr>`).join('')
-    : '<tr><td colspan="6" class="empty">No volunteers yet.</td></tr>';
+    ? v.data.map(r => `<tr><td>${r.full_name}</td><td>${r.email}</td><td>${r.phone||'—'}</td><td>${r.help_type}</td><td>${r.availability}</td><td>${r.vest_request||'—'}</td><td>${fmt(r.created_at)}</td></tr>`).join('')
+    : '<tr><td colspan="7" class="empty">No volunteers yet.</td></tr>';
 
   // Litter Reports
   document.getElementById('count-reports').textContent = r.data?.length || 0;
   document.getElementById('body-reports').innerHTML = r.data?.length
-    ? r.data.map(r => `<tr><td>${r.name}</td><td>${r.location}</td><td>${r.description}</td><td>${fmt(r.created_at)}</td></tr>`).join('')
-    : '<tr><td colspan="4" class="empty">No reports yet.</td></tr>';
+    ? r.data.map(row => {
+        const photoLink = row.photo_url ? `<a class="photo-link" href="${row.photo_url}" target="_blank">View Photo</a>` : '—';
+        return `<tr><td>${row.name}</td><td>${row.location}</td><td>${row.description}</td><td>${photoLink}</td><td>${fmt(row.created_at)}</td></tr>`;
+      }).join('')
+    : '<tr><td colspan="5" class="empty">No reports yet.</td></tr>';
 
   // Proof Submissions
   document.getElementById('count-proof').textContent = p.data?.length || 0;
@@ -170,12 +202,12 @@ async function loadAll() {
             <option value="20">20 pts</option><option value="25">25 pts</option>
             <option value="30">30 pts</option><option value="35">35 pts</option>
             <option value="40">40 pts</option><option value="45">45 pts</option>
-            <option value="50">50 pts</option>
+            <option value="50">50 pts</option><option value="75">75 pts</option>
           </select>
           <button class="btn-approve" onclick="approveSubmission('${row.id}', '${row.email}')">Approve</button>
           <button class="btn-reject" onclick="rejectSubmission('${row.id}')">Reject</button>` : '—';
         return `<tr>
-          <td>${row.name||'—'}</td><td>${row.email||'—'}</td><td>${row.description||'—'}</td>
+          <td>${row.name||'—'}</td><td>${row.email||'—'}</td><td>${row.task_description||row.description||'—'}</td>
           <td>${photoLink}</td>
           <td><span class="status-badge status-${status}">${status.charAt(0).toUpperCase()+status.slice(1)}</span></td>
           <td>${row.points_awarded||'—'}</td><td>${actions}</td></tr>`;
@@ -198,15 +230,36 @@ async function loadAll() {
           <button class="btn-approve" onclick="fulfillRedemption('${row.id}')">Mark Fulfilled</button>
           <button class="btn-reject" onclick="cancelRedemption('${row.id}')">Cancel</button>` : '—';
         return `<tr>
-          <td>${row.email}</td>
-          <td>${row.prize_type}</td>
-          <td>${row.details||'—'}</td>
+          <td>${row.email}</td><td>${row.prize_type}</td><td>${row.details||'—'}</td>
           <td>${row.points_spent}</td>
+          <td><span class="status-badge status-${status}">${status.charAt(0).toUpperCase()+status.slice(1)}</span></td>
+          <td>${fmt(row.created_at)}</td><td>${actions}</td></tr>`;
+      }).join('')
+    : '<tr><td colspan="7" class="empty">No redemptions yet.</td></tr>';
+
+  // Sponsors
+  document.getElementById('count-sponsors').textContent = sp.data?.length || 0;
+  document.getElementById('body-sponsors').innerHTML = sp.data?.length
+    ? sp.data.map(row => {
+        const status = row.status || 'pending';
+        const isPending = status === 'pending';
+        const websiteLink = row.website ? `<a href="${row.website}" target="_blank" style="color:#1D9E75;">${row.website}</a>` : '—';
+        const actions = isPending ? `
+          <button class="btn-approve" onclick="contactSponsor('${row.id}')">Mark Contacted</button>
+          <button class="btn-reject" onclick="declineSponsor('${row.id}')">Decline</button>` : '—';
+        return `<tr>
+          <td><strong>${row.company_name}</strong></td>
+          <td>${row.contact_name||'—'}</td>
+          <td>${row.contact_email||'—'}</td>
+          <td>${row.contact_phone||'—'}</td>
+          <td>${websiteLink}</td>
+          <td>${row.sponsorship_type||'—'}</td>
+          <td><div class="sponsor-msg">${row.message||'—'}</div></td>
           <td><span class="status-badge status-${status}">${status.charAt(0).toUpperCase()+status.slice(1)}</span></td>
           <td>${fmt(row.created_at)}</td>
           <td>${actions}</td></tr>`;
       }).join('')
-    : '<tr><td colspan="7" class="empty">No redemptions yet.</td></tr>';
+    : '<tr><td colspan="10" class="empty">No sponsor inquiries yet.</td></tr>';
 }
 
 async function approveSubmission(id, email) {
@@ -238,6 +291,18 @@ async function fulfillRedemption(id) {
 async function cancelRedemption(id) {
   await _sb.from('redemptions').update({ status: 'cancelled' }).eq('id', id);
   alert('❌ Redemption cancelled.');
+  loadAll();
+}
+
+async function contactSponsor(id) {
+  await _sb.from('sponsors').update({ status: 'contacted' }).eq('id', id);
+  alert('✅ Sponsor marked as contacted!');
+  loadAll();
+}
+
+async function declineSponsor(id) {
+  await _sb.from('sponsors').update({ status: 'declined' }).eq('id', id);
+  alert('❌ Sponsor inquiry declined.');
   loadAll();
 }
 </script>
