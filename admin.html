@@ -23,7 +23,15 @@
     .tab.active { color: #1D9E75; border-bottom-color: #1D9E75; }
     .tab-content { display: none; padding: 32px 40px; }
     .tab-content.active { display: block; }
-    .section-title { font-size: 20px; font-weight: 700; margin-bottom: 20px; color: #1a1a1a; }
+    .tab-toolbar { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+    .tab-toolbar-left { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; flex: 1; }
+    .search-input { padding: 9px 16px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; min-width: 220px; }
+    .search-input:focus { border-color: #1D9E75; }
+    .filter-select { padding: 9px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; background: white; cursor: pointer; }
+    .filter-select:focus { border-color: #1D9E75; }
+    .btn-csv { background: #0F2318; color: white; border: none; padding: 9px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .btn-csv:hover { background: #1a3a28; }
+    .section-title { font-size: 20px; font-weight: 700; margin-bottom: 16px; color: #1a1a1a; }
     .count-badge { display: inline-block; background: #E1F5EE; color: #0F6E56; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-left: 8px; }
     .unread-badge { background: #FDECEA; color: #c0392b; }
     table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 8px rgba(0,0,0,0.06); }
@@ -54,6 +62,7 @@
     .sponsor-msg { font-size: 13px; color: #555; max-width: 300px; white-space: pre-wrap; word-break: break-word; }
     .msg-text { font-size: 13px; color: #555; max-width: 320px; white-space: pre-wrap; word-break: break-word; line-height: 1.6; }
     .unread-row td { background: #fffbf0; font-weight: 500; }
+    .no-results { text-align: center; padding: 32px; color: #999; font-size: 14px; }
   </style>
 </head>
 <body>
@@ -79,58 +88,141 @@
     <button class="tab" onclick="showTab('messages', this)">✉️ Messages</button>
   </div>
 
+  <!-- Sign-ups -->
   <div class="tab-content active" id="tab-signups">
     <div class="section-title">Sign-ups <span class="count-badge" id="count-signups">...</span></div>
+    <div class="tab-toolbar">
+      <div class="tab-toolbar-left">
+        <input class="search-input" placeholder="🔍 Search by name or email..." oninput="filterTable('body-signups', this.value, [1,2])" />
+      </div>
+      <button class="btn-csv" onclick="exportCSV('body-signups', 'signups')">⬇ Export CSV</button>
+    </div>
     <table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Zip Code</th><th>Language</th><th>Date</th></tr></thead>
     <tbody id="body-signups"><tr><td colspan="6" class="loading">Loading...</td></tr></tbody></table>
   </div>
 
+  <!-- Volunteers -->
   <div class="tab-content" id="tab-volunteers">
     <div class="section-title">Volunteers <span class="count-badge" id="count-volunteers">...</span></div>
+    <div class="tab-toolbar">
+      <div class="tab-toolbar-left">
+        <input class="search-input" placeholder="🔍 Search by name or email..." oninput="filterTable('body-volunteers', this.value, [0,1])" />
+        <select class="filter-select" onchange="filterTable('body-volunteers', '', [], this.value, 3)">
+          <option value="">All types</option>
+          <option value="Join cleanup events">Join cleanup events</option>
+          <option value="Organize events">Organize events</option>
+          <option value="Social media">Social media</option>
+          <option value="Donate supplies">Donate supplies</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <button class="btn-csv" onclick="exportCSV('body-volunteers', 'volunteers')">⬇ Export CSV</button>
+    </div>
     <table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>How they help</th><th>Availability</th><th>Vest</th><th>Date</th></tr></thead>
     <tbody id="body-volunteers"><tr><td colspan="7" class="loading">Loading...</td></tr></tbody></table>
   </div>
 
+  <!-- Litter Reports -->
   <div class="tab-content" id="tab-reports">
     <div class="section-title">Litter Reports <span class="count-badge" id="count-reports">...</span></div>
+    <div class="tab-toolbar">
+      <div class="tab-toolbar-left">
+        <input class="search-input" placeholder="🔍 Search by name or location..." oninput="filterTable('body-reports', this.value, [0,1])" />
+      </div>
+      <button class="btn-csv" onclick="exportCSV('body-reports', 'litter-reports')">⬇ Export CSV</button>
+    </div>
     <table><thead><tr><th>Name</th><th>Location</th><th>Description</th><th>Photo</th><th>Date</th></tr></thead>
     <tbody id="body-reports"><tr><td colspan="5" class="loading">Loading...</td></tr></tbody></table>
   </div>
 
+  <!-- Proof Submissions -->
   <div class="tab-content" id="tab-proof">
     <div class="section-title">Proof Submissions <span class="count-badge" id="count-proof">...</span></div>
+    <div class="tab-toolbar">
+      <div class="tab-toolbar-left">
+        <input class="search-input" placeholder="🔍 Search by name or email..." oninput="filterTable('body-proof', this.value, [0,1])" />
+        <select class="filter-select" onchange="filterByStatus('body-proof', this.value)">
+          <option value="">All statuses</option>
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+      <button class="btn-csv" onclick="exportCSV('body-proof', 'proof-submissions')">⬇ Export CSV</button>
+    </div>
     <table><thead><tr><th>Name</th><th>Email</th><th>Description</th><th>Photo</th><th>Status</th><th>Points</th><th>Actions</th></tr></thead>
     <tbody id="body-proof"><tr><td colspan="7" class="loading">Loading...</td></tr></tbody></table>
   </div>
 
+  <!-- Points Ledger -->
   <div class="tab-content" id="tab-points">
     <div class="section-title">Points Ledger <span class="count-badge" id="count-points">...</span></div>
+    <div class="tab-toolbar">
+      <div class="tab-toolbar-left">
+        <input class="search-input" placeholder="🔍 Search by email..." oninput="filterTable('body-points', this.value, [0])" />
+      </div>
+      <button class="btn-csv" onclick="exportCSV('body-points', 'points-ledger')">⬇ Export CSV</button>
+    </div>
     <table><thead><tr><th>Email</th><th>Current Points</th><th>Total Ever Earned</th><th>Last Updated</th></tr></thead>
     <tbody id="body-points"><tr><td colspan="4" class="loading">Loading...</td></tr></tbody></table>
   </div>
 
+  <!-- Redemptions -->
   <div class="tab-content" id="tab-redemptions">
     <div class="section-title">Redemptions <span class="count-badge" id="count-redemptions">...</span></div>
+    <div class="tab-toolbar">
+      <div class="tab-toolbar-left">
+        <input class="search-input" placeholder="🔍 Search by email..." oninput="filterTable('body-redemptions', this.value, [0])" />
+        <select class="filter-select" onchange="filterByStatus('body-redemptions', this.value)">
+          <option value="">All statuses</option>
+          <option value="pending">Pending</option>
+          <option value="fulfilled">Fulfilled</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
+      <button class="btn-csv" onclick="exportCSV('body-redemptions', 'redemptions')">⬇ Export CSV</button>
+    </div>
     <table><thead><tr><th>Email</th><th>Prize Type</th><th>Details</th><th>Points Spent</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
     <tbody id="body-redemptions"><tr><td colspan="7" class="loading">Loading...</td></tr></tbody></table>
   </div>
 
+  <!-- Sponsors -->
   <div class="tab-content" id="tab-sponsors">
     <div class="section-title">Sponsor Inquiries <span class="count-badge" id="count-sponsors">...</span></div>
+    <div class="tab-toolbar">
+      <div class="tab-toolbar-left">
+        <input class="search-input" placeholder="🔍 Search by company or email..." oninput="filterTable('body-sponsors', this.value, [0,2])" />
+        <select class="filter-select" onchange="filterByStatus('body-sponsors', this.value)">
+          <option value="">All statuses</option>
+          <option value="pending">Pending</option>
+          <option value="contacted">Contacted</option>
+          <option value="declined">Declined</option>
+        </select>
+      </div>
+      <button class="btn-csv" onclick="exportCSV('body-sponsors', 'sponsors')">⬇ Export CSV</button>
+    </div>
     <table>
-      <thead>
-        <tr><th>Company</th><th>Contact</th><th>Email</th><th>Phone</th><th>Website</th><th>Type</th><th>Message</th><th>Status</th><th>Date</th><th>Actions</th></tr>
-      </thead>
+      <thead><tr><th>Company</th><th>Contact</th><th>Email</th><th>Phone</th><th>Website</th><th>Type</th><th>Message</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
       <tbody id="body-sponsors"><tr><td colspan="10" class="loading">Loading...</td></tr></tbody>
     </table>
   </div>
 
+  <!-- Messages -->
   <div class="tab-content" id="tab-messages">
     <div class="section-title">Contact Messages <span class="count-badge unread-badge" id="count-messages">...</span></div>
+    <div class="tab-toolbar">
+      <div class="tab-toolbar-left">
+        <input class="search-input" placeholder="🔍 Search by name or email..." oninput="filterTable('body-messages', this.value, [0,1])" />
+        <select class="filter-select" onchange="filterByStatus('body-messages', this.value)">
+          <option value="">All messages</option>
+          <option value="unread">Unread only</option>
+          <option value="read">Read only</option>
+        </select>
+      </div>
+      <button class="btn-csv" onclick="exportCSV('body-messages', 'contact-messages')">⬇ Export CSV</button>
+    </div>
     <table>
-      <thead>
-        <tr><th>Name</th><th>Email</th><th>Subject</th><th>Message</th><th>Status</th><th>Date</th><th>Actions</th></tr>
-      </thead>
+      <thead><tr><th>Name</th><th>Email</th><th>Subject</th><th>Message</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
       <tbody id="body-messages"><tr><td colspan="7" class="loading">Loading...</td></tr></tbody>
     </table>
   </div>
@@ -162,6 +254,45 @@ function showTab(name, el) {
 }
 
 function fmt(d) { return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
+
+// Search filter
+function filterTable(bodyId, query, cols) {
+  const rows = document.getElementById(bodyId).querySelectorAll('tr');
+  const q = query.toLowerCase();
+  let visible = 0;
+  rows.forEach(row => {
+    if (row.classList.contains('no-results-row')) return;
+    const match = q === '' || cols.some(c => (row.cells[c]?.textContent||'').toLowerCase().includes(q));
+    row.style.display = match ? '' : 'none';
+    if (match) visible++;
+  });
+}
+
+// Status filter
+function filterByStatus(bodyId, status) {
+  const rows = document.getElementById(bodyId).querySelectorAll('tr');
+  rows.forEach(row => {
+    if (!status) { row.style.display = ''; return; }
+    const text = row.textContent.toLowerCase();
+    row.style.display = text.includes(status) ? '' : 'none';
+  });
+}
+
+// CSV Export
+function exportCSV(bodyId, filename) {
+  const table = document.getElementById(bodyId).closest('table');
+  const headers = [...table.querySelectorAll('th')].map(th => `"${th.textContent.trim()}"`).join(',');
+  const rows = [...document.getElementById(bodyId).querySelectorAll('tr')]
+    .filter(r => r.style.display !== 'none')
+    .map(row => [...row.cells].map(td => `"${td.textContent.trim().replace(/"/g, '""')}"`).join(','))
+    .join('\n');
+  const csv = headers + '\n' + rows;
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `lpn-${filename}-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
 
 async function loadAll() {
   const [s, v, r, p, pts, red, sp, msg] = await Promise.all([
