@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1D9E75" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Litter Map – Litter Prevention Network</title>
+  <link rel="stylesheet" href="shared.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <script src="shared.js" defer></script>
+  <style>
+    .map-wrap { max-width: 1100px; margin: 0 auto; padding: 40px; }
+    .map-container { border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.1); margin-bottom: 32px; }
+    #map { width: 100%; height: 520px; }
+    .map-legend { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 32px; }
+    .legend-item { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #444; }
+    .legend-dot { width: 14px; height: 14px; border-radius: 50%; }
+    .legend-dot.litter { background: #e74c3c; }
+    .legend-dot.cleanup { background: #1D9E75; }
+    .map-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 40px; }
+    .map-stat-box { background: #f9f9f7; border-radius: 12px; padding: 20px; text-align: center; border: 1px solid #eee; }
+    .map-stat-box .num { font-size: 28px; font-weight: 800; color: #0F6E56; font-family: 'Outfit', sans-serif; }
+    .map-stat-box .lbl { font-size: 13px; color: #777; margin-top: 4px; }
+    .recent-reports { background: white; border-radius: 16px; padding: 28px; box-shadow: 0 1px 8px rgba(0,0,0,0.06); }
+    .recent-reports h3 { font-size: 18px; font-weight: 800; font-family: 'Outfit', sans-serif; color: #0F2318; margin-bottom: 20px; }
+    .report-item { display: flex; align-items: flex-start; gap: 14px; padding: 14px 0; border-bottom: 1px solid #f0f0ee; }
+    .report-item:last-child { border-bottom: none; }
+    .report-dot { width: 10px; height: 10px; border-radius: 50%; background: #e74c3c; margin-top: 5px; flex-shrink: 0; }
+    .report-info h4 { font-size: 14px; font-weight: 700; color: #0F2318; margin-bottom: 3px; }
+    .report-info p { font-size: 13px; color: #888; }
+    .empty-reports { text-align: center; padding: 32px; color: #999; font-size: 14px; }
+    @media (max-width: 600px) { .map-wrap { padding: 20px; } #map { height: 360px; } }
+  </style>
+</head>
+<body>
+  <div class="lang-bar">
+    <button class="active" onclick="setLang('en')">English</button>
+    <button onclick="setLang('es')">Español</button>
+  </div>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <span style="font-family:'Outfit',sans-serif;font-weight:800;font-size:18px;color:#0F6E56;">LPN Willis</span>
+    </a>
+    <button class="hamburger" onclick="openDrawer()"><span></span><span></span><span></span></button>
+  </nav>
+  <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">
+      <div class="drawer-logo" style="font-family:'Outfit',sans-serif;">Litter Prevention Network</div>
+      <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    </div>
+    <div class="drawer-nav">
+      <a href="index.html"><span class="nav-icon">🏠</span><span class="en">Home</span><span class="es">Inicio</span></a>
+      <a href="events.html"><span class="nav-icon">📅</span><span class="en">Events</span><span class="es">Eventos</span></a>
+      <a href="map.html" class="active"><span class="nav-icon">🗺️</span><span class="en">Litter Map</span><span class="es">Mapa de Basura</span></a>
+      <a href="map.html"><span class="nav-icon">🗺️</span><span class="en">Litter Map</span><span class="es">Mapa de Basura</span></a>
+      <a href="report-litter.html"><span class="nav-icon">📍</span><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
+      <a href="rewards.html"><span class="nav-icon">🏆</span><span class="en">Rewards</span><span class="es">Recompensas</span></a>
+      <a href="volunteer.html"><span class="nav-icon">🙌</span><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
+      <a href="submit-proof.html"><span class="nav-icon">📸</span><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
+      <a href="prize-portal.html"><span class="nav-icon">🎁</span><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
+      <a href="sponsors.html"><span class="nav-icon">🤝</span><span class="en">Sponsors</span><span class="es">Patrocinadores</span></a>
+      <div class="drawer-divider"></div>
+      <a href="dashboard.html"><span class="nav-icon">📊</span><span class="en">My Dashboard</span><span class="es">Mi Panel</span></a>
+      <a href="login.html"><span class="nav-icon">🔐</span><span class="en">Login</span><span class="es">Iniciar Sesión</span></a>
+      <div class="drawer-divider"></div>
+      <a href="about.html"><span class="nav-icon">ℹ️</span><span class="en">About</span><span class="es">Acerca de</span></a>
+      <a href="faq.html"><span class="nav-icon">❓</span>FAQ</a>
+      <a href="contact.html"><span class="nav-icon">📬</span><span class="en">Contact</span><span class="es">Contacto</span></a>
+    </div>
+    <div class="drawer-footer-note">© 2026 Litter Prevention Network · Willis, TX</div>
+  </div>
+
+  <section class="page-hero">
+    <h1><span class="en">Litter Map</span><span class="es">Mapa de Basura</span></h1>
+    <p><span class="en">See where litter has been reported and cleaned up across Willis, TX.</span><span class="es">Ve dónde se ha reportado y limpiado basura en Willis, TX.</span></p>
+  </section>
+
+  <div class="map-wrap">
+
+    <!-- Stats -->
+    <div class="map-stats">
+      <div class="map-stat-box">
+        <div class="num" id="stat-reports">0</div>
+        <div class="lbl"><span class="en">Litter Reports</span><span class="es">Reportes de Basura</span></div>
+      </div>
+      <div class="map-stat-box">
+        <div class="num" id="stat-cleanups">0</div>
+        <div class="lbl"><span class="en">Cleanups Logged</span><span class="es">Limpiezas Registradas</span></div>
+      </div>
+      <div class="map-stat-box">
+        <div class="num">Willis</div>
+        <div class="lbl">TX</div>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="map-legend">
+      <div class="legend-item"><div class="legend-dot litter"></div><span class="en">Litter Reported</span><span class="es">Basura Reportada</span></div>
+      <div class="legend-item"><div class="legend-dot cleanup"></div><span class="en">Cleanup Completed</span><span class="es">Limpieza Completada</span></div>
+    </div>
+
+    <!-- Map -->
+    <div class="map-container">
+      <div id="map"></div>
+    </div>
+
+    <!-- Recent Reports -->
+    <div class="recent-reports">
+      <h3><span class="en">Recent Reports</span><span class="es">Reportes Recientes</span></h3>
+      <div id="recent-list"><div class="empty-reports">Loading...</div></div>
+    </div>
+
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3 style="font-family:'Outfit',sans-serif;">Litter Prevention Network</h3>
+        <p class="en">Keeping Willis, TX clean — one cleanup at a time.</p>
+        <p class="es">Manteniendo Willis, TX limpio — una limpieza a la vez.</p>
+        <div class="footer-contact">
+          📍 Willis, TX<br/>
+          📞 <a href="tel:2819359097">(281) 935-9097</a><br/>
+          📧 <a href="mailto:stanley@litterpreventionnetwork.org">stanley@litterpreventionnetwork.org</a>
+        </div>
+        <div class="footer-social">
+          <a href="https://facebook.com/litterpreventionnetwork" target="_blank">f</a>
+          <a href="https://instagram.com/litterpreventionnetwork" target="_blank">ig</a>
+          <a href="https://tiktok.com/@litterpreventionnetwork" target="_blank">tt</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">Navigate</span><span class="es">Navegar</span></h4>
+        <a href="index.html"><span class="en">Home</span><span class="es">Inicio</span></a>
+        <a href="events.html"><span class="en">Events</span><span class="es">Eventos</span></a>
+        <a href="map.html"><span class="en">Litter Map</span><span class="es">Mapa</span></a>
+        <a href="report-litter.html"><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
+        <a href="rewards.html"><span class="en">Rewards</span><span class="es">Recompensas</span></a>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">Get Involved</span><span class="es">Participa</span></h4>
+        <a href="volunteer.html"><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
+        <a href="submit-proof.html"><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
+        <a href="prize-portal.html"><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
+        <a href="sponsors.html"><span class="en">Sponsors</span><span class="es">Patrocinadores</span></a>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">About</span><span class="es">Acerca de</span></h4>
+        <a href="about.html"><span class="en">Our Mission</span><span class="es">Nuestra Misión</span></a>
+        <a href="faq.html">FAQ</a>
+        <a href="contact.html"><span class="en">Contact Us</span><span class="es">Contáctanos</span></a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Litter Prevention Network · Willis, TX</span>
+      <div style="display:flex;gap:20px;">
+        <a href="faq.html">FAQ</a>
+        <a href="about.html"><span class="en">About</span><span class="es">Acerca de</span></a>
+        <a href="contact.html"><span class="en">Contact</span><span class="es">Contacto</span></a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+  const _sb = window.supabase.createClient(
+    'https://elgzfppmlsrrmskgloeo.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
+  );
+
+  let map;
+  const WILLIS_CENTER = { lat: 30.4224, lng: -95.4849 };
+
+  async function initMap() {
+    map = new google.maps.Map(document.getElementById('map'), {
+      center: WILLIS_CENTER,
+      zoom: 13,
+      styles: [
+        { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] }
+      ],
+      mapTypeControl: false,
+      streetViewControl: false,
+      fullscreenControl: true,
+    });
+
+    // Load litter reports
+    const { data: reports } = await _sb.from('litter_reports').select('*').order('created_at', { ascending: false });
+    const { data: proofs } = await _sb.from('proof_submissions').select('*').eq('status', 'approved').order('created_at', { ascending: false });
+
+    document.getElementById('stat-reports').textContent = reports?.length || 0;
+    document.getElementById('stat-cleanups').textContent = proofs?.length || 0;
+
+    // Plot litter reports as red markers
+    reports?.forEach(r => {
+      if (!r.lat && !r.lng) return;
+      const marker = new google.maps.Marker({
+        position: { lat: parseFloat(r.lat), lng: parseFloat(r.lng) },
+        map,
+        title: r.location || 'Litter Report',
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 8,
+          fillColor: '#e74c3c',
+          fillOpacity: 0.9,
+          strokeColor: 'white',
+          strokeWeight: 2,
+        }
+      });
+      const info = new google.maps.InfoWindow({
+        content: `<div style="font-family:'Segoe UI',sans-serif;padding:4px;">
+          <strong style="color:#e74c3c;">🚨 Litter Report</strong><br/>
+          <span style="font-size:13px;">${r.location||'Willis, TX'}</span><br/>
+          <span style="font-size:12px;color:#888;">${r.description||''}</span>
+        </div>`
+      });
+      marker.addListener('click', () => info.open(map, marker));
+    });
+
+    // Plot cleanups as green markers
+    proofs?.forEach(p => {
+      if (!p.lat && !p.lng) return;
+      const marker = new google.maps.Marker({
+        position: { lat: parseFloat(p.lat), lng: parseFloat(p.lng) },
+        map,
+        title: 'Cleanup Completed',
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 8,
+          fillColor: '#1D9E75',
+          fillOpacity: 0.9,
+          strokeColor: 'white',
+          strokeWeight: 2,
+        }
+      });
+      const info = new google.maps.InfoWindow({
+        content: `<div style="font-family:'Segoe UI',sans-serif;padding:4px;">
+          <strong style="color:#1D9E75;">✅ Cleanup Completed</strong><br/>
+          <span style="font-size:13px;">${p.name||'Community Member'}</span><br/>
+          <span style="font-size:12px;color:#888;">${p.task_description||p.description||''}</span>
+        </div>`
+      });
+      marker.addListener('click', () => info.open(map, marker));
+    });
+
+    // Recent reports list
+    const list = document.getElementById('recent-list');
+    if (reports?.length) {
+      list.innerHTML = reports.slice(0, 8).map(r => `
+        <div class="report-item">
+          <div class="report-dot"></div>
+          <div class="report-info">
+            <h4>${r.location || 'Willis, TX'}</h4>
+            <p>${r.description || '—'} · ${new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+          </div>
+        </div>`).join('');
+    } else {
+      list.innerHTML = '<div class="empty-reports">No reports yet. <a href="report-litter.html" style="color:#1D9E75;font-weight:600;">Be the first to report litter →</a></div>';
+    }
+  }
+  </script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC0iZEaX0jlC39FLxLK_SJ9CPAIfwMlf_g&callback=initMap"></script>
+  <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js');</script>
+</body>
+</html>
