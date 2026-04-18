@@ -16,6 +16,12 @@
     .safety-banner ul li { font-size: 13px; color: #5a4200; padding: 4px 0; line-height: 1.6; }
     .safety-banner ul li::before { content: "⚠️ "; }
     .points-badge { display: inline-block; background: #E1F5EE; color: #0F6E56; font-size: 13px; font-weight: 700; padding: 6px 14px; border-radius: 20px; margin-bottom: 24px; }
+    .location-box { background: #f9f9f7; border: 1px solid #eee; border-radius: 10px; padding: 16px; margin-bottom: 20px; }
+    .location-box .loc-status { font-size: 13px; color: #555; display: flex; align-items: center; gap: 8px; }
+    .location-box .loc-coords { font-size: 12px; color: #888; margin-top: 6px; font-family: monospace; }
+    .btn-locate { background: #1D9E75; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 10px; }
+    .btn-locate:hover { background: #0F6E56; }
+    .btn-locate:disabled { background: #aaa; cursor: not-allowed; }
   </style>
 </head>
 <body>
@@ -39,11 +45,13 @@
     <div class="drawer-nav">
       <a href="index.html"><span class="nav-icon">🏠</span><span class="en">Home</span><span class="es">Inicio</span></a>
       <a href="events.html"><span class="nav-icon">📅</span><span class="en">Events</span><span class="es">Eventos</span></a>
+      <a href="map.html"><span class="nav-icon">🗺️</span><span class="en">Litter Map</span><span class="es">Mapa de Basura</span></a>
       <a href="report-litter.html" class="active"><span class="nav-icon">📍</span><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
       <a href="rewards.html"><span class="nav-icon">🏆</span><span class="en">Rewards</span><span class="es">Recompensas</span></a>
       <a href="volunteer.html"><span class="nav-icon">🙌</span><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
       <a href="submit-proof.html"><span class="nav-icon">📸</span><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
       <a href="prize-portal.html"><span class="nav-icon">🎁</span><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
+      <a href="sponsors.html"><span class="nav-icon">🤝</span><span class="en">Sponsors</span><span class="es">Patrocinadores</span></a>
       <div class="drawer-divider"></div>
       <a href="dashboard.html"><span class="nav-icon">📊</span><span class="en">My Dashboard</span><span class="es">Mi Panel</span></a>
       <a href="login.html"><span class="nav-icon">🔐</span><span class="en">Login</span><span class="es">Iniciar Sesión</span></a>
@@ -82,6 +90,19 @@
       <label><span class="en">Location / Street Address</span><span class="es">Ubicación / Dirección</span></label>
       <input type="text" id="report-location" placeholder="123 Main St, Willis TX" />
     </div>
+
+    <!-- GPS Location -->
+    <div class="location-box">
+      <div class="loc-status" id="loc-status">
+        📍 <span class="en">Add your GPS location to pin this report on the map (optional but recommended)</span>
+        <span class="es">Agrega tu ubicación GPS para marcar este reporte en el mapa (opcional pero recomendado)</span>
+      </div>
+      <div class="loc-coords" id="loc-coords" style="display:none;"></div>
+      <button class="btn-locate" id="loc-btn" onclick="getLocation()">
+        <span class="en">📍 Get My Location</span><span class="es">📍 Obtener Mi Ubicación</span>
+      </button>
+    </div>
+
     <div class="form-group">
       <label><span class="en">Describe the litter</span><span class="es">Describe la basura</span></label>
       <textarea id="report-description" rows="4" placeholder="Bags of trash near the stop sign..."></textarea>
@@ -115,6 +136,7 @@
         <h4><span class="en">Navigate</span><span class="es">Navegar</span></h4>
         <a href="index.html"><span class="en">Home</span><span class="es">Inicio</span></a>
         <a href="events.html"><span class="en">Events</span><span class="es">Eventos</span></a>
+        <a href="map.html"><span class="en">Litter Map</span><span class="es">Mapa</span></a>
         <a href="report-litter.html"><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
         <a href="rewards.html"><span class="en">Rewards</span><span class="es">Recompensas</span></a>
       </div>
@@ -123,7 +145,7 @@
         <a href="volunteer.html"><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
         <a href="submit-proof.html"><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
         <a href="prize-portal.html"><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
-        <a href="login.html"><span class="en">Sign In</span><span class="es">Iniciar Sesión</span></a>
+        <a href="sponsors.html"><span class="en">Sponsors</span><span class="es">Patrocinadores</span></a>
       </div>
       <div class="footer-col">
         <h4><span class="en">About</span><span class="es">Acerca de</span></h4>
@@ -144,11 +166,50 @@
     'https://elgzfppmlsrrmskgloeo.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
   );
+
+  let userLat = null;
+  let userLng = null;
+
+  function getLocation() {
+    const btn = document.getElementById('loc-btn');
+    const status = document.getElementById('loc-status');
+    const coords = document.getElementById('loc-coords');
+
+    if (!navigator.geolocation) {
+      status.innerHTML = '❌ <span>Geolocation is not supported by your browser.</span>';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="en">Getting location...</span><span class="es">Obteniendo ubicación...</span>';
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        userLat = position.coords.latitude;
+        userLng = position.coords.longitude;
+        status.innerHTML = '✅ <span class="en">Location captured! This report will appear as a pin on the map.</span><span class="es">¡Ubicación capturada! Este reporte aparecerá como un pin en el mapa.</span>';
+        status.style.color = '#0F6E56';
+        coords.style.display = 'block';
+        coords.textContent = `Lat: ${userLat.toFixed(5)}, Lng: ${userLng.toFixed(5)}`;
+        btn.innerHTML = '✅ <span class="en">Location Saved</span><span class="es">Ubicación Guardada</span>';
+        btn.style.background = '#0F6E56';
+      },
+      (error) => {
+        status.innerHTML = '⚠️ <span class="en">Could not get location. You can still submit without it.</span><span class="es">No se pudo obtener la ubicación. Puedes enviar sin ella.</span>';
+        status.style.color = '#856404';
+        btn.disabled = false;
+        btn.innerHTML = '<span class="en">📍 Try Again</span><span class="es">📍 Intentar de Nuevo</span>';
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  }
+
   document.getElementById('report-btn').addEventListener('click', async () => {
     const name = document.getElementById('report-name').value.trim();
     const location = document.getElementById('report-location').value.trim();
     const description = document.getElementById('report-description').value.trim();
     const photoFile = document.getElementById('report-photo').files[0];
+
     if (!name || !location || !description) { alert('Please fill out your name, location, and description.'); return; }
     if (!photoFile) { alert('A photo is required to submit a litter report.'); return; }
 
@@ -167,7 +228,13 @@
     const { data: urlData } = _sb.storage.from('proof-photos').getPublicUrl(fileName);
     const photo_url = urlData.publicUrl;
 
-    const { error } = await _sb.from('litter_reports').insert([{ name, location, description, photo_url }]);
+    const insertData = { name, location, description, photo_url };
+    if (userLat && userLng) {
+      insertData.lat = userLat;
+      insertData.lng = userLng;
+    }
+
+    const { error } = await _sb.from('litter_reports').insert([insertData]);
     if (error) {
       alert('Something went wrong. Please try again.');
       console.error(error);
@@ -179,6 +246,7 @@
           <div style="font-size:60px;margin-bottom:16px">📍</div>
           <h2 style="font-size:28px;margin-bottom:12px;color:#1D9E75;font-family:'Outfit',sans-serif;">Report received!</h2>
           <p style="color:#555;font-size:16px;line-height:1.7">Thank you for reporting litter in Willis.<br>Once approved you'll earn <strong>+10 points</strong>.</p>
+          ${userLat ? '<p style="color:#1D9E75;font-size:14px;margin-top:12px;">📍 Your report has been pinned on the <a href="map.html" style="color:#1D9E75;font-weight:700;">Litter Map</a>!</p>' : ''}
         </div>`;
     }
   });
