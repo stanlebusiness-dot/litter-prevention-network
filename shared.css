@@ -390,3 +390,5 @@ nav {
 .es { display: none; }
 body.spanish .en { display: none; }
 body.spanish .es { display: inline; }
+/* ── FORCE VISIBILITY ── */
+section, .hero, .stats, .mission, .how, .signup { display: block !important; visibility: visible !important; opacity: 1 !important; }
