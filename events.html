@@ -23,6 +23,9 @@
     .event-info h3 { font-size: 17px; margin-bottom: 6px; font-family: 'Outfit', sans-serif; font-weight: 700; }
     .event-info p { font-size: 14px; color: #666; line-height: 1.6; }
     .event-info .event-points { display: inline-block; background: #E1F5EE; color: #0F6E56; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-top: 8px; }
+    .no-events { text-align: center; padding: 48px 24px; background: #f9f9f7; border-radius: 16px; margin-bottom: 32px; border: 2px dashed #ddd; }
+    .no-events h3 { font-size: 20px; font-weight: 800; color: #0F2318; margin-bottom: 8px; font-family: 'Outfit', sans-serif; }
+    .no-events p { font-size: 15px; color: #888; line-height: 1.6; }
     .host-your-own { background: linear-gradient(135deg, #1D9E75 0%, #0F6E56 100%); border-radius: 16px; padding: 40px; text-align: center; color: white; margin-top: 48px; }
     .host-your-own h2 { font-size: 24px; font-weight: 800; margin-bottom: 12px; font-family: 'Outfit', sans-serif; }
     .host-your-own p { font-size: 15px; opacity: 0.9; margin-bottom: 24px; max-width: 500px; margin-left: auto; margin-right: auto; line-height: 1.7; }
@@ -56,6 +59,7 @@
       <a href="volunteer.html"><span class="nav-icon">🙌</span><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
       <a href="submit-proof.html"><span class="nav-icon">📸</span><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
       <a href="prize-portal.html"><span class="nav-icon">🎁</span><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
+      <a href="sponsors.html"><span class="nav-icon">🤝</span><span class="en">Sponsors</span><span class="es">Patrocinadores</span></a>
       <div class="drawer-divider"></div>
       <a href="dashboard.html"><span class="nav-icon">📊</span><span class="en">My Dashboard</span><span class="es">Mi Panel</span></a>
       <a href="login.html"><span class="nav-icon">🔐</span><span class="en">Login</span><span class="es">Iniciar Sesión</span></a>
@@ -70,17 +74,39 @@
 
   <section class="events-section">
 
-    <!-- Past Events -->
+    <!-- Upcoming Events -->
     <div class="events-header">
+      <h2><span class="en">Upcoming Events</span><span class="es">Próximos Eventos</span></h2>
+    </div>
+
+    <div class="no-events">
+      <div style="font-size:48px;margin-bottom:12px;">📅</div>
+      <h3><span class="en">No Upcoming Events Right Now</span><span class="es">No Hay Eventos Próximos Ahora</span></h3>
+      <p><span class="en">We're planning our next cleanup event. Check back soon or sign up below to be notified when new events are posted.</span><span class="es">Estamos planificando nuestro próximo evento de limpieza. Vuelve pronto o regístrate abajo para ser notificado cuando se publiquen nuevos eventos.</span></p>
+      <a href="index.html#signup" class="btn-green" style="display:inline-block;margin-top:20px;"><span class="en">Get Notified — Join the Network</span><span class="es">Recibe Notificaciones — Únete a la Red</span></a>
+    </div>
+
+    <!-- Past Events -->
+    <div class="events-header" style="margin-top:48px;">
       <h2><span class="en">Past Events</span><span class="es">Eventos Pasados</span></h2>
       <span class="past-badge"><span class="en">Completed</span><span class="es">Completados</span></span>
     </div>
 
     <div class="event-card past">
-      <div class="event-date">MAR<br/>8</div>
+      <div class="event-date">APR<br/>18</div>
       <div class="event-info">
-        <h3><span class="en">Willis City Park Cleanup</span><span class="es">Limpieza del Parque de Willis</span></h3>
-        <p><span class="en">8:00 AM – 11:00 AM · Willis City Park · Gloves and bags provided</span><span class="es">8:00 AM – 11:00 AM · Parque de Willis · Guantes y bolsas incluidos</span></p>
+        <h3><span class="en">Willis Community Spring Cleanup</span><span class="es">Limpieza Comunitaria de Primavera</span></h3>
+        <p><span class="en">9:00 AM – 12:00 PM · Downtown Willis · Gloves, bags & safety vests provided</span><span class="es">9:00 AM – 12:00 PM · Centro de Willis · Guantes, bolsas y chalecos incluidos</span></p>
+        <span class="event-points">+50 pts earned</span>
+      </div>
+      <span class="completed-badge">✓ <span class="en">Completed</span><span class="es">Completado</span></span>
+    </div>
+
+    <div class="event-card past">
+      <div class="event-date">MAR<br/>29</div>
+      <div class="event-info">
+        <h3><span class="en">Lake Conroe Shoreline Cleanup</span><span class="es">Limpieza de la Orilla del Lago Conroe</span></h3>
+        <p><span class="en">7:30 AM – 11:00 AM · Lake Conroe boat ramp · Family friendly</span><span class="es">7:30 AM – 11:00 AM · Rampa del Lago Conroe · Apto para familias</span></p>
         <span class="event-points">+50 pts earned</span>
       </div>
       <span class="completed-badge">✓ <span class="en">Completed</span><span class="es">Completado</span></span>
@@ -97,28 +123,13 @@
     </div>
 
     <div class="event-card past">
-      <div class="event-date">MAR<br/>29</div>
+      <div class="event-date">MAR<br/>8</div>
       <div class="event-info">
-        <h3><span class="en">Lake Conroe Shoreline Cleanup</span><span class="es">Limpieza de la Orilla del Lago Conroe</span></h3>
-        <p><span class="en">7:30 AM – 11:00 AM · Lake Conroe boat ramp · Family friendly · Earn 50 points</span><span class="es">7:30 AM – 11:00 AM · Rampa del Lago Conroe · Apto para familias</span></p>
+        <h3><span class="en">Willis City Park Cleanup</span><span class="es">Limpieza del Parque de Willis</span></h3>
+        <p><span class="en">8:00 AM – 11:00 AM · Willis City Park · Gloves and bags provided</span><span class="es">8:00 AM – 11:00 AM · Parque de Willis · Guantes y bolsas incluidos</span></p>
         <span class="event-points">+50 pts earned</span>
       </div>
       <span class="completed-badge">✓ <span class="en">Completed</span><span class="es">Completado</span></span>
-    </div>
-
-    <!-- Upcoming -->
-    <div class="events-header" style="margin-top:48px;">
-      <h2><span class="en">Upcoming Events</span><span class="es">Próximos Eventos</span></h2>
-    </div>
-
-    <div class="event-card">
-      <div class="event-date">APR<br/>18</div>
-      <div class="event-info">
-        <h3><span class="en">Willis Community Spring Cleanup</span><span class="es">Limpieza Comunitaria de Primavera</span></h3>
-        <p><span class="en">9:00 AM – 12:00 PM · Downtown Willis · Gloves, bags & safety vests provided</span><span class="es">9:00 AM – 12:00 PM · Centro de Willis · Guantes, bolsas y chalecos incluidos</span></p>
-        <span class="event-points">+50 pts</span>
-      </div>
-      <a href="index.html#signup" class="btn-green"><span class="en">Sign Up</span><span class="es">Registrarse</span></a>
     </div>
 
     <!-- Host Your Own -->
@@ -159,7 +170,7 @@
         <a href="volunteer.html"><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
         <a href="submit-proof.html"><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
         <a href="prize-portal.html"><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
-        <a href="login.html"><span class="en">Sign In</span><span class="es">Iniciar Sesión</span></a>
+        <a href="sponsors.html"><span class="en">Sponsors</span><span class="es">Patrocinadores</span></a>
       </div>
       <div class="footer-col">
         <h4><span class="en">About</span><span class="es">Acerca de</span></h4>
@@ -174,7 +185,6 @@
     </div>
   </footer>
 
-  <script src="shared.js" defer></script>
   <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js');</script>
 </body>
 </html>
