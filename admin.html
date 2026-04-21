@@ -57,12 +57,48 @@
     .status-cancelled { background: #FDECEA; color: #c0392b; }
     .status-contacted { background: #E3F2FD; color: #1565C0; }
     .status-declined { background: #FDECEA; color: #c0392b; }
+    .status-upcoming { background: #E1F5EE; color: #0F6E56; }
+    .status-past { background: #f0f0ee; color: #888; }
     .points-select { padding: 6px 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; margin-right: 6px; }
     .photo-link { color: #1D9E75; text-decoration: underline; font-size: 13px; }
     .sponsor-msg { font-size: 13px; color: #555; max-width: 300px; white-space: pre-wrap; word-break: break-word; }
     .msg-text { font-size: 13px; color: #555; max-width: 320px; white-space: pre-wrap; word-break: break-word; line-height: 1.6; }
     .unread-row td { background: #fffbf0; font-weight: 500; }
     .no-results { text-align: center; padding: 32px; color: #999; font-size: 14px; }
+
+    /* ── SITE SETTINGS ── */
+    .settings-card { background: white; border-radius: 12px; padding: 28px; box-shadow: 0 1px 8px rgba(0,0,0,0.06); margin-bottom: 24px; }
+    .settings-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; color: #0F2318; }
+    .settings-card .card-desc { font-size: 13px; color: #888; margin-bottom: 20px; }
+    .settings-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+    .settings-label { font-size: 13px; font-weight: 600; color: #333; min-width: 120px; }
+    .settings-input { padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; flex: 1; min-width: 200px; }
+    .settings-input:focus { border-color: #1D9E75; }
+    .toggle-wrap { display: flex; align-items: center; gap: 10px; }
+    .toggle { position: relative; width: 48px; height: 26px; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; inset: 0; background: #ccc; border-radius: 26px; cursor: pointer; transition: 0.3s; }
+    .toggle-slider:before { content: ''; position: absolute; width: 20px; height: 20px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: 0.3s; }
+    .toggle input:checked + .toggle-slider { background: #1D9E75; }
+    .toggle input:checked + .toggle-slider:before { transform: translateX(22px); }
+    .toggle-label { font-size: 14px; color: #444; }
+    .presets-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+    .preset-btn { padding: 8px 18px; border-radius: 8px; border: 2px solid transparent; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+    .preset-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .preset-default { background: #1D9E75; color: white; }
+    .preset-spring { background: #FF6B9D; color: white; }
+    .preset-summer { background: #FF8C42; color: white; }
+    .preset-fall { background: #C0392B; color: white; }
+    .preset-holiday { background: #C0392B; color: white; border: 2px solid #1a6b2a; }
+    .preset-btn.selected { box-shadow: 0 0 0 3px #0F2318; }
+    .color-preview { display: flex; gap: 12px; margin-bottom: 20px; align-items: center; }
+    .color-swatch { width: 40px; height: 40px; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; }
+    .color-swatch-label { font-size: 12px; color: #888; margin-top: 4px; text-align: center; }
+    .color-group { text-align: center; }
+    .btn-save-settings { background: #1D9E75; color: white; border: none; padding: 12px 32px; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; }
+    .btn-save-settings:hover { background: #0F6E56; }
+    .settings-msg { margin-left: 16px; font-size: 13px; color: #0F6E56; font-weight: 600; }
+    .announcement-preview { background: #1D9E75; color: white; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; text-align: center; margin-top: 12px; display: none; }
   </style>
 </head>
 <body>
@@ -87,6 +123,7 @@
     <button class="tab" onclick="showTab('sponsors', this)">🤝 Sponsors</button>
     <button class="tab" onclick="showTab('messages', this)">✉️ Messages</button>
     <button class="tab" onclick="showTab('events', this)">📅 Events</button>
+    <button class="tab" onclick="showTab('settings', this)">⚙️ Site Settings</button>
   </div>
 
   <!-- Sign-ups -->
@@ -223,7 +260,7 @@
       <button class="btn-csv" onclick="exportCSV('body-messages', 'contact-messages')">⬇ Export CSV</button>
     </div>
     <table>
-<thead><tr><th>Name</th><th>Email</th><th>Subject</th><th>Message</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+      <thead><tr><th>Name</th><th>Email</th><th>Subject</th><th>Message</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
       <tbody id="body-messages"><tr><td colspan="7" class="loading">Loading...</td></tr></tbody>
     </table>
   </div>
@@ -290,7 +327,75 @@
       <tbody id="body-events"><tr><td colspan="7" class="loading">Loading...</td></tr></tbody>
     </table>
   </div>
-</div>
+
+  <!-- ⚙️ Site Settings -->
+  <div class="tab-content" id="tab-settings">
+    <div class="section-title">⚙️ Site Settings</div>
+
+    <!-- Announcement Bar -->
+    <div class="settings-card">
+      <h3>📢 Announcement Bar</h3>
+      <p class="card-desc">Shows a banner at the top of every page on the site. Great for events, holidays, or urgent alerts.</p>
+      <div class="settings-row">
+        <span class="settings-label">Message</span>
+        <input class="settings-input" id="ann-text" type="text" placeholder="🎉 Spring Cleanup this Saturday! Join us at Willis City Park." />
+      </div>
+      <div class="settings-row">
+        <span class="settings-label">Active</span>
+        <div class="toggle-wrap">
+          <label class="toggle">
+            <input type="checkbox" id="ann-active" onchange="updateAnnouncementPreview()" />
+            <span class="toggle-slider"></span>
+          </label>
+          <span class="toggle-label" id="ann-status-label">Off</span>
+        </div>
+      </div>
+      <div class="announcement-preview" id="ann-preview">Preview will appear here</div>
+    </div>
+
+    <!-- Theme Colors -->
+    <div class="settings-card">
+      <h3>🎨 Theme Colors</h3>
+      <p class="card-desc">Change the site's color scheme. Pick a seasonal preset or set custom colors.</p>
+
+      <p style="font-size:13px;font-weight:600;color:#333;margin-bottom:10px;">Seasonal Presets</p>
+      <div class="presets-row">
+        <button class="preset-btn preset-default selected" id="preset-default" onclick="applyPreset('default', this)">🌿 Default</button>
+        <button class="preset-btn preset-spring" id="preset-spring" onclick="applyPreset('spring', this)">🌸 Spring</button>
+        <button class="preset-btn preset-summer" id="preset-summer" onclick="applyPreset('summer', this)">☀️ Summer</button>
+        <button class="preset-btn preset-fall" id="preset-fall" onclick="applyPreset('fall', this)">🍂 Fall</button>
+        <button class="preset-btn preset-holiday" id="preset-holiday" onclick="applyPreset('holiday', this)">🎄 Holiday</button>
+      </div>
+
+      <p style="font-size:13px;font-weight:600;color:#333;margin-bottom:10px;">Custom Colors</p>
+      <div class="color-preview">
+        <div class="color-group">
+          <input type="color" class="color-swatch" id="color-primary" value="#1D9E75" oninput="onColorChange()" />
+          <div class="color-swatch-label">Primary</div>
+        </div>
+        <div class="color-group">
+          <input type="color" class="color-swatch" id="color-secondary" value="#0F6E56" oninput="onColorChange()" />
+          <div class="color-swatch-label">Secondary</div>
+        </div>
+        <div style="flex:1;margin-left:16px;">
+          <div id="theme-preview" style="background:#1D9E75;color:white;padding:12px 20px;border-radius:8px;font-weight:700;font-size:14px;text-align:center;">
+            Preview: LPN Willis
+          </div>
+          <div id="theme-preview2" style="background:#0F6E56;color:white;padding:8px 20px;border-radius:8px;font-size:13px;text-align:center;margin-top:6px;">
+            Secondary Color Preview
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Save Button -->
+    <div style="display:flex;align-items:center;gap:16px;">
+      <button class="btn-save-settings" onclick="saveSettings()">💾 Save All Settings</button>
+      <span class="settings-msg" id="settings-msg"></span>
+    </div>
+  </div>
+
+</div><!-- end dashboard -->
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -306,6 +411,7 @@ function checkPassword() {
     document.getElementById('login').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
     loadAll();
+    loadSettingsTab();
   } else { alert('Incorrect password.'); }
 }
 document.getElementById('password-input').addEventListener('keydown', e => { if (e.key === 'Enter') checkPassword(); });
@@ -319,20 +425,16 @@ function showTab(name, el) {
 
 function fmt(d) { return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
 
-// Search filter
 function filterTable(bodyId, query, cols) {
   const rows = document.getElementById(bodyId).querySelectorAll('tr');
   const q = query.toLowerCase();
-  let visible = 0;
   rows.forEach(row => {
     if (row.classList.contains('no-results-row')) return;
     const match = q === '' || cols.some(c => (row.cells[c]?.textContent||'').toLowerCase().includes(q));
     row.style.display = match ? '' : 'none';
-    if (match) visible++;
   });
 }
 
-// Status filter
 function filterByStatus(bodyId, status) {
   const rows = document.getElementById(bodyId).querySelectorAll('tr');
   rows.forEach(row => {
@@ -342,7 +444,6 @@ function filterByStatus(bodyId, status) {
   });
 }
 
-// CSV Export
 function exportCSV(bodyId, filename) {
   const table = document.getElementById(bodyId).closest('table');
   const headers = [...table.querySelectorAll('th')].map(th => `"${th.textContent.trim()}"`).join(',');
@@ -371,19 +472,16 @@ async function loadAll() {
   ]);
   loadEvents();
 
-  // Sign-ups
   document.getElementById('count-signups').textContent = s.data?.length || 0;
   document.getElementById('body-signups').innerHTML = s.data?.length
     ? s.data.map(r => `<tr><td>#${r.member_number||'—'}</td><td>${r.full_name}</td><td>${r.email}</td><td>${r.zip_code||'—'}</td><td>${r.language||'—'}</td><td>${fmt(r.created_at)}</td></tr>`).join('')
     : '<tr><td colspan="6" class="empty">No sign-ups yet.</td></tr>';
 
-  // Volunteers
   document.getElementById('count-volunteers').textContent = v.data?.length || 0;
   document.getElementById('body-volunteers').innerHTML = v.data?.length
     ? v.data.map(r => `<tr><td>${r.full_name}</td><td>${r.email}</td><td>${r.phone||'—'}</td><td>${r.help_type}</td><td>${r.availability}</td><td>${r.vest_request||'—'}</td><td>${fmt(r.created_at)}</td></tr>`).join('')
     : '<tr><td colspan="7" class="empty">No volunteers yet.</td></tr>';
 
-  // Litter Reports
   document.getElementById('count-reports').textContent = r.data?.length || 0;
   document.getElementById('body-reports').innerHTML = r.data?.length
     ? r.data.map(row => {
@@ -392,7 +490,6 @@ async function loadAll() {
       }).join('')
     : '<tr><td colspan="5" class="empty">No reports yet.</td></tr>';
 
-  // Proof Submissions
   document.getElementById('count-proof').textContent = p.data?.length || 0;
   document.getElementById('body-proof').innerHTML = p.data?.length
     ? p.data.map(row => {
@@ -417,13 +514,11 @@ async function loadAll() {
       }).join('')
     : '<tr><td colspan="7" class="empty">No proof submissions yet.</td></tr>';
 
-  // Points Ledger
   document.getElementById('count-points').textContent = pts.data?.length || 0;
   document.getElementById('body-points').innerHTML = pts.data?.length
     ? pts.data.map(r => `<tr><td>${r.email}</td><td>${r.points}</td><td>${r.total_earned}</td><td>${fmt(r.updated_at)}</td></tr>`).join('')
     : '<tr><td colspan="4" class="empty">No points awarded yet.</td></tr>';
 
-  // Redemptions
   document.getElementById('count-redemptions').textContent = red.data?.length || 0;
   document.getElementById('body-redemptions').innerHTML = red.data?.length
     ? red.data.map(row => {
@@ -440,7 +535,6 @@ async function loadAll() {
       }).join('')
     : '<tr><td colspan="7" class="empty">No redemptions yet.</td></tr>';
 
-  // Sponsors
   document.getElementById('count-sponsors').textContent = sp.data?.length || 0;
   document.getElementById('body-sponsors').innerHTML = sp.data?.length
     ? sp.data.map(row => {
@@ -452,36 +546,28 @@ async function loadAll() {
           <button class="btn-reject" onclick="declineSponsor('${row.id}')">Decline</button>` : '—';
         return `<tr>
           <td><strong>${row.company_name}</strong></td>
-          <td>${row.contact_name||'—'}</td>
-          <td>${row.contact_email||'—'}</td>
-          <td>${row.contact_phone||'—'}</td>
-          <td>${websiteLink}</td>
-          <td>${row.sponsorship_type||'—'}</td>
+          <td>${row.contact_name||'—'}</td><td>${row.contact_email||'—'}</td><td>${row.contact_phone||'—'}</td>
+          <td>${websiteLink}</td><td>${row.sponsorship_type||'—'}</td>
           <td><div class="sponsor-msg">${row.message||'—'}</div></td>
           <td><span class="status-badge status-${status}">${status.charAt(0).toUpperCase()+status.slice(1)}</span></td>
-          <td>${fmt(row.created_at)}</td>
-          <td>${actions}</td></tr>`;
+          <td>${fmt(row.created_at)}</td><td>${actions}</td></tr>`;
       }).join('')
     : '<tr><td colspan="10" class="empty">No sponsor inquiries yet.</td></tr>';
 
-  // Contact Messages
   const unreadCount = msg.data?.filter(m => m.status === 'unread').length || 0;
   document.getElementById('count-messages').textContent = unreadCount > 0 ? `${unreadCount} unread` : msg.data?.length || 0;
   document.getElementById('body-messages').innerHTML = msg.data?.length
     ? msg.data.map(row => {
         const status = row.status || 'unread';
         const isUnread = status === 'unread';
-        const actions = isUnread
-          ? `<button class="btn-approve" onclick="markMessageRead('${row.id}')">Mark Read</button>`
-          : '—';
+        const actions = isUnread ? `<button class="btn-approve" onclick="markMessageRead('${row.id}')">Mark Read</button>` : '—';
         return `<tr class="${isUnread ? 'unread-row' : ''}">
           <td><strong>${row.name||'—'}</strong></td>
           <td><a href="mailto:${row.email}" style="color:#1D9E75;">${row.email||'—'}</a></td>
           <td>${row.subject||'—'}</td>
           <td><div class="msg-text">${row.message||'—'}</div></td>
           <td><span class="status-badge status-${status}">${status.charAt(0).toUpperCase()+status.slice(1)}</span></td>
-          <td>${fmt(row.created_at)}</td>
-          <td>${actions}</td></tr>`;
+          <td>${fmt(row.created_at)}</td><td>${actions}</td></tr>`;
       }).join('')
     : '<tr><td colspan="7" class="empty">No messages yet.</td></tr>';
 }
@@ -577,6 +663,111 @@ async function deleteEvent(id) {
   if (!confirm('Delete this event?')) return;
   await _sb.from('events').delete().eq('id', id);
   loadEvents();
+}
+
+// ── SITE SETTINGS ──
+
+const PRESETS = {
+  default:  { primary: '#1D9E75', secondary: '#0F6E56' },
+  spring:   { primary: '#FF6B9D', secondary: '#C2185B' },
+  summer:   { primary: '#FF8C42', secondary: '#E65100' },
+  fall:     { primary: '#D4500A', secondary: '#8B2500' },
+  holiday:  { primary: '#C0392B', secondary: '#1a6b2a' },
+};
+
+async function loadSettingsTab() {
+  const { data } = await _sb.from('site_settings').select('*');
+  if (!data) return;
+  const s = {};
+  data.forEach(row => s[row.key] = row.value);
+
+  document.getElementById('ann-text').value = s.announcement_text || '';
+  const isActive = s.announcement_active === 'true';
+  document.getElementById('ann-active').checked = isActive;
+  document.getElementById('ann-status-label').textContent = isActive ? 'On' : 'Off';
+
+  const primary = s.primary_color || '#1D9E75';
+  const secondary = s.secondary_color || '#0F6E56';
+  document.getElementById('color-primary').value = primary;
+  document.getElementById('color-secondary').value = secondary;
+  updateColorPreview(primary, secondary);
+
+  const preset = s.active_preset || 'default';
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('selected'));
+  const pb = document.getElementById('preset-' + preset);
+  if (pb) pb.classList.add('selected');
+
+  updateAnnouncementPreview();
+}
+
+function updateAnnouncementPreview() {
+  const text = document.getElementById('ann-text').value;
+  const active = document.getElementById('ann-active').checked;
+  const label = document.getElementById('ann-status-label');
+  const preview = document.getElementById('ann-preview');
+  label.textContent = active ? 'On' : 'Off';
+  if (active && text) {
+    preview.style.display = 'block';
+    preview.textContent = text;
+    preview.style.background = document.getElementById('color-primary').value;
+  } else {
+    preview.style.display = 'none';
+  }
+}
+
+function applyPreset(name, btn) {
+  const p = PRESETS[name];
+  if (!p) return;
+  document.getElementById('color-primary').value = p.primary;
+  document.getElementById('color-secondary').value = p.secondary;
+  updateColorPreview(p.primary, p.secondary);
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  updateAnnouncementPreview();
+}
+
+function onColorChange() {
+  const primary = document.getElementById('color-primary').value;
+  const secondary = document.getElementById('color-secondary').value;
+  updateColorPreview(primary, secondary);
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('selected'));
+  updateAnnouncementPreview();
+}
+
+function updateColorPreview(primary, secondary) {
+  document.getElementById('theme-preview').style.background = primary;
+  document.getElementById('theme-preview2').style.background = secondary;
+}
+
+async function saveSettings() {
+  const text = document.getElementById('ann-text').value.trim();
+  const active = document.getElementById('ann-active').checked;
+  const primary = document.getElementById('color-primary').value;
+  const secondary = document.getElementById('color-secondary').value;
+
+  // Determine active preset
+  let activePreset = 'custom';
+  for (const [name, colors] of Object.entries(PRESETS)) {
+    if (colors.primary === primary && colors.secondary === secondary) {
+      activePreset = name; break;
+    }
+  }
+
+  const updates = [
+    { key: 'announcement_text', value: text },
+    { key: 'announcement_active', value: String(active) },
+    { key: 'primary_color', value: primary },
+    { key: 'secondary_color', value: secondary },
+    { key: 'active_preset', value: activePreset },
+  ];
+
+  for (const u of updates) {
+    await _sb.from('site_settings').upsert(u, { onConflict: 'key' });
+  }
+
+  const msg = document.getElementById('settings-msg');
+  msg.textContent = '✅ Settings saved! Changes will appear on the site within seconds.';
+  setTimeout(() => msg.textContent = '', 4000);
 }
 </script>
 </body>
