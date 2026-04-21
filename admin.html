@@ -85,11 +85,24 @@
     .presets-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
     .preset-btn { padding: 8px 18px; border-radius: 8px; border: 2px solid transparent; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
     .preset-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-    .preset-default { background: #1D9E75; color: white; }
-    .preset-spring { background: #FF6B9D; color: white; }
-    .preset-summer { background: #FF8C42; color: white; }
-    .preset-fall { background: #C0392B; color: white; }
-    .preset-holiday { background: #C0392B; color: white; border: 2px solid #1a6b2a; }
+    .preset-default    { background: #1D9E75; color: white; }
+    .preset-spring     { background: #FF6B9D; color: white; }
+    .preset-summer     { background: #FF8C42; color: white; }
+    .preset-fall       { background: #D4500A; color: white; }
+    .preset-winter     { background: #4A90D9; color: white; }
+    .preset-halloween  { background: #E65C00; color: white; }
+    .preset-thanksgiving { background: #A0522D; color: white; }
+    .preset-christmas  { background: #C0392B; color: white; }
+    .preset-newyear    { background: #2C2C54; color: white; }
+    .preset-valentines { background: #E91E8C; color: white; }
+    .preset-juneteenth { background: #006400; color: white; }
+    .preset-fourthjuly { background: #B22222; color: white; }
+    .preset-backtoschool { background: #1565C0; color: white; }
+    .preset-graduation { background: #6A0DAD; color: white; }
+    .preset-earlyspring { background: #43A047; color: white; }
+    .preset-ocean      { background: #0277BD; color: white; }
+    .preset-sunset     { background: #F4511E; color: white; }
+    .preset-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #999; margin: 14px 0 8px; }
     .preset-btn.selected { box-shadow: 0 0 0 3px #0F2318; }
     .color-preview { display: flex; gap: 12px; margin-bottom: 20px; align-items: center; }
     .color-swatch { width: 40px; height: 40px; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; }
@@ -358,13 +371,37 @@
       <h3>🎨 Theme Colors</h3>
       <p class="card-desc">Change the site's color scheme. Pick a seasonal preset or set custom colors.</p>
 
-      <p style="font-size:13px;font-weight:600;color:#333;margin-bottom:10px;">Seasonal Presets</p>
+      <div class="preset-label">🌿 Default</div>
       <div class="presets-row">
-        <button class="preset-btn preset-default selected" id="preset-default" onclick="applyPreset('default', this)">🌿 Default</button>
+        <button class="preset-btn preset-default selected" id="preset-default" onclick="applyPreset('default', this)">🌿 LPN Default</button>
+        <button class="preset-btn preset-ocean" id="preset-ocean" onclick="applyPreset('ocean', this)">🌊 Ocean</button>
+        <button class="preset-btn preset-sunset" id="preset-sunset" onclick="applyPreset('sunset', this)">🌅 Sunset</button>
+      </div>
+
+      <div class="preset-label">🍃 Seasons</div>
+      <div class="presets-row">
+        <button class="preset-btn preset-earlyspring" id="preset-earlyspring" onclick="applyPreset('earlyspring', this)">🌱 Early Spring</button>
         <button class="preset-btn preset-spring" id="preset-spring" onclick="applyPreset('spring', this)">🌸 Spring</button>
         <button class="preset-btn preset-summer" id="preset-summer" onclick="applyPreset('summer', this)">☀️ Summer</button>
         <button class="preset-btn preset-fall" id="preset-fall" onclick="applyPreset('fall', this)">🍂 Fall</button>
-        <button class="preset-btn preset-holiday" id="preset-holiday" onclick="applyPreset('holiday', this)">🎄 Holiday</button>
+        <button class="preset-btn preset-winter" id="preset-winter" onclick="applyPreset('winter', this)">❄️ Winter</button>
+      </div>
+
+      <div class="preset-label">🎉 Holidays</div>
+      <div class="presets-row">
+        <button class="preset-btn preset-valentines" id="preset-valentines" onclick="applyPreset('valentines', this)">💝 Valentine's</button>
+        <button class="preset-btn preset-fourthjuly" id="preset-fourthjuly" onclick="applyPreset('fourthjuly', this)">🇺🇸 4th of July</button>
+        <button class="preset-btn preset-juneteenth" id="preset-juneteenth" onclick="applyPreset('juneteenth', this)">✊ Juneteenth</button>
+        <button class="preset-btn preset-halloween" id="preset-halloween" onclick="applyPreset('halloween', this)">🎃 Halloween</button>
+        <button class="preset-btn preset-thanksgiving" id="preset-thanksgiving" onclick="applyPreset('thanksgiving', this)">🦃 Thanksgiving</button>
+        <button class="preset-btn preset-christmas" id="preset-christmas" onclick="applyPreset('christmas', this)">🎄 Christmas</button>
+        <button class="preset-btn preset-newyear" id="preset-newyear" onclick="applyPreset('newyear', this)">🎆 New Year</button>
+      </div>
+
+      <div class="preset-label">🎓 School</div>
+      <div class="presets-row">
+        <button class="preset-btn preset-backtoschool" id="preset-backtoschool" onclick="applyPreset('backtoschool', this)">📚 Back to School</button>
+        <button class="preset-btn preset-graduation" id="preset-graduation" onclick="applyPreset('graduation', this)">🎓 Graduation</button>
       </div>
 
       <p style="font-size:13px;font-weight:600;color:#333;margin-bottom:10px;">Custom Colors</p>
@@ -668,11 +705,27 @@ async function deleteEvent(id) {
 // ── SITE SETTINGS ──
 
 const PRESETS = {
-  default:  { primary: '#1D9E75', secondary: '#0F6E56' },
-  spring:   { primary: '#FF6B9D', secondary: '#C2185B' },
-  summer:   { primary: '#FF8C42', secondary: '#E65100' },
-  fall:     { primary: '#D4500A', secondary: '#8B2500' },
-  holiday:  { primary: '#C0392B', secondary: '#1a6b2a' },
+  // Default & Lifestyle
+  default:       { primary: '#1D9E75', secondary: '#0F6E56' },
+  ocean:         { primary: '#0277BD', secondary: '#01579B' },
+  sunset:        { primary: '#F4511E', secondary: '#BF360C' },
+  // Seasons
+  earlyspring:   { primary: '#43A047', secondary: '#2E7D32' },
+  spring:        { primary: '#FF6B9D', secondary: '#C2185B' },
+  summer:        { primary: '#FF8C42', secondary: '#E65100' },
+  fall:          { primary: '#D4500A', secondary: '#8B2500' },
+  winter:        { primary: '#4A90D9', secondary: '#1565C0' },
+  // Holidays
+  valentines:    { primary: '#E91E8C', secondary: '#880E4F' },
+  fourthjuly:    { primary: '#B22222', secondary: '#003580' },
+  juneteenth:    { primary: '#006400', secondary: '#8B0000' },
+  halloween:     { primary: '#E65C00', secondary: '#4A148C' },
+  thanksgiving:  { primary: '#A0522D', secondary: '#6D3B0A' },
+  christmas:     { primary: '#C0392B', secondary: '#1a6b2a' },
+  newyear:       { primary: '#2C2C54', secondary: '#C9A84C' },
+  // School
+  backtoschool:  { primary: '#1565C0', secondary: '#0D47A1' },
+  graduation:    { primary: '#6A0DAD', secondary: '#4A0080' },
 };
 
 async function loadSettingsTab() {
