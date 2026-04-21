@@ -77,10 +77,36 @@ function getPageKey() {
     // ── HERO IMAGE ──
     const pageKey = getPageKey();
     const heroImageUrl = pageKey ? (s['hero_'+pageKey+'_image'] || '') : '';
-    const heroYPos = pageKey ? (s['hero_'+pageKey+'_position'] || 'center center') : 'center center';
+    const heroYPos = pageKey ? (s['hero_'+pageKey+'_position'] || 'center 50%') : 'center 50%';
     const heroXPos = pageKey ? (s['hero_'+pageKey+'_xposition'] || '50') : '50';
+    const heroZoom = pageKey ? (s['hero_'+pageKey+'_zoom'] || '110') : '110';
     const heroPosition = heroXPos+'% '+(heroYPos.match(/(\d+)%/) ? heroYPos.match(/(\d+)%/)[1] : '50')+'%';
     const overlayOpacity = parseFloat(s.hero_overlay_opacity || '0.6');
+
+    // Load hero text from page_content
+    if (pageKey) {
+      try {
+        const pcRes = await fetch(SUPABASE_URL+'/rest/v1/page_content?page=eq.'+pageKey+'&select=*', {
+          headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer '+SUPABASE_ANON }
+        });
+        const pcRows = await pcRes.json();
+        if (Array.isArray(pcRows) && pcRows.length > 0) {
+          const pc = pcRows[0];
+          const lang = localStorage.getItem('lpn-lang') || 'en';
+          const headline = lang === 'es' ? (pc.hero_headline_es || pc.hero_headline_en) : pc.hero_headline_en;
+          const subtext  = lang === 'es' ? (pc.hero_subtext_es  || pc.hero_subtext_en)  : pc.hero_subtext_en;
+          if (headline) {
+            // Override h1 text in hero
+            const heroEl2 = document.querySelector('.hero h1, .page-hero h1');
+            if (heroEl2) heroEl2.innerHTML = headline;
+          }
+          if (subtext) {
+            const heroP = document.querySelector('.hero > p, .page-hero > p');
+            if (heroP) heroP.innerHTML = subtext;
+          }
+        }
+      } catch(e) {}
+    }
 
     // Inject zoom keyframe + theme CSS
     const zoomKeyframe = heroImageUrl ? '@keyframes lpn-hero-zoom{from{transform:scale(1.08)}to{transform:scale(1)}}' : '';
@@ -182,7 +208,7 @@ function getPageKey() {
         imgLayer.style.cssText = [
           'position:absolute;inset:0;',
           'background-image:url('+heroImageUrl+');',
-          'background-size:cover;',
+          'background-size:'+heroZoom+'%;',
           'background-position:'+heroPosition+';',
           'animation:lpn-hero-zoom 6s ease-out forwards;',
           'z-index:0;',

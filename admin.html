@@ -732,21 +732,217 @@ async function deleteEvent(id) {
 
 // ── PAGE HERO IMAGES ──
 const PAGE_LIST = [
-  { key: 'index',    label: '🏠 Home' },
-  { key: 'events',   label: '📅 Events' },
-  { key: 'rewards',  label: '🏆 Rewards' },
-  { key: 'volunteer',label: '🙌 Volunteer' },
-  { key: 'report',   label: '📍 Report Litter' },
-  { key: 'submit',   label: '📸 Submit Proof' },
-  { key: 'prize',    label: '🎁 Prize Portal' },
-  { key: 'map',      label: '🗺️ Litter Map' },
-  { key: 'sponsors', label: '🤝 Sponsors' },
-  { key: 'about',    label: 'ℹ️ About' },
-  { key: 'faq',      label: '❓ FAQ' },
-  { key: 'contact',  label: '📬 Contact' },
+  { key: 'index',    label: '🏠 Home',          title: 'Change Starts Here.' },
+  { key: 'events',   label: '📅 Events',         title: 'Events' },
+  { key: 'rewards',  label: '🏆 Rewards',        title: 'Earn Rewards' },
+  { key: 'volunteer',label: '🙌 Volunteer',      title: 'Volunteer' },
+  { key: 'report',   label: '📍 Report Litter',  title: 'Report Litter' },
+  { key: 'submit',   label: '📸 Submit Proof',   title: 'Submit Proof' },
+  { key: 'prize',    label: '🎁 Prize Portal',   title: 'Prize Portal' },
+  { key: 'map',      label: '🗺️ Litter Map',     title: 'Litter Map' },
+  { key: 'sponsors', label: '🤝 Sponsors',       title: 'Sponsors' },
+  { key: 'about',    label: 'ℹ️ About',           title: 'About Us' },
+  { key: 'faq',      label: '❓ FAQ',             title: 'FAQ' },
+  { key: 'contact',  label: '📬 Contact',        title: 'Contact Us' },
 ];
 
 let _openPageKey = null;
+
+async function loadPagesTab() {
+  const [settingsRes, contentRes] = await Promise.all([
+    _sb.from('site_settings').select('*'),
+    _sb.from('page_content').select('*'),
+  ]);
+  const s = {};
+  (settingsRes.data || []).forEach(r => s[r.key] = r.value);
+  const pc = {};
+  (contentRes.data || []).forEach(r => pc[r.page] = r);
+
+  const opacity = parseFloat(s.hero_overlay_opacity || '0.6');
+  document.getElementById('overlay-opacity').value = opacity;
+  document.getElementById('opacity-val').textContent = Math.round(opacity * 100) + '%';
+
+  const container = document.getElementById('page-hero-list');
+  container.innerHTML = PAGE_LIST.map(p => {
+    const imgVal  = s['hero_'+p.key+'_image'] || '';
+    const yPos    = (s['hero_'+p.key+'_position'] || 'center 50%').match(/(\d+)%/) ? (s['hero_'+p.key+'_position'].match(/(\d+)%/)[1]) : '50';
+    const xPos    = s['hero_'+p.key+'_xposition'] || '50';
+    const zoom    = s['hero_'+p.key+'_zoom'] || '110';
+    const hasImg  = imgVal.length > 0;
+    const isOpen  = _openPageKey === p.key;
+    const content = pc[p.key] || {};
+    const headEn  = content.hero_headline_en || p.title;
+    const headEs  = content.hero_headline_es || '';
+    const subEn   = content.hero_subtext_en || '';
+    const subEs   = content.hero_subtext_es || '';
+
+    return `<div style="border:1px solid #eee;border-radius:10px;overflow:hidden;background:white;">
+      <div onclick="togglePageAccordion('${p.key}')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;user-select:none;${isOpen?'background:#f0fdf8;':''}">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span style="font-size:15px;font-weight:700;color:#0F2318;">${p.label}</span>
+          ${hasImg ? '<span style="background:#E1F5EE;color:#0F6E56;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;">Image set</span>' : '<span style="background:#f0f0ee;color:#aaa;font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;">No image</span>'}
+        </div>
+        <span style="font-size:18px;color:#aaa;transition:transform 0.2s;${isOpen?'transform:rotate(180deg);':''}">⌄</span>
+      </div>
+
+      <div id="accordion-${p.key}" style="display:${isOpen?'block':'none'};padding:18px;border-top:1px solid #f0f0ee;">
+
+        <!-- Image URL -->
+        <label style="font-size:12px;font-weight:600;color:#666;display:block;margin-bottom:4px;">Image URL</label>
+        <input type="text" id="hero-img-${p.key}" value="${imgVal}"
+          placeholder="Paste image URL from Supabase Storage or any public URL..."
+          oninput="updateHeroPreview('${p.key}')"
+          style="width:100%;padding:9px 12px;border:1px solid #ddd;border-radius:6px;font-size:13px;outline:none;margin-bottom:16px;" />
+
+        <!-- 3 sliders -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;">
+          <div>
+            <label style="font-size:12px;font-weight:600;color:#666;display:block;margin-bottom:4px;">
+              ↕ Vertical &nbsp;<span id="pos-y-label-${p.key}" style="color:#1D9E75;font-weight:700;">${yPos==50?'Center':yPos<50?'Top '+yPos+'%':'Bottom '+yPos+'%'}</span>
+            </label>
+            <input type="range" id="hero-pos-${p.key}" min="0" max="100" value="${yPos}" style="width:100%;" oninput="updateHeroPreview('${p.key}')" />
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:600;color:#666;display:block;margin-bottom:4px;">
+              ↔ Horizontal &nbsp;<span id="pos-x-label-${p.key}" style="color:#1D9E75;font-weight:700;">${xPos==50?'Center':xPos<50?'Left '+xPos+'%':'Right '+xPos+'%'}</span>
+            </label>
+            <input type="range" id="hero-xpos-${p.key}" min="0" max="100" value="${xPos}" style="width:100%;" oninput="updateHeroPreview('${p.key}')" />
+          </div>
+          <div>
+            <label style="font-size:12px;font-weight:600;color:#666;display:block;margin-bottom:4px;">
+              🔍 Zoom &nbsp;<span id="zoom-label-${p.key}" style="color:#1D9E75;font-weight:700;">${zoom}%</span>
+            </label>
+            <input type="range" id="hero-zoom-${p.key}" min="100" max="200" value="${zoom}" style="width:100%;" oninput="updateHeroPreview('${p.key}')" />
+          </div>
+        </div>
+
+        <!-- Previews -->
+        <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;">
+          <div style="flex:1;">
+            <div style="font-size:11px;color:#aaa;margin-bottom:4px;text-align:center;">🖥 Desktop</div>
+            <div style="width:100%;aspect-ratio:16/5;border-radius:6px;overflow:hidden;background:#eee;position:relative;">
+              <div id="preview-img-desktop-${p.key}" style="position:absolute;inset:0;background-size:${zoom}%;background-image:${hasImg?'url(\''+imgVal+'\')':'none'};background-position:${xPos}% ${yPos}%;"></div>
+              <div style="position:absolute;inset:0;background:rgba(15,110,86,0.45);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;">
+                <span id="preview-title-${p.key}" style="color:white;font-size:13px;font-weight:800;text-shadow:0 1px 4px rgba(0,0,0,0.6);text-align:center;">${headEn}</span>
+                <span style="color:rgba(255,255,255,0.8);font-size:10px;margin-top:3px;text-align:center;max-width:80%;">${subEn.slice(0,60)}${subEn.length>60?'...':''}</span>
+              </div>
+            </div>
+          </div>
+          <div style="width:70px;flex-shrink:0;">
+            <div style="font-size:11px;color:#aaa;margin-bottom:4px;text-align:center;">📱 Mobile</div>
+            <div style="width:70px;height:124px;border-radius:6px;overflow:hidden;background:#eee;position:relative;">
+              <div id="preview-img-mobile-${p.key}" style="position:absolute;inset:0;background-size:${zoom}%;background-image:${hasImg?'url(\''+imgVal+'\')':'none'};background-position:${xPos}% ${yPos}%;"></div>
+              <div style="position:absolute;inset:0;background:rgba(15,110,86,0.45);"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero Text Editing -->
+        <div style="border-top:1px solid #f0f0ee;padding-top:14px;margin-top:4px;">
+          <div style="font-size:13px;font-weight:700;color:#0F2318;margin-bottom:10px;">✏️ Hero Text (optional override)</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px;">
+            <div>
+              <label style="font-size:11px;font-weight:600;color:#666;display:block;margin-bottom:3px;">Headline (English)</label>
+              <input type="text" id="hero-head-en-${p.key}" value="${headEn.replace(/"/g,'&quot;')}"
+                oninput="document.getElementById('preview-title-${p.key}').textContent=this.value"
+                style="width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:6px;font-size:13px;outline:none;" />
+            </div>
+            <div>
+              <label style="font-size:11px;font-weight:600;color:#666;display:block;margin-bottom:3px;">Headline (Spanish)</label>
+              <input type="text" id="hero-head-es-${p.key}" value="${headEs.replace(/"/g,'&quot;')}"
+                style="width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:6px;font-size:13px;outline:none;" />
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div>
+              <label style="font-size:11px;font-weight:600;color:#666;display:block;margin-bottom:3px;">Subtext (English)</label>
+              <textarea id="hero-sub-en-${p.key}" rows="2"
+                style="width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:6px;font-size:12px;outline:none;resize:vertical;">${subEn}</textarea>
+            </div>
+            <div>
+              <label style="font-size:11px;font-weight:600;color:#666;display:block;margin-bottom:3px;">Subtext (Spanish)</label>
+              <textarea id="hero-sub-es-${p.key}" rows="2"
+                style="width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:6px;font-size:12px;outline:none;resize:vertical;">${subEs}</textarea>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function togglePageAccordion(key) {
+  _openPageKey = _openPageKey === key ? null : key;
+  PAGE_LIST.forEach(p => {
+    const body = document.getElementById('accordion-'+p.key);
+    const header = body?.previousElementSibling;
+    if (!body) return;
+    const isOpen = p.key === _openPageKey;
+    body.style.display = isOpen ? 'block' : 'none';
+    if (header) {
+      header.style.background = isOpen ? '#f0fdf8' : '';
+      const arrow = header.querySelector('span:last-child');
+      if (arrow) arrow.style.transform = isOpen ? 'rotate(180deg)' : '';
+    }
+  });
+}
+
+function updateHeroPreview(key) {
+  const url  = document.getElementById('hero-img-'+key)?.value || '';
+  const yPos = document.getElementById('hero-pos-'+key)?.value || '50';
+  const xPos = document.getElementById('hero-xpos-'+key)?.value || '50';
+  const zoom = document.getElementById('hero-zoom-'+key)?.value || '110';
+  const bgPos = xPos+'% '+yPos+'%';
+  const yLabel = yPos==50?'Center':yPos<50?'Top '+yPos+'%':'Bottom '+yPos+'%';
+  const xLabel = xPos==50?'Center':xPos<50?'Left '+xPos+'%':'Right '+xPos+'%';
+  const zLabel = zoom+'%';
+  const el = document.getElementById('pos-y-label-'+key);
+  const xl = document.getElementById('pos-x-label-'+key);
+  const zl = document.getElementById('zoom-label-'+key);
+  if (el) el.textContent = yLabel;
+  if (xl) xl.textContent = xLabel;
+  if (zl) zl.textContent = zLabel;
+  const bgStr = url ? "url('"+url+"')" : 'none';
+  const bgSize = zoom+'%';
+  const d = document.getElementById('preview-img-desktop-'+key);
+  const m = document.getElementById('preview-img-mobile-'+key);
+  if (d) { d.style.backgroundImage = bgStr; d.style.backgroundPosition = bgPos; d.style.backgroundSize = bgSize; }
+  if (m) { m.style.backgroundImage = bgStr; m.style.backgroundPosition = bgPos; m.style.backgroundSize = bgSize; }
+}
+
+async function savePageImages() {
+  const opacity = document.getElementById('overlay-opacity').value;
+  const updates = [{ key: 'hero_overlay_opacity', value: String(opacity) }];
+  const contentUpdates = [];
+
+  PAGE_LIST.forEach(p => {
+    const imgVal  = document.getElementById('hero-img-'+p.key)?.value?.trim() || '';
+    const yPos    = document.getElementById('hero-pos-'+p.key)?.value || '50';
+    const xPos    = document.getElementById('hero-xpos-'+p.key)?.value || '50';
+    const zoom    = document.getElementById('hero-zoom-'+p.key)?.value || '110';
+    const headEn  = document.getElementById('hero-head-en-'+p.key)?.value?.trim() || '';
+    const headEs  = document.getElementById('hero-head-es-'+p.key)?.value?.trim() || '';
+    const subEn   = document.getElementById('hero-sub-en-'+p.key)?.value?.trim() || '';
+    const subEs   = document.getElementById('hero-sub-es-'+p.key)?.value?.trim() || '';
+    updates.push({ key: 'hero_'+p.key+'_image',     value: imgVal });
+    updates.push({ key: 'hero_'+p.key+'_position',  value: 'center '+yPos+'%' });
+    updates.push({ key: 'hero_'+p.key+'_xposition', value: xPos });
+    updates.push({ key: 'hero_'+p.key+'_zoom',      value: zoom });
+    contentUpdates.push({ page: p.key, hero_headline_en: headEn, hero_headline_es: headEs, hero_subtext_en: subEn, hero_subtext_es: subEs, updated_at: new Date().toISOString() });
+  });
+
+  for (const u of updates) {
+    await _sb.from('site_settings').upsert(u, { onConflict: 'key' });
+  }
+  for (const c of contentUpdates) {
+    await _sb.from('page_content').upsert(c, { onConflict: 'page' });
+  }
+
+  const msg = document.getElementById('pages-msg');
+  msg.textContent = '✅ Saved! Changes are live on the site.';
+  setTimeout(() => msg.textContent = '', 3000);
+}
 
 async function loadPagesTab() {
   const { data } = await _sb.from('site_settings').select('*');
