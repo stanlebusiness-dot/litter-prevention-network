@@ -77,7 +77,9 @@ function getPageKey() {
     // ── HERO IMAGE ──
     const pageKey = getPageKey();
     const heroImageUrl = pageKey ? (s['hero_'+pageKey+'_image'] || '') : '';
-    const heroPosition = pageKey ? (s['hero_'+pageKey+'_position'] || 'center center') : 'center center';
+    const heroYPos = pageKey ? (s['hero_'+pageKey+'_position'] || 'center center') : 'center center';
+    const heroXPos = pageKey ? (s['hero_'+pageKey+'_xposition'] || '50') : '50';
+    const heroPosition = heroXPos+'% '+(heroYPos.match(/(\d+)%/) ? heroYPos.match(/(\d+)%/)[1] : '50')+'%';
     const overlayOpacity = parseFloat(s.hero_overlay_opacity || '0.6');
 
     // Inject zoom keyframe + theme CSS
@@ -93,6 +95,10 @@ function getPageKey() {
       // Drawer
       '.drawer-header{background:'+primary+'!important}',
       '.drawer-nav a:hover,.drawer-nav a.active{color:'+primary+'!important;border-left-color:'+primary+'!important;background:'+tintBg+'!important}',
+      // Taller hero sections
+      '.hero,.page-hero{min-height:420px!important;padding:100px 40px!important;display:flex!important;align-items:center!important;justify-content:center!important;flex-direction:column!important;}',
+      '.dash-hero{min-height:160px!important;padding:50px 40px!important;}',
+      '.points-banner{min-height:200px!important;padding:60px 20px!important;}',
       // Hero — color gradient (used when no image set)
       '.hero,.page-hero,.dash-hero,.points-banner{background:linear-gradient(135deg,'+primary+' 0%,'+secondary+' 100%)!important}',
       // Stats
