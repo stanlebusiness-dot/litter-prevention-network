@@ -77,6 +77,7 @@ function getPageKey() {
     // ── HERO IMAGE ──
     const pageKey = getPageKey();
     const heroImageUrl = pageKey ? (s['hero_'+pageKey+'_image'] || '') : '';
+    const heroPosition = pageKey ? (s['hero_'+pageKey+'_position'] || 'center center') : 'center center';
     const overlayOpacity = parseFloat(s.hero_overlay_opacity || '0.6');
 
     // Inject zoom keyframe + theme CSS
@@ -176,8 +177,8 @@ function getPageKey() {
           'position:absolute;inset:0;',
           'background-image:url('+heroImageUrl+');',
           'background-size:cover;',
-          'background-position:center;',
-          'animation:lpn-hero-zoom 1.8s ease-out forwards;',
+          'background-position:'+heroPosition+';',
+          'animation:lpn-hero-zoom 6s ease-out forwards;',
           'z-index:0;',
         ].join('');
 
