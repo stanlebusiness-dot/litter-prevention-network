@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lpn-cache-v10';
+const CACHE_NAME = 'lpn-cache-v12';
 const ASSETS_TO_CACHE = [
   '/shared.css',
   '/shared.js',
