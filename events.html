@@ -79,65 +79,17 @@
 
   <section class="events-section">
 
-    <!-- Upcoming Events -->
     <div class="events-header">
       <h2><span class="en">Upcoming Events</span><span class="es">Próximos Eventos</span></h2>
     </div>
+    <div id="upcoming-events"><div style="text-align:center;padding:32px;color:#999;">Loading...</div></div>
 
-    <div class="no-events">
-      <div style="font-size:48px;margin-bottom:12px;">📅</div>
-      <h3><span class="en">No Upcoming Events Right Now</span><span class="es">No Hay Eventos Próximos Ahora</span></h3>
-      <p><span class="en">We're planning our next cleanup event. Check back soon or sign up below to be notified when new events are posted.</span><span class="es">Estamos planificando nuestro próximo evento de limpieza. Vuelve pronto o regístrate abajo para ser notificado cuando se publiquen nuevos eventos.</span></p>
-      <a href="index.html#signup" class="btn-green" style="display:inline-block;margin-top:20px;"><span class="en">Get Notified — Join the Network</span><span class="es">Recibe Notificaciones — Únete a la Red</span></a>
-    </div>
-
-    <!-- Past Events -->
     <div class="events-header" style="margin-top:48px;">
       <h2><span class="en">Past Events</span><span class="es">Eventos Pasados</span></h2>
       <span class="past-badge"><span class="en">Completed</span><span class="es">Completados</span></span>
     </div>
+    <div id="past-events"><div style="text-align:center;padding:32px;color:#999;">Loading...</div></div>
 
-    <div class="event-card past">
-      <div class="event-date">APR<br/>18</div>
-      <div class="event-info">
-        <h3><span class="en">Willis Community Spring Cleanup</span><span class="es">Limpieza Comunitaria de Primavera</span></h3>
-        <p><span class="en">9:00 AM – 12:00 PM · Downtown Willis · Gloves, bags & safety vests provided</span><span class="es">9:00 AM – 12:00 PM · Centro de Willis · Guantes, bolsas y chalecos incluidos</span></p>
-        <span class="event-points">+50 pts earned</span>
-      </div>
-      <span class="completed-badge">✓ <span class="en">Completed</span><span class="es">Completado</span></span>
-    </div>
-
-    <div class="event-card past">
-      <div class="event-date">MAR<br/>29</div>
-      <div class="event-info">
-        <h3><span class="en">Lake Conroe Shoreline Cleanup</span><span class="es">Limpieza de la Orilla del Lago Conroe</span></h3>
-        <p><span class="en">7:30 AM – 11:00 AM · Lake Conroe boat ramp · Family friendly</span><span class="es">7:30 AM – 11:00 AM · Rampa del Lago Conroe · Apto para familias</span></p>
-        <span class="event-points">+50 pts earned</span>
-      </div>
-      <span class="completed-badge">✓ <span class="en">Completed</span><span class="es">Completado</span></span>
-    </div>
-
-    <div class="event-card past">
-      <div class="event-date">MAR<br/>15</div>
-      <div class="event-info">
-        <h3><span class="en">Highway 75 Corridor Cleanup</span><span class="es">Limpieza del Corredor Autopista 75</span></h3>
-        <p><span class="en">9:00 AM – 12:00 PM · Walmart parking lot, Willis · Safety vests provided</span><span class="es">9:00 AM – 12:00 PM · Estacionamiento de Walmart, Willis · Chalecos de seguridad incluidos</span></p>
-        <span class="event-points">+50 pts earned</span>
-      </div>
-      <span class="completed-badge">✓ <span class="en">Completed</span><span class="es">Completado</span></span>
-    </div>
-
-    <div class="event-card past">
-      <div class="event-date">MAR<br/>8</div>
-      <div class="event-info">
-        <h3><span class="en">Willis City Park Cleanup</span><span class="es">Limpieza del Parque de Willis</span></h3>
-        <p><span class="en">8:00 AM – 11:00 AM · Willis City Park · Gloves and bags provided</span><span class="es">8:00 AM – 11:00 AM · Parque de Willis · Guantes y bolsas incluidos</span></p>
-        <span class="event-points">+50 pts earned</span>
-      </div>
-      <span class="completed-badge">✓ <span class="en">Completed</span><span class="es">Completado</span></span>
-    </div>
-
-    <!-- Host Your Own -->
     <div class="host-your-own">
       <h2><span class="en">Host Your Own Cleanup</span><span class="es">Organiza Tu Propia Limpieza</span></h2>
       <p><span class="en">You don't have to wait for an LPN event. Organize your own cleanup solo or with friends, submit before and after photos, and earn 75 points. Safety first — always work in safe, visible areas.</span><span class="es">No tienes que esperar un evento de LPN. Organiza tu propia limpieza solo o con amigos, envía fotos antes y después, y gana 75 puntos.</span></p>
@@ -190,6 +142,86 @@
     </div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+  const _sb = window.supabase.createClient(
+    'https://elgzfppmlsrrmskgloeo.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
+  );
+
+  const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+
+  function fmtEventDate(d) {
+    const date = new Date(d + 'T12:00:00');
+    return `${MONTHS[date.getMonth()]}<br/>${date.getDate()}`;
+  }
+
+  function fmtEventTime(start, end) {
+    if (!start) return '';
+    return end ? `${start} – ${end}` : start;
+  }
+
+  async function loadEvents() {
+    const { data, error } = await _sb.from('events').select('*').order('date', { ascending: false });
+
+    if (error) { console.error(error); return; }
+
+    const today = new Date().toISOString().slice(0, 10);
+    const upcoming = data?.filter(e => e.date >= today && e.status !== 'past') || [];
+    const past = data?.filter(e => e.date < today || e.status === 'past') || [];
+
+    // Upcoming
+    const upcomingEl = document.getElementById('upcoming-events');
+    if (upcoming.length) {
+      upcomingEl.innerHTML = upcoming.map(e => `
+        <div class="event-card">
+          <div class="event-date">${fmtEventDate(e.date)}</div>
+          <div class="event-info">
+            <h3>${e.title}</h3>
+            <p>${fmtEventTime(e.time_start, e.time_end)}${e.location ? ' · ' + e.location : ''}${e.description ? ' · ' + e.description : ''}</p>
+            <span class="event-points">+${e.points || 50} pts</span>
+          </div>
+          <a href="index.html#signup" class="btn-green"><span class="en">Sign Up</span><span class="es">Registrarse</span></a>
+        </div>`).join('');
+    } else {
+      upcomingEl.innerHTML = `
+        <div class="no-events">
+          <div style="font-size:48px;margin-bottom:12px;">📅</div>
+          <h3><span class="en">No Upcoming Events Right Now</span><span class="es">No Hay Eventos Próximos Ahora</span></h3>
+          <p><span class="en">We're planning our next cleanup event. Check back soon or sign up to be notified.</span><span class="es">Estamos planificando nuestro próximo evento. Vuelve pronto o regístrate para ser notificado.</span></p>
+          <a href="index.html#signup" class="btn-green" style="display:inline-block;margin-top:20px;"><span class="en">Get Notified — Join the Network</span><span class="es">Recibe Notificaciones — Únete a la Red</span></a>
+        </div>`;
+    }
+
+    // Past — db results + hardcoded legacy ones
+    const legacyPast = [
+      { date: '2026-04-18', title: 'Willis Community Spring Cleanup', title_es: 'Limpieza Comunitaria de Primavera', time_start: '9:00 AM', time_end: '12:00 PM', location: 'Downtown Willis', points: 50 },
+      { date: '2026-03-29', title: 'Lake Conroe Shoreline Cleanup', title_es: 'Limpieza de la Orilla del Lago Conroe', time_start: '7:30 AM', time_end: '11:00 AM', location: 'Lake Conroe boat ramp', points: 50 },
+      { date: '2026-03-15', title: 'Highway 75 Corridor Cleanup', title_es: 'Limpieza del Corredor Autopista 75', time_start: '9:00 AM', time_end: '12:00 PM', location: 'Walmart parking lot, Willis', points: 50 },
+      { date: '2026-03-08', title: 'Willis City Park Cleanup', title_es: 'Limpieza del Parque de Willis', time_start: '8:00 AM', time_end: '11:00 AM', location: 'Willis City Park', points: 50 },
+    ];
+
+    const allPast = [...past, ...legacyPast].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    const pastEl = document.getElementById('past-events');
+    if (allPast.length) {
+      pastEl.innerHTML = allPast.map(e => `
+        <div class="event-card past">
+          <div class="event-date">${fmtEventDate(e.date)}</div>
+          <div class="event-info">
+            <h3><span class="en">${e.title}</span>${e.title_es ? `<span class="es">${e.title_es}</span>` : ''}</h3>
+            <p>${fmtEventTime(e.time_start, e.time_end)}${e.location ? ' · ' + e.location : ''}</p>
+            <span class="event-points">+${e.points || 50} pts earned</span>
+          </div>
+          <span class="completed-badge">✓ <span class="en">Completed</span><span class="es">Completado</span></span>
+        </div>`).join('');
+    } else {
+      pastEl.innerHTML = '<p style="color:#999;font-size:14px;">No past events yet.</p>';
+    }
+  }
+
+  loadEvents();
+  </script>
   <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js');</script>
 </body>
 </html>
