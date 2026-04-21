@@ -348,9 +348,9 @@
 
     <div class="settings-card">
       <h3>Hero Image Settings</h3>
-      <p class="card-desc">Set a background photo for each page's hero banner. The theme color will overlay it at your chosen opacity — the photo shows through regardless of which theme is active.</p>
+      <p class="card-desc">Set a background photo for each page. Use the vertical position slider to pan up or down. The preview shows how it will crop on desktop and mobile.</p>
 
-      <div class="settings-row" style="margin-bottom:20px;">
+      <div class="settings-row" style="margin-bottom:24px;">
         <span class="settings-label">Overlay Opacity</span>
         <div style="display:flex;align-items:center;gap:12px;flex:1;">
           <input type="range" id="overlay-opacity" min="0.1" max="0.9" step="0.05" value="0.6"
@@ -360,7 +360,7 @@
         </div>
       </div>
 
-      <div id="page-hero-list" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin-top:8px;"></div>
+      <div id="page-hero-list" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:20px;margin-top:8px;"></div>
 
       <div style="margin-top:24px;display:flex;align-items:center;gap:16px;">
         <button class="btn-save-settings" onclick="savePageImages()">💾 Save All Hero Images</button>
@@ -759,31 +759,84 @@ async function loadPagesTab() {
 
   const container = document.getElementById('page-hero-list');
   container.innerHTML = PAGE_LIST.map(p => {
-    const val = s['hero_'+p.key+'_image'] || '';
-    const hasImg = val.length > 0;
-    return `<div style="background:white;border-radius:10px;padding:16px;box-shadow:0 1px 6px rgba(0,0,0,0.06);">
-      <div style="font-size:14px;font-weight:700;margin-bottom:10px;color:#0F2318;">${p.label}</div>
-      ${hasImg ? `<div style="width:100%;height:80px;border-radius:6px;background:url('${val}') center/cover;margin-bottom:8px;"></div>` : ''}
-      <input type="text" id="hero-img-${p.key}" value="${val}"
+    const imgVal = s['hero_'+p.key+'_image'] || '';
+    const posVal = s['hero_'+p.key+'_position'] || 'center center';
+    // Convert "center 30%" to slider value 0-100
+    const posMatch = posVal.match(/(\d+)%/);
+    const sliderVal = posMatch ? parseInt(posMatch[1]) : 50;
+
+    return `<div style="background:white;border-radius:10px;padding:20px;box-shadow:0 1px 6px rgba(0,0,0,0.07);">
+      <div style="font-size:15px;font-weight:700;margin-bottom:12px;color:#0F2318;">${p.label}</div>
+
+      <!-- URL input -->
+      <label style="font-size:12px;font-weight:600;color:#666;display:block;margin-bottom:4px;">Image URL</label>
+      <input type="text" id="hero-img-${p.key}" value="${imgVal}"
         placeholder="Paste image URL..."
-        style="width:100%;padding:8px 12px;border:1px solid #ddd;border-radius:6px;font-size:13px;outline:none;margin-bottom:6px;" />
-      <div style="font-size:11px;color:#aaa;">Or upload to Supabase Storage → hero-images, then paste the public URL above.</div>
+        oninput="updateHeroPreview('${p.key}')"
+        style="width:100%;padding:8px 12px;border:1px solid #ddd;border-radius:6px;font-size:13px;outline:none;margin-bottom:12px;" />
+
+      <!-- Position slider -->
+      <label style="font-size:12px;font-weight:600;color:#666;display:block;margin-bottom:4px;">
+        Vertical Position &nbsp;<span id="pos-label-${p.key}" style="color:#1D9E75;">${sliderVal === 50 ? 'Center' : sliderVal < 50 ? 'Top '+sliderVal+'%' : 'Bottom '+sliderVal+'%'}</span>
+      </label>
+      <input type="range" id="hero-pos-${p.key}" min="0" max="100" value="${sliderVal}"
+        style="width:100%;margin-bottom:12px;"
+        oninput="updateHeroPreview('${p.key}')" />
+
+      <!-- Previews -->
+      <div style="display:flex;gap:8px;margin-bottom:4px;">
+        <div style="flex:1;">
+          <div style="font-size:11px;color:#aaa;margin-bottom:4px;text-align:center;">🖥 Desktop</div>
+          <div id="preview-desktop-${p.key}" style="width:100%;aspect-ratio:16/5;border-radius:6px;overflow:hidden;background:#eee;position:relative;">
+            <div id="preview-img-desktop-${p.key}" style="position:absolute;inset:0;background-size:cover;background-image:url('${imgVal}');background-position:center ${sliderVal}%;"></div>
+            <div style="position:absolute;inset:0;background:rgba(15,110,86,0.5);display:flex;align-items:center;justify-content:center;">
+              <span style="color:white;font-size:10px;font-weight:700;opacity:0.8;">Hero Text Area</span>
+            </div>
+          </div>
+        </div>
+        <div style="width:60px;">
+          <div style="font-size:11px;color:#aaa;margin-bottom:4px;text-align:center;">📱 Mobile</div>
+          <div id="preview-mobile-${p.key}" style="width:60px;aspect-ratio:9/16;border-radius:6px;overflow:hidden;background:#eee;position:relative;">
+            <div id="preview-img-mobile-${p.key}" style="position:absolute;inset:0;background-size:cover;background-image:url('${imgVal}');background-position:center ${sliderVal}%;"></div>
+            <div style="position:absolute;inset:0;background:rgba(15,110,86,0.5);"></div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:#bbb;text-align:center;">Drag slider to reposition · Green tint = theme overlay</div>
     </div>`;
   }).join('');
+}
+
+function updateHeroPreview(key) {
+  const url = document.getElementById('hero-img-'+key)?.value || '';
+  const pos = document.getElementById('hero-pos-'+key)?.value || '50';
+  const label = pos == 50 ? 'Center' : pos < 50 ? 'Top '+pos+'%' : 'Bottom '+pos+'%';
+  const bgPos = 'center '+pos+'%';
+  if (document.getElementById('pos-label-'+key)) document.getElementById('pos-label-'+key).textContent = label;
+  if (document.getElementById('preview-img-desktop-'+key)) {
+    document.getElementById('preview-img-desktop-'+key).style.backgroundImage = url ? 'url(\''+url+'\')' : 'none';
+    document.getElementById('preview-img-desktop-'+key).style.backgroundPosition = bgPos;
+  }
+  if (document.getElementById('preview-img-mobile-'+key)) {
+    document.getElementById('preview-img-mobile-'+key).style.backgroundImage = url ? 'url(\''+url+'\')' : 'none';
+    document.getElementById('preview-img-mobile-'+key).style.backgroundPosition = bgPos;
+  }
 }
 
 async function savePageImages() {
   const opacity = document.getElementById('overlay-opacity').value;
   const updates = [{ key: 'hero_overlay_opacity', value: String(opacity) }];
   PAGE_LIST.forEach(p => {
-    const val = document.getElementById('hero-img-'+p.key)?.value?.trim() || '';
-    updates.push({ key: 'hero_'+p.key+'_image', value: val });
+    const imgVal = document.getElementById('hero-img-'+p.key)?.value?.trim() || '';
+    const posVal = document.getElementById('hero-pos-'+p.key)?.value || '50';
+    updates.push({ key: 'hero_'+p.key+'_image', value: imgVal });
+    updates.push({ key: 'hero_'+p.key+'_position', value: 'center '+posVal+'%' });
   });
   for (const u of updates) {
     await _sb.from('site_settings').upsert(u, { onConflict: 'key' });
   }
   const msg = document.getElementById('pages-msg');
-  msg.textContent = '✅ Hero images saved!';
+  msg.textContent = '✅ Saved! Changes live on site immediately.';
   setTimeout(() => msg.textContent = '', 3000);
   loadPagesTab();
 }
