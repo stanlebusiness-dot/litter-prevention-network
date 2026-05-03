@@ -267,9 +267,79 @@ function injectNewsNavLink() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  buildDesktopNav();
   injectNewsNavLink();
   initializePersonalization();
 });
+
+function buildDesktopNav() {
+  const nav = document.querySelector('nav');
+  if (!nav || nav.querySelector('.nav-links-desktop')) return;
+
+  const el = document.createElement('div');
+  el.className = 'nav-links-desktop';
+  el.innerHTML = `
+    <div class="nav-dropdown">
+      <button class="nav-drop-btn">About Us <span class="nav-drop-arrow">▾</span></button>
+      <div class="nav-drop-menu">
+        <a href="about.html">Our Mission</a>
+        <a href="news.html">News &amp; Updates</a>
+        <a href="faq.html">FAQ</a>
+      </div>
+    </div>
+    <div class="nav-dropdown">
+      <button class="nav-drop-btn">Get Involved <span class="nav-drop-arrow">▾</span></button>
+      <div class="nav-drop-menu">
+        <a href="volunteer.html">Volunteer</a>
+        <a href="events.html">Cleanup Events</a>
+        <a href="submit-proof.html">Submit Proof</a>
+        <a href="report-litter.html">Report Litter</a>
+        <a href="rewards.html">Earn Rewards</a>
+        <a href="prize-portal.html">Prize Portal</a>
+      </div>
+    </div>
+    <div class="nav-dropdown">
+      <button class="nav-drop-btn">Education <span class="nav-drop-arrow">▾</span></button>
+      <div class="nav-drop-menu">
+        <div class="nav-drop-section">Schools</div>
+        <a href="volunteer.html">School Partnerships</a>
+        <a href="contact.html">Bring LPN to Your School</a>
+        <div class="nav-drop-divider"></div>
+        <div class="nav-drop-section">Litter &amp; Trash</div>
+        <a href="rewards.html">Safety Tips</a>
+        <a href="faq.html">Litter Facts &amp; FAQ</a>
+        <a href="map.html">Litter Map</a>
+      </div>
+    </div>
+    <div class="nav-dropdown">
+      <button class="nav-drop-btn">Contact <span class="nav-drop-arrow">▾</span></button>
+      <div class="nav-drop-menu">
+        <a href="contact.html">Contact Us</a>
+        <a href="sponsors.html">Become a Sponsor</a>
+        <a href="faq.html">FAQ</a>
+        <a href="contact.html">School Partnerships</a>
+      </div>
+    </div>
+    <a href="login.html" class="nav-signin-btn" id="desktop-nav-auth">Sign In</a>
+  `;
+
+  const hamburger = nav.querySelector('.hamburger');
+  if (hamburger) nav.insertBefore(el, hamburger);
+  else nav.appendChild(el);
+
+  el.querySelectorAll('.nav-dropdown').forEach(dd => {
+    dd.querySelector('.nav-drop-btn').addEventListener('click', e => {
+      e.stopPropagation();
+      const wasOpen = dd.classList.contains('open');
+      el.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+      if (!wasOpen) dd.classList.add('open');
+    });
+  });
+
+  document.addEventListener('click', () => {
+    el.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+  });
+}
 
 function loadSupabaseScript() {
   return new Promise(resolve => {
@@ -334,26 +404,34 @@ async function initializePersonalization() {
 
 function renderPersonalizedNav(user, points) {
   const drawer = document.querySelector('.drawer');
-  if (!drawer) return;
-  const header = drawer.querySelector('.drawer-header');
-  if (header && !header.querySelector('.drawer-user-card')) {
-    const card = document.createElement('div');
-    card.className = 'drawer-user-card';
-    card.innerHTML = `
-      <div class="drawer-user-welcome"><span class="en">Welcome back, ${user.user_metadata?.full_name || user.email.split('@')[0]}</span><span class="es">Bienvenido de nuevo, ${user.user_metadata?.full_name || user.email.split('@')[0]}</span></div>
-      <div class="drawer-user-points">${points} <span class="en">points</span><span class="es">puntos</span></div>
-    `;
-    header.appendChild(card);
+  if (drawer) {
+    const header = drawer.querySelector('.drawer-header');
+    if (header && !header.querySelector('.drawer-user-card')) {
+      const card = document.createElement('div');
+      card.className = 'drawer-user-card';
+      card.innerHTML = `
+        <div class="drawer-user-welcome"><span class="en">Welcome back, ${user.user_metadata?.full_name || user.email.split('@')[0]}</span><span class="es">Bienvenido de nuevo, ${user.user_metadata?.full_name || user.email.split('@')[0]}</span></div>
+        <div class="drawer-user-points">${points} <span class="en">points</span><span class="es">puntos</span></div>
+      `;
+      header.appendChild(card);
+    }
+    const loginLink = drawer.querySelector('a[href="login.html"]');
+    if (loginLink) {
+      loginLink.href = 'javascript:void(0)';
+      loginLink.onclick = async () => {
+        const sb = await getLpnSupabase();
+        if (sb) await sb.auth.signOut();
+        window.location.href = 'login.html';
+      };
+      loginLink.innerHTML = '<span class="nav-icon">🚪</span><span class="en">Sign Out</span><span class="es">Cerrar Sesión</span>';
+    }
   }
-  const loginLink = drawer.querySelector('a[href="login.html"]');
-  if (loginLink) {
-    loginLink.href = 'javascript:void(0)';
-    loginLink.onclick = async () => {
-      const sb = await getLpnSupabase();
-      if (sb) await sb.auth.signOut();
-      window.location.href = 'login.html';
-    };
-    loginLink.innerHTML = '<span class="nav-icon">🚪</span><span class="en">Sign Out</span><span class="es">Cerrar Sesión</span>';
+  const desktopAuthBtn = document.getElementById('desktop-nav-auth');
+  if (desktopAuthBtn) {
+    const name = user.user_metadata?.full_name || user.email.split('@')[0];
+    desktopAuthBtn.textContent = `${name} (${points} pts)`;
+    desktopAuthBtn.href = 'dashboard.html';
+    desktopAuthBtn.style.background = '#0F6E56';
   }
 }
 
