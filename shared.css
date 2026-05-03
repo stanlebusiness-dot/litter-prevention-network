@@ -425,15 +425,15 @@ nav {
 .nav-links { display: none !important; }
 
 /* ── DESKTOP DROPDOWN NAV ── */
-@media (min-width: 769px) {
-  nav { justify-content: space-between; }
-  .hamburger { display: none !important; }
-  .nav-logo { font-size: 20px !important; }
-}
 .nav-links-desktop {
   display: none;
   align-items: center;
   gap: 2px;
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 101;
 }
 @media (min-width: 769px) {
   .nav-links-desktop { display: flex; }
