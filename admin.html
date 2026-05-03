@@ -119,9 +119,12 @@
   <h1>LPN Admin Dashboard</h1>
   <span>Litter Prevention Network – Willis, TX</span>
 </div>
-<div class="login-screen" id="login" style="display:none;">
-  <h2>Loading admin access...</h2>
-  <p>Please wait while we verify your account.</p>
+<div class="login-screen" id="login">
+  <h2>🔐 Admin Access</h2>
+  <p>Enter the admin password to continue.</p>
+  <input type="password" id="admin-pw" placeholder="Password" onkeydown="if(event.key==='Enter')checkAdminPw()" autofocus />
+  <button onclick="checkAdminPw()">Enter Dashboard</button>
+  <div id="pw-error" style="display:none;color:#e74c3c;font-size:14px;margin-top:14px;">Incorrect password. Try again.</div>
 </div>
 <div class="dashboard" id="dashboard">
   <div class="tabs">
@@ -508,18 +511,32 @@ const _sb = window.supabase.createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
 );
 
-async function initAdmin() {
-  const { data: { session } } = await _sb.auth.getSession();
-  if (!session) {
-    window.location.href = 'login.html';
-    return;
+function checkAdminPw() {
+  const pw = document.getElementById('admin-pw').value;
+  if (pw === 'PreventLitter9102!') {
+    sessionStorage.setItem('lpn-admin', '1');
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadAll();
+    loadSettingsTab();
+    loadPagesTab();
+  } else {
+    document.getElementById('pw-error').style.display = 'block';
+    document.getElementById('admin-pw').value = '';
+    document.getElementById('admin-pw').focus();
   }
+}
 
-  document.getElementById('login').style.display = 'none';
-  document.getElementById('dashboard').style.display = 'block';
-  loadAll();
-  loadSettingsTab();
-  loadPagesTab();
+function initAdmin() {
+  if (sessionStorage.getItem('lpn-admin') === '1') {
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadAll();
+    loadSettingsTab();
+    loadPagesTab();
+  } else {
+    document.getElementById('login').style.display = 'block';
+  }
 }
 
 initAdmin();
