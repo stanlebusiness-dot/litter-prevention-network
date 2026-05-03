@@ -119,11 +119,9 @@
   <h1>LPN Admin Dashboard</h1>
   <span>Litter Prevention Network – Willis, TX</span>
 </div>
-<div class="login-screen" id="login">
-  <h2>Admin Login</h2>
-  <p>Enter the admin password to access the dashboard.</p>
-  <input type="password" id="password-input" placeholder="Password" />
-  <button onclick="checkPassword()">Sign In</button>
+<div class="login-screen" id="login" style="display:none;">
+  <h2>Loading admin access...</h2>
+  <p>Please wait while we verify your account.</p>
 </div>
 <div class="dashboard" id="dashboard">
   <div class="tabs">
@@ -136,6 +134,7 @@
     <button class="tab" onclick="showTab('sponsors', this)">🤝 Sponsors</button>
     <button class="tab" onclick="showTab('messages', this)">✉️ Messages</button>
     <button class="tab" onclick="showTab('events', this)">📅 Events</button>
+    <button class="tab" onclick="showTab('news', this)">📰 News Posts</button>
     <button class="tab" onclick="showTab('pages', this)">🖼️ Pages</button>
     <button class="tab" onclick="showTab('settings', this)">⚙️ Site Settings</button>
   </div>
@@ -342,7 +341,48 @@
     </table>
   </div>
 
-  <!-- 🖼️ Pages -->
+  <!-- � News Posts -->
+  <div class="tab-content" id="tab-news">
+    <div class="section-title">📰 News Posts <span class="count-badge" id="count-news">...</span></div>
+    <div style="background:white;border-radius:12px;padding:28px;box-shadow:0 1px 8px rgba(0,0,0,0.06);margin-bottom:28px;">
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:20px;color:#0F2318;">➕ Add or Edit News Post</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+        <div>
+          <label style="font-size:13px;font-weight:600;color:#333;display:block;margin-bottom:6px;">Title</label>
+          <input id="news-title" type="text" placeholder="Headline for the story" style="width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none;" />
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:600;color:#333;display:block;margin-bottom:6px;">Date</label>
+          <input id="news-date" type="date" style="width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none;" />
+        </div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="font-size:13px;font-weight:600;color:#333;display:block;margin-bottom:6px;">Image URL</label>
+        <input id="news-image" type="text" placeholder="Paste image URL from Supabase Storage or any public URL..." style="width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none;" />
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="font-size:13px;font-weight:600;color:#333;display:block;margin-bottom:6px;">Body</label>
+        <textarea id="news-body" rows="5" placeholder="Write the news story details..." style="width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none;resize:vertical;"></textarea>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+        <button class="btn-approve" onclick="saveNewsPost()">Save Post</button>
+        <button class="btn-neutral" onclick="cancelNewsEdit()" id="news-cancel-btn" style="display:none;">Cancel Edit</button>
+        <span id="news-msg" style="color:#0F6E56;font-size:13px;"></span>
+      </div>
+    </div>
+    <div class="tab-toolbar">
+      <div class="tab-toolbar-left">
+        <input class="search-input" placeholder="🔍 Search news posts..." oninput="filterTable('body-news', this.value, [0,1])" />
+      </div>
+      <button class="btn-csv" onclick="exportCSV('body-news', 'news-posts')">⬇ Export CSV</button>
+    </div>
+    <table>
+      <thead><tr><th>Title</th><th>Date</th><th>Image</th><th>Actions</th></tr></thead>
+      <tbody id="body-news"><tr><td colspan="4" class="loading">Loading...</td></tr></tbody>
+    </table>
+  </div>
+
+  <!-- �🖼️ Pages -->
   <div class="tab-content" id="tab-pages">
     <div class="section-title">🖼️ Page Hero Images</div>
     <div class="settings-card">
@@ -463,23 +503,32 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const ADMIN_PASSWORD = 'PreventLitter9102!';
 const _sb = window.supabase.createClient(
   'https://elgzfppmlsrrmskgloeo.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
 );
 
-function checkPassword() {
-  const val = document.getElementById('password-input').value;
-  if (val === ADMIN_PASSWORD) {
-    document.getElementById('login').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
-    loadAll();
-    loadSettingsTab();
-    loadPagesTab();
-  } else { alert('Incorrect password.'); }
+async function initAdmin() {
+  const { data: { session } } = await _sb.auth.getSession();
+  if (!session) {
+    window.location.href = 'login.html';
+    return;
+  }
+
+  const role = session.user?.user_metadata?.role || session.user?.app_metadata?.role;
+  if (role !== 'admin') {
+    window.location.href = 'login.html';
+    return;
+  }
+
+  document.getElementById('login').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  loadAll();
+  loadSettingsTab();
+  loadPagesTab();
 }
-document.getElementById('password-input').addEventListener('keydown', e => { if (e.key === 'Enter') checkPassword(); });
+
+initAdmin();
 
 function showTab(name, el) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -536,6 +585,7 @@ async function loadAll() {
     _sb.from('contact_messages').select('*').order('created_at', { ascending: false }),
   ]);
   loadEvents();
+  loadNewsPosts();
 
   document.getElementById('count-signups').textContent = s.data?.length || 0;
   document.getElementById('body-signups').innerHTML = s.data?.length
@@ -728,6 +778,75 @@ async function deleteEvent(id) {
   if (!confirm('Delete this event?')) return;
   await _sb.from('events').delete().eq('id', id);
   loadEvents();
+}
+
+let _editingNewsId = null;
+
+async function loadNewsPosts() {
+  const { data } = await _sb.from('news_posts').select('*').order('date', { ascending: false });
+  document.getElementById('count-news').textContent = data?.length || 0;
+  document.getElementById('body-news').innerHTML = data?.length
+    ? data.map(post => {
+        const imgCell = post.image ? `<a class="photo-link" href="${post.image}" target="_blank">View</a>` : '—';
+        return `<tr>
+          <td><strong>${post.title}</strong><div style="font-size:12px;color:#666;">${post.body?.slice(0, 120).replace(/\n/g, ' ')}${post.body?.length > 120 ? '…' : ''}</div></td>
+          <td>${post.date || '—'}</td>
+          <td>${imgCell}</td>
+          <td><button class="btn-approve" onclick="editNewsPost('${post.id}')">Edit</button><button class="btn-reject" onclick="deleteNewsPost('${post.id}')">Delete</button></td>
+        </tr>`;
+      }).join('')
+    : '<tr><td colspan="4" class="empty">No news posts yet.</td></tr>';
+}
+
+async function saveNewsPost() {
+  const title = document.getElementById('news-title').value.trim();
+  const date = document.getElementById('news-date').value;
+  const image = document.getElementById('news-image').value.trim();
+  const body = document.getElementById('news-body').value.trim();
+  if (!title || !date || !body) { alert('Title, date, and body are required.'); return; }
+  const payload = { title, date, image, body };
+  if (_editingNewsId) {
+    const { error } = await _sb.from('news_posts').update(payload).eq('id', _editingNewsId);
+    if (error) { alert('Error updating this post.'); console.error(error); return; }
+    document.getElementById('news-msg').textContent = '✅ Post updated.';
+  } else {
+    const { error } = await _sb.from('news_posts').insert([payload]);
+    if (error) { alert('Error saving this post.'); console.error(error); return; }
+    document.getElementById('news-msg').textContent = '✅ Post created.';
+  }
+  _editingNewsId = null;
+  document.getElementById('news-cancel-btn').style.display = 'none';
+  ['news-title','news-date','news-image','news-body'].forEach(id => document.getElementById(id).value = '');
+  setTimeout(() => { document.getElementById('news-msg').textContent = ''; }, 3000);
+  loadNewsPosts();
+}
+
+function cancelNewsEdit() {
+  _editingNewsId = null;
+  document.getElementById('news-title').value = '';
+  document.getElementById('news-date').value = '';
+  document.getElementById('news-image').value = '';
+  document.getElementById('news-body').value = '';
+  document.getElementById('news-cancel-btn').style.display = 'none';
+  document.getElementById('news-msg').textContent = '';
+}
+
+async function editNewsPost(id) {
+  const { data, error } = await _sb.from('news_posts').select('*').eq('id', id).single();
+  if (error || !data) { alert('Could not load that post.'); return; }
+  _editingNewsId = id;
+  document.getElementById('news-title').value = data.title || '';
+  document.getElementById('news-date').value = data.date || '';
+  document.getElementById('news-image').value = data.image || '';
+  document.getElementById('news-body').value = data.body || '';
+  document.getElementById('news-cancel-btn').style.display = 'inline-flex';
+  document.getElementById('news-msg').textContent = 'Editing this post. Click Save to update.';
+}
+
+async function deleteNewsPost(id) {
+  if (!confirm('Delete this news post?')) return;
+  await _sb.from('news_posts').delete().eq('id', id);
+  loadNewsPosts();
 }
 
 // ── PAGE HERO IMAGES ──

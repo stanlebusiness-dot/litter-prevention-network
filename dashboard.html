@@ -166,9 +166,8 @@
   );
   function fmt(d) { return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
   async function init() {
-    const { data: { session } } = await _sb.auth.getSession();
-    if (!session) return window.location.href = 'login.html';
-    const user = session.user;
+    const user = await requireLogin();
+    if (!user) return;
     const name = user.user_metadata?.full_name || user.email;
     document.getElementById('user-name').textContent = name;
     document.getElementById('user-name-es').textContent = name;

@@ -47,7 +47,7 @@ function getPageKey() {
     'events':'events','rewards':'rewards','volunteer':'volunteer',
     'report-litter':'report','submit-proof':'submit',
     'prize-portal':'prize','map':'map','sponsors':'sponsors',
-    'about':'about','faq':'faq','contact':'contact'
+    'about':'about','faq':'faq','contact':'contact','news':'news'
   };
   return map[path] || null;
 }
@@ -184,6 +184,16 @@ function getPageKey() {
       '.footer-col a:hover,.footer-brand .footer-contact a{color:'+primary+'!important}',
       '.footer-social a{background:'+footerBg2+'!important}',
       '.footer-social a:hover{background:'+primary+'!important;color:white!important}',
+      '.drawer-user-card{background:rgba(255,255,255,0.95);border-radius:14px;padding:16px;margin:0 20px 16px;color:#0F2318;font-family:Segoe UI,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,0.08);}',
+      '.drawer-user-welcome{font-size:15px;font-weight:700;margin-bottom:8px;}',
+      '.drawer-user-points{font-size:13px;color:'+secondary+';font-weight:700;}',
+      '.lpn-user-banner{background:rgba(255,255,255,0.94);border-left:4px solid '+secondary+';padding:20px 22px;margin-top:24px;border-radius:14px;max-width:720px;box-shadow:0 10px 24px rgba(0,0,0,0.08);}',
+      '.lpn-user-banner p{margin:0;font-size:15px;line-height:1.7;color:#253437;}',
+      '.lpn-user-banner strong{color:'+secondary+';}',
+      '.lpn-quick-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-top:22px;}',
+      '.lpn-quick-actions a{background:rgba(255,255,255,0.95);border-radius:12px;padding:16px 18px;color:#0F2318;text-decoration:none;font-weight:700;box-shadow:0 10px 25px rgba(0,0,0,0.08);transition:transform .2s,box-shadow .2s;}',
+      '.lpn-quick-actions a:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(0,0,0,0.12);}',
+      '.lpn-quick-actions a span{display:block;}',
       // Announcement
       '#lpn-announcement{background:'+secondary+'!important}',
     ].join('\n');
@@ -235,3 +245,143 @@ function getPageKey() {
     }
   } catch(e) {}
 })();
+
+function injectNewsNavLink() {
+  const nav = document.querySelector('.drawer-nav');
+  if (!nav || nav.querySelector('a[href="news.html"]')) return;
+
+  const link = document.createElement('a');
+  link.href = 'news.html';
+  link.innerHTML = '<span class="nav-icon">📰</span><span class="en">News</span><span class="es">Noticias</span>';
+  if (window.location.pathname.endsWith('news.html')) {
+    link.classList.add('active');
+  }
+
+  const anchor = nav.querySelector('a[href="events.html"]');
+  if (anchor) {
+    nav.insertBefore(link, anchor.nextSibling);
+  } else {
+    nav.appendChild(link);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  injectNewsNavLink();
+  initializePersonalization();
+});
+
+function loadSupabaseScript() {
+  return new Promise(resolve => {
+    if (window.supabase) return resolve();
+    const existing = document.querySelector('script[data-lpn-supabase]');
+    if (existing) {
+      existing.addEventListener('load', () => resolve());
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+    script.defer = true;
+    script.dataset.lpnSupabase = '1';
+    script.addEventListener('load', () => resolve());
+    document.head.appendChild(script);
+  });
+}
+
+async function getLpnSupabase() {
+  if (window._lpnSupabase) return window._lpnSupabase;
+  await loadSupabaseScript();
+  if (!window.supabase) return null;
+  return window._lpnSupabase = window.supabase.createClient(
+    'https://elgzfppmlsrrmskgloeo.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
+  );
+}
+
+async function getSignedInUser() {
+  const sb = await getLpnSupabase();
+  if (!sb) return null;
+  const { data: { session } } = await sb.auth.getSession();
+  return session?.user || null;
+}
+
+async function requireLogin() {
+  const sb = await getLpnSupabase();
+  if (!sb) return null;
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session || !session.user) {
+    window.location.href = 'login.html';
+    return null;
+  }
+  return session.user;
+}
+
+async function loadUserPoints(user) {
+  if (!user) return 0;
+  const sb = await getLpnSupabase();
+  if (!sb) return 0;
+  const { data, error } = await sb.from('points').select('points').eq('email', user.email).single();
+  return data?.points || 0;
+}
+
+async function initializePersonalization() {
+  const user = await getSignedInUser();
+  if (!user) return;
+  const points = await loadUserPoints(user);
+  renderPersonalizedNav(user, points);
+  renderPersonalizedHero(user, points);
+}
+
+function renderPersonalizedNav(user, points) {
+  const drawer = document.querySelector('.drawer');
+  if (!drawer) return;
+  const header = drawer.querySelector('.drawer-header');
+  if (header && !header.querySelector('.drawer-user-card')) {
+    const card = document.createElement('div');
+    card.className = 'drawer-user-card';
+    card.innerHTML = `
+      <div class="drawer-user-welcome"><span class="en">Welcome back, ${user.user_metadata?.full_name || user.email.split('@')[0]}</span><span class="es">Bienvenido de nuevo, ${user.user_metadata?.full_name || user.email.split('@')[0]}</span></div>
+      <div class="drawer-user-points">${points} <span class="en">points</span><span class="es">puntos</span></div>
+    `;
+    header.appendChild(card);
+  }
+  const loginLink = drawer.querySelector('a[href="login.html"]');
+  if (loginLink) {
+    loginLink.href = 'javascript:void(0)';
+    loginLink.onclick = async () => {
+      const sb = await getLpnSupabase();
+      if (sb) await sb.auth.signOut();
+      window.location.href = 'login.html';
+    };
+    loginLink.innerHTML = '<span class="nav-icon">🚪</span><span class="en">Sign Out</span><span class="es">Cerrar Sesión</span>';
+  }
+}
+
+function renderPersonalizedHero(user, points) {
+  const hero = document.querySelector('.hero, .page-hero');
+  if (!hero) return;
+  const displayName = user.user_metadata?.full_name || user.email.split('@')[0];
+  const remaining = Math.max(0, 100 - points);
+  if (!hero.querySelector('.lpn-user-banner')) {
+    const banner = document.createElement('div');
+    banner.className = 'lpn-user-banner';
+    banner.innerHTML = `
+      <p><strong><span class="en">Hey ${displayName}, great to see you again.</span><span class="es">Hola ${displayName}, nos alegra verte de nuevo.</span></strong></p>
+      <p><span class="en">You now have <strong>${points} points</strong>. ${remaining > 0 ? 'Earn '+remaining+' more points to redeem your next reward.' : 'You are ready to redeem a reward today!'}</span><span class="es">Ahora tienes <strong>${points} puntos</strong>. ${remaining > 0 ? 'Gana '+remaining+' puntos más para canjear tu próxima recompensa.' : '¡Estás listo para canjear una recompensa hoy!'}</span></p>
+    `;
+    hero.appendChild(banner);
+  }
+  const pageKey = getPageKey();
+  if (pageKey === 'index' && !document.querySelector('.lpn-quick-actions')) {
+    const quick = document.createElement('div');
+    quick.className = 'lpn-quick-actions';
+    quick.innerHTML = `
+      <a href="report-litter.html"><span class="en">Report litter</span><span class="es">Reportar basura</span></a>
+      <a href="submit-proof.html"><span class="en">Submit proof</span><span class="es">Enviar prueba</span></a>
+      <a href="prize-portal.html"><span class="en">Redeem points</span><span class="es">Canjear puntos</span></a>
+      <a href="dashboard.html"><span class="en">View dashboard</span><span class="es">Ver panel</span></a>
+    `;
+    const heroButtons = hero.querySelector('.hero-buttons');
+    if (heroButtons) heroButtons.after(quick);
+    else hero.appendChild(quick);
+  }
+}

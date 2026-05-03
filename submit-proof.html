@@ -171,14 +171,19 @@
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
     );
 
-    let selectedType = null;
+  (async function() {
+    const user = await requireLogin();
+    if (!user) return;
+  })();
 
-    function selectType(type, el) {
-      document.querySelectorAll('.proof-type-card').forEach(c => c.classList.remove('selected'));
-      el.classList.add('selected');
-      selectedType = type;
-      document.getElementById('before-after-note').style.display = type === 'own' ? 'block' : 'none';
-    }
+  let selectedType = null;
+
+  function selectType(type, el) {
+    document.querySelectorAll('.proof-type-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedType = type;
+    document.getElementById('before-after-note').style.display = type === 'own' ? 'block' : 'none';
+  }
 
     async function submitProof() {
       const name = document.getElementById('proof-name').value.trim();

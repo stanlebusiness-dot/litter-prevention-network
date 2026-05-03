@@ -175,6 +175,16 @@
   const WILLIS_CENTER = { lat: 30.4224, lng: -95.4849 };
 
   async function initMap() {
+    const allowedHosts = ['litterpreventionnetwork.org', 'www.litterpreventionnetwork.org', 'localhost', '127.0.0.1'];
+    if (!allowedHosts.includes(window.location.hostname)) {
+      const mapEl = document.getElementById('map');
+      if (mapEl) {
+        mapEl.innerHTML = '<div style="padding:24px;text-align:center;color:#555;font-family:Segoe UI,sans-serif;">This map only works on litterpreventionnetwork.org or localhost.</div>';
+        mapEl.style.minHeight = '320px';
+      }
+      return;
+    }
+
     map = new google.maps.Map(document.getElementById('map'), {
       center: WILLIS_CENTER,
       zoom: 13,

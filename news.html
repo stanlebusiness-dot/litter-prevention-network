@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1D9E75" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>News – Litter Prevention Network</title>
+  <link rel="stylesheet" href="shared.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <script src="shared.js" defer></script>
+  <style>
+    .hero { background: linear-gradient(135deg, #1D9E75 0%, #0F6E56 100%); color: white; padding: 80px 40px; text-align: center; }
+    .hero h1 { font-size: 44px; font-weight: 800; margin-bottom: 16px; line-height: 1.1; font-family: 'Outfit', sans-serif; }
+    .hero p { font-size: 19px; opacity: 0.95; max-width: 700px; margin: 0 auto; line-height: 1.7; }
+    .news-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; padding: 40px; }
+    @media (max-width: 980px) { .news-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 720px) { .news-grid { grid-template-columns: 1fr; padding: 24px; } }
+    .news-card { background: white; border-radius: 18px; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,0.06); display: flex; flex-direction: column; }
+    .news-card img { width: 100%; height: 220px; object-fit: cover; }
+    .news-card-content { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+    .news-card-date { display: inline-flex; background: #E1F5EE; color: #0F6E56; border-radius: 999px; padding: 8px 14px; font-size: 13px; font-weight: 700; margin-bottom: 14px; }
+    .news-card-title { font-size: 22px; margin-bottom: 14px; line-height: 1.2; }
+    .news-card-body { color: #555; font-size: 15px; line-height: 1.8; flex: 1; margin-bottom: 18px; }
+    .news-card-cta { display: flex; justify-content: flex-end; }
+    .news-card-cta a { background: #1D9E75; color: white; padding: 12px 18px; border-radius: 12px; font-weight: 700; text-decoration: none; transition: background 0.2s; }
+    .news-card-cta a:hover { background: #0F6E56; }
+    .empty-news { padding: 48px 24px; text-align: center; color: #555; font-size: 18px; }
+  </style>
+</head>
+<body>
+  <div class="lang-bar">
+    <button class="active" onclick="setLang('en')">English</button>
+    <button onclick="setLang('es')">Español</button>
+  </div>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <span style="font-family:'Outfit',sans-serif;font-weight:800;font-size:18px;color:#0F6E56;">LPN Willis</span>
+    </a>
+    <button class="hamburger" onclick="openDrawer()">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">
+      <div class="drawer-logo" style="font-family:'Outfit',sans-serif;">Litter Prevention Network</div>
+      <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    </div>
+    <div class="drawer-nav">
+      <a href="index.html"><span class="nav-icon">🏠</span><span class="en">Home</span><span class="es">Inicio</span></a>
+      <a href="events.html"><span class="nav-icon">📅</span><span class="en">Events</span><span class="es">Eventos</span></a>
+      <a href="news.html" class="active"><span class="nav-icon">📰</span><span class="en">News</span><span class="es">Noticias</span></a>
+      <a href="map.html"><span class="nav-icon">🗺️</span><span class="en">Litter Map</span><span class="es">Mapa de Basura</span></a>
+      <a href="report-litter.html"><span class="nav-icon">📍</span><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
+      <a href="rewards.html"><span class="nav-icon">🏆</span><span class="en">Rewards</span><span class="es">Recompensas</span></a>
+      <a href="volunteer.html"><span class="nav-icon">🙌</span><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
+      <a href="submit-proof.html"><span class="nav-icon">📸</span><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
+      <a href="prize-portal.html"><span class="nav-icon">🎁</span><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
+      <a href="sponsors.html"><span class="nav-icon">🤝</span><span class="en">Sponsors</span><span class="es">Patrocinadores</span></a>
+      <div class="drawer-divider"></div>
+      <a href="dashboard.html"><span class="nav-icon">📊</span><span class="en">My Dashboard</span><span class="es">Mi Panel</span></a>
+      <a href="login.html"><span class="nav-icon">🔐</span><span class="en">Login</span><span class="es">Iniciar Sesión</span></a>
+      <div class="drawer-divider"></div>
+      <a href="about.html"><span class="nav-icon">ℹ️</span><span class="en">About</span><span class="es">Acerca de</span></a>
+      <a href="faq.html">FAQ</a>
+      <a href="contact.html"><span class="nav-icon">📬</span><span class="en">Contact</span><span class="es">Contacto</span></a>
+    </div>
+    <div class="drawer-footer-note">© 2026 Litter Prevention Network · Willis, TX</div>
+  </div>
+
+  <section class="hero">
+    <h1><span class="en">Latest News</span><span class="es">Últimas Noticias</span></h1>
+    <p>
+      <span class="en">Read the latest updates, volunteer stories, cleanups, and community announcements from the Litter Prevention Network.</span>
+      <span class="es">Lee las últimas noticias, historias de voluntarios, limpiezas y anuncios comunitarios de la Red de Prevención de Basura.</span>
+    </p>
+  </section>
+
+  <section class="mission" style="padding-top:32px;">
+    <div class="section-tag"><span class="en">Community Spotlight</span><span class="es">Enfoque Comunitario</span></div>
+    <h2><span class="en">News from around Willis</span><span class="es">Noticias de todo Willis</span></h2>
+    <p>
+      <span class="en">We publish news posts for cleanups, success stories, and important local updates. Check back often to stay connected.</span>
+      <span class="es">Publicamos noticias sobre limpiezas, historias de éxito y actualizaciones locales importantes. Vuelve pronto para mantenerte conectado.</span>
+    </p>
+  </section>
+
+  <section class="news-grid" id="news-list">
+    <div class="empty-news"><span class="en">Loading news posts...</span><span class="es">Cargando noticias...</span></div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3 style="font-family:'Outfit',sans-serif;">Litter Prevention Network</h3>
+        <p class="en">Keeping Willis, TX clean — one cleanup at a time.</p>
+        <p class="es">Manteniendo Willis, TX limpio — una limpieza a la vez.</p>
+        <div class="footer-contact">
+          📍 Willis, TX<br/>
+          📞 <a href="tel:2819359097">(281) 935-9097</a><br/>
+          📧 <a href="mailto:stanley@litterpreventionnetwork.org">stanley@litterpreventionnetwork.org</a>
+        </div>
+        <div class="footer-social">
+          <a href="https://facebook.com/litterpreventionnetwork" target="_blank">f</a>
+          <a href="https://instagram.com/litterpreventionnetwork" target="_blank">ig</a>
+          <a href="https://tiktok.com/@litterpreventionnetwork" target="_blank">tt</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">Navigate</span><span class="es">Navegar</span></h4>
+        <a href="index.html"><span class="en">Home</span><span class="es">Inicio</span></a>
+        <a href="events.html"><span class="en">Events</span><span class="es">Eventos</span></a>
+        <a href="news.html"><span class="en">News</span><span class="es">Noticias</span></a>
+        <a href="map.html"><span class="en">Litter Map</span><span class="es">Mapa de Basura</span></a>
+        <a href="rewards.html"><span class="en">Rewards</span><span class="es">Recompensas</span></a>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">Get Involved</span><span class="es">Participa</span></h4>
+        <a href="volunteer.html"><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
+        <a href="submit-proof.html"><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
+        <a href="prize-portal.html"><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
+        <a href="sponsors.html"><span class="en">Sponsors</span><span class="es">Patrocinadores</span></a>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">About</span><span class="es">Acerca de</span></h4>
+        <a href="about.html"><span class="en">Our Mission</span><span class="es">Nuestra Misión</span></a>
+        <a href="faq.html">FAQ</a>
+        <a href="contact.html"><span class="en">Contact</span><span class="es">Contacto</span></a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Litter Prevention Network · Willis, TX</span>
+      <div style="display:flex;gap:20px;"><a href="faq.html">FAQ</a><a href="about.html"><span class="en">About</span><span class="es">Acerca de</span></a><a href="contact.html"><span class="en">Contact</span><span class="es">Contacto</span></a></div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const _sb = window.supabase.createClient(
+      'https://elgzfppmlsrrmskgloeo.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
+    );
+
+    async function initNewsPage() {
+      const { data } = await _sb.from('news_posts').select('*').order('date', { ascending: false });
+      const container = document.getElementById('news-list');
+      if (!data || !data.length) {
+        container.innerHTML = '<div class="empty-news"><span class="en">No news posts are available yet. Check back soon.</span><span class="es">No hay noticias disponibles todavía. Vuelve pronto.</span></div>';
+        return;
+      }
+      container.innerHTML = data.map(post => {
+        const image = post.image ? `<img src="${post.image}" alt="${post.title}" />` : '';
+        const bodyText = post.body ? post.body.replace(/\n/g, '<br/>') : '';
+        const formattedDate = post.date ? new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+        return `
+          <article class="news-card">
+            ${image}
+            <div class="news-card-content">
+              <span class="news-card-date">${formattedDate}</span>
+              <h3 class="news-card-title">${post.title}</h3>
+              <div class="news-card-body">${bodyText}</div>
+              <div class="news-card-cta"><a href="news.html">Read More</a></div>
+            </div>
+          </article>`;
+      }).join('');
+    }
+
+    initNewsPage();
+  </script>
+  <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js');</script>
+</body>
+</html>

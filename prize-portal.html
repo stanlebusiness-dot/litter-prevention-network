@@ -209,15 +209,13 @@
   );
   let currentUser = null, currentPoints = 0, selectedPrize = null;
   async function init() {
-    const { data: { session } } = await _sb.auth.getSession();
-    if (!session) { document.getElementById('not-logged-in').style.display = 'block'; }
-    else {
-      currentUser = session.user;
-      document.getElementById('logged-in').style.display = 'block';
-      const { data: pts } = await _sb.from('points').select('*').eq('email', currentUser.email).single();
-      currentPoints = pts?.points || 0;
-      document.getElementById('points-display').textContent = currentPoints;
-    }
+    const user = await requireLogin();
+    if (!user) return;
+    currentUser = user;
+    document.getElementById('logged-in').style.display = 'block';
+    const { data: pts } = await _sb.from('points').select('*').eq('email', currentUser.email).single();
+    currentPoints = pts?.points || 0;
+    document.getElementById('points-display').textContent = currentPoints;
   }
   function selectPrize(type, el) {
     document.querySelectorAll('.prize-card').forEach(c => c.classList.remove('selected'));
