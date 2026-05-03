@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#1D9E75" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My Dashboard � Litter Prevention Network</title>
+  <title>My Dashboard – Litter Prevention Network</title>
   <link rel="stylesheet" href="shared.css?v=20260503h" />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <script src="shared.js?v=20260503h"></script>
@@ -37,7 +37,7 @@
 <body>
   <div class="lang-bar">
     <button class="active" onclick="setLang('en')">English</button>
-    <button onclick="setLang('es')">Espa�ol</button>
+    <button onclick="setLang('es')">Español</button>
   </div>
 
   <nav>
@@ -50,71 +50,71 @@
   <div class="drawer" id="drawer">
     <div class="drawer-header">
       <div class="drawer-logo" style="font-family:'Outfit',sans-serif;">Litter Prevention Network</div>
-      <button class="drawer-close" onclick="closeDrawer()">?</button>
+      <button class="drawer-close" onclick="closeDrawer()">✕</button>
     </div>
     <div class="drawer-nav">
-      <a href="index.html"><span class="nav-icon">??</span><span class="en">Home</span><span class="es">Inicio</span></a>
-      <a href="events.html"><span class="nav-icon">??</span><span class="en">Events</span><span class="es">Eventos</span></a>
-      <a href="map.html"><span class="nav-icon">???</span><span class="en">Litter Map</span><span class="es">Mapa de Basura</span></a>
-      <a href="report-litter.html"><span class="nav-icon">??</span><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
-      <a href="rewards.html"><span class="nav-icon">??</span><span class="en">Rewards</span><span class="es">Recompensas</span></a>
-      <a href="volunteer.html"><span class="nav-icon">??</span><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
-      <a href="submit-proof.html"><span class="nav-icon">??</span><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
-      <a href="prize-portal.html"><span class="nav-icon">??</span><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
+      <a href="index.html"><span class="nav-icon">🏠</span><span class="en">Home</span><span class="es">Inicio</span></a>
+      <a href="events.html"><span class="nav-icon">📅</span><span class="en">Events</span><span class="es">Eventos</span></a>
+      <a href="map.html"><span class="nav-icon">🗺️</span><span class="en">Litter Map</span><span class="es">Mapa de Basura</span></a>
+      <a href="report-litter.html"><span class="nav-icon">📍</span><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
+      <a href="rewards.html"><span class="nav-icon">🏆</span><span class="en">Rewards</span><span class="es">Recompensas</span></a>
+      <a href="volunteer.html"><span class="nav-icon">🙌</span><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
+      <a href="submit-proof.html"><span class="nav-icon">📸</span><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
+      <a href="prize-portal.html"><span class="nav-icon">🎁</span><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
       <div class="drawer-divider"></div>
-      <a href="dashboard.html" class="active"><span class="nav-icon">??</span><span class="en">My Dashboard</span><span class="es">Mi Panel</span></a>
-      <a href="login.html"><span class="nav-icon">??</span><span class="en">Login</span><span class="es">Iniciar Sesi�n</span></a>
+      <a href="dashboard.html" class="active"><span class="nav-icon">📊</span><span class="en">My Dashboard</span><span class="es">Mi Panel</span></a>
+      <a href="login.html"><span class="nav-icon">🔐</span><span class="en">Login</span><span class="es">Iniciar Sesión</span></a>
       <div class="drawer-divider"></div>
-      <a href="about.html"><span class="nav-icon">??</span><span class="en">About</span><span class="es">Acerca de</span></a>
-      <a href="faq.html"><span class="nav-icon">?</span>FAQ</a>
-      <a href="contact.html"><span class="nav-icon">??</span><span class="en">Contact</span><span class="es">Contacto</span></a>
+      <a href="about.html"><span class="nav-icon">ℹ️</span><span class="en">About</span><span class="es">Acerca de</span></a>
+      <a href="faq.html"><span class="nav-icon">❓</span>FAQ</a>
+      <a href="contact.html"><span class="nav-icon">📬</span><span class="en">Contact</span><span class="es">Contacto</span></a>
     </div>
-    <div class="drawer-footer-note">� 2026 Litter Prevention Network � Willis, TX</div>
+    <div class="drawer-footer-note">© 2026 Litter Prevention Network · Willis, TX</div>
   </div>
 
   <div class="dash-hero">
     <div class="dash-hero-text">
-      <h1 class="en">Welcome back, <span id="user-name">...</span>! ??</h1>
-      <h1 class="es">�Bienvenido, <span id="user-name-es">...</span>! ??</h1>
+      <h1 class="en">Welcome back, <span id="user-name">...</span>! 👋</h1>
+      <h1 class="es">¡Bienvenido, <span id="user-name-es">...</span>! 👋</h1>
       <p class="en">Here's your impact so far.</p>
-      <p class="es">Aqu� est� tu impacto hasta ahora.</p>
+      <p class="es">Aquí está tu impacto hasta ahora.</p>
     </div>
-    <button class="logout-btn" onclick="handleLogout()"><span class="en">?? Log Out</span><span class="es">?? Cerrar Sesi�n</span></button>
+    <button class="logout-btn" onclick="handleLogout()"><span class="en">🚪 Log Out</span><span class="es">🚪 Cerrar Sesión</span></button>
   </div>
 
   <div class="dash-content">
     <div class="cards">
       <div class="card">
-        <div class="icon">?</div>
+        <div class="icon">⭐</div>
         <div class="number" id="current-points">0</div>
         <div class="label en">Current Points</div>
         <div class="label es">Puntos Actuales</div>
       </div>
       <div class="card">
-        <div class="icon">??</div>
+        <div class="icon">🏆</div>
         <div class="number" id="total-points">0</div>
         <div class="label en">Total Earned</div>
         <div class="label es">Total Ganado</div>
       </div>
       <div class="card">
-        <div class="icon">??</div>
+        <div class="icon">📸</div>
         <div class="number" id="submission-count">0</div>
         <div class="label en">Submissions</div>
-        <div class="label es">Env�os</div>
+        <div class="label es">Envíos</div>
       </div>
     </div>
     <div class="dash-actions">
-      <a href="submit-proof.html"><span class="en">?? Submit Proof</span><span class="es">?? Enviar Prueba</span></a>
-      <a href="prize-portal.html"><span class="en">?? Redeem Points</span><span class="es">?? Canjear Puntos</span></a>
-      <a href="events.html"><span class="en">?? View Events</span><span class="es">?? Ver Eventos</span></a>
-      <a href="report-litter.html"><span class="en">?? Report Litter</span><span class="es">?? Reportar Basura</span></a>
+      <a href="submit-proof.html"><span class="en">📸 Submit Proof</span><span class="es">📸 Enviar Prueba</span></a>
+      <a href="prize-portal.html"><span class="en">🎁 Redeem Points</span><span class="es">🎁 Canjear Puntos</span></a>
+      <a href="events.html"><span class="en">📅 View Events</span><span class="es">📅 Ver Eventos</span></a>
+      <a href="report-litter.html"><span class="en">📍 Report Litter</span><span class="es">📍 Reportar Basura</span></a>
     </div>
     <div class="section-title en">Points History</div>
     <div class="section-title es">Historial de Puntos</div>
     <table>
       <thead>
         <tr>
-          <th><span class="en">Reason</span><span class="es">Raz�n</span></th>
+          <th><span class="en">Reason</span><span class="es">Razón</span></th>
           <th><span class="en">Points</span><span class="es">Puntos</span></th>
           <th><span class="en">Date</span><span class="es">Fecha</span></th>
         </tr>
@@ -127,12 +127,12 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <h3 style="font-family:'Outfit',sans-serif;">Litter Prevention Network</h3>
-        <p class="en">Keeping Willis, TX clean � one cleanup at a time.</p>
-        <p class="es">Manteniendo Willis, TX limpio � una limpieza a la vez.</p>
+        <p class="en">Keeping Willis, TX clean — one cleanup at a time.</p>
+        <p class="es">Manteniendo Willis, TX limpio — una limpieza a la vez.</p>
         <div class="footer-contact">
-          ?? Willis, TX<br/>
-          ?? <a href="tel:2819359097">(281) 935-9097</a><br/>
-          ?? <a href="mailto:stanley@litterpreventionnetwork.org">stanley@litterpreventionnetwork.org</a>
+          📍 Willis, TX<br/>
+          📞 <a href="tel:2819359097">(281) 935-9097</a><br/>
+          📧 <a href="mailto:stanley@litterpreventionnetwork.org">stanley@litterpreventionnetwork.org</a>
         </div>
         <div class="footer-social">
           <a href="https://facebook.com/litterpreventionnetwork" target="_blank">FB</a>
@@ -155,13 +155,13 @@
       </div>
       <div class="footer-col">
         <h4><span class="en">About</span><span class="es">Acerca de</span></h4>
-        <a href="about.html"><span class="en">Our Mission</span><span class="es">Nuestra Misi�n</span></a>
+        <a href="about.html"><span class="en">Our Mission</span><span class="es">Nuestra Misión</span></a>
         <a href="faq.html">FAQ</a>
-        <a href="contact.html"><span class="en">Contact Us</span><span class="es">Cont�ctanos</span></a>
+        <a href="contact.html"><span class="en">Contact Us</span><span class="es">Contáctanos</span></a>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>� 2026 Litter Prevention Network � Willis, TX</span>
+      <span>© 2026 Litter Prevention Network · Willis, TX</span>
       <div style="display:flex;gap:20px;"><a href="faq.html">FAQ</a><a href="about.html"><span class="en">About</span><span class="es">Acerca de</span></a><a href="contact.html"><span class="en">Contact</span><span class="es">Contacto</span></a></div>
     </div>
   </footer>
@@ -186,7 +186,7 @@
     const { data: history } = await _sb.from('points_history').select('*').eq('email', user.email).order('created_at', { ascending: false });
     document.getElementById('history-body').innerHTML = history?.length
       ? history.map(h => `<tr><td>${h.reason}</td><td style="color:#0F6E56;font-weight:700;">+${h.points}</td><td>${fmt(h.created_at)}</td></tr>`).join('')
-      : '<tr><td colspan="3" class="empty">No points earned yet � submit proof to get started!</td></tr>';
+      : '<tr><td colspan="3" class="empty">No points earned yet — submit proof to get started!</td></tr>';
   }
   async function handleLogout() { await _sb.auth.signOut(); window.location.href = 'login.html'; }
   init();
