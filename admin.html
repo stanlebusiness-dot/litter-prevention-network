@@ -515,12 +515,6 @@ async function initAdmin() {
     return;
   }
 
-  const role = session.user?.user_metadata?.role || session.user?.app_metadata?.role;
-  if (role !== 'admin') {
-    window.location.href = 'login.html';
-    return;
-  }
-
   document.getElementById('login').style.display = 'none';
   document.getElementById('dashboard').style.display = 'block';
   loadAll();

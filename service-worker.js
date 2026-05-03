@@ -1,7 +1,7 @@
-const CACHE_NAME = 'lpn-cache-v13';
+const CACHE_NAME = 'lpn-cache-v14';
 const ASSETS_TO_CACHE = [
-  '/shared.css',
-  '/shared.js',
+  '/shared.css?v=20260503',
+  '/shared.js?v=20260503',
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png'
