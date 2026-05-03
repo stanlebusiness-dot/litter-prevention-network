@@ -125,8 +125,6 @@ function getPageKey() {
       '.hero,.page-hero{min-height:420px!important;padding:100px 40px!important;display:flex!important;align-items:center!important;justify-content:center!important;flex-direction:column!important;}',
       '.dash-hero{min-height:160px!important;padding:50px 40px!important;}',
       '.points-banner{min-height:200px!important;padding:60px 20px!important;}',
-      // Hero — color gradient (used when no image set)
-      '.hero,.page-hero,.dash-hero,.points-banner{background:linear-gradient(135deg,'+primary+' 0%,'+secondary+' 100%)!important}',
       // Stats
       '.stats{background:'+tintBg+'!important}',
       '.stat-number{color:'+secondary+'!important}',
@@ -204,34 +202,37 @@ function getPageKey() {
     document.head.appendChild(style);
 
     // ── APPLY HERO IMAGE ──
-    if (heroImageUrl) {
-      const heroEl = document.querySelector('.hero, .page-hero, .dash-hero, .points-banner');
-      if (heroEl) {
-        // Wrap content in overlay div
-        const overlayColor = hexToRgba(secondary, overlayOpacity);
-        const inner = document.createElement('div');
-        inner.style.cssText = 'position:relative;z-index:2;width:100%;';
-        while (heroEl.firstChild) inner.appendChild(heroEl.firstChild);
+    const heroEl = document.querySelector('.hero, .page-hero, .dash-hero, .points-banner');
+    if (heroImageUrl && heroEl) {
+      // Wrap content in overlay div
+      const overlayColor = hexToRgba(secondary, overlayOpacity);
+      const inner = document.createElement('div');
+      inner.style.cssText = 'position:relative;z-index:2;width:100%;';
+      while (heroEl.firstChild) inner.appendChild(heroEl.firstChild);
 
-        // Image layer with zoom
-        const imgLayer = document.createElement('div');
-        imgLayer.style.cssText = [
-          'position:absolute;inset:0;',
-          'background-image:url('+heroImageUrl+');',
-          'background-size:'+heroZoom+'%;',
-          'background-position:'+heroPosition+';',
-          'animation:lpn-hero-zoom 6s ease-out forwards;',
-          'z-index:0;',
-        ].join('');
+      // Image layer with zoom
+      const imgLayer = document.createElement('div');
+      imgLayer.style.cssText = [
+        'position:absolute;inset:0;',
+        'background-image:url('+heroImageUrl+');',
+        'background-size:'+heroZoom+'%;',
+        'background-position:'+heroPosition+';',
+        'animation:lpn-hero-zoom 6s ease-out forwards;',
+        'z-index:0;',
+      ].join('');
 
-        // Color overlay
-        const colorLayer = document.createElement('div');
-        colorLayer.style.cssText = 'position:absolute;inset:0;background:'+overlayColor+';z-index:1;';
+      // Color overlay
+      const colorLayer = document.createElement('div');
+      colorLayer.style.cssText = 'position:absolute;inset:0;background:'+overlayColor+';z-index:1;';
 
-        heroEl.style.cssText += ';position:relative;overflow:hidden;background:none!important;';
-        heroEl.appendChild(imgLayer);
-        heroEl.appendChild(colorLayer);
-        heroEl.appendChild(inner);
+      heroEl.style.cssText += ';position:relative;overflow:hidden;background:none!important;';
+      heroEl.appendChild(imgLayer);
+      heroEl.appendChild(colorLayer);
+      heroEl.appendChild(inner);
+    } else if (heroEl) {
+      const currentBg = window.getComputedStyle(heroEl).backgroundImage;
+      if (!currentBg || currentBg === 'none') {
+        heroEl.style.background = 'linear-gradient(135deg,'+primary+' 0%,'+secondary+' 100%)';
       }
     }
 

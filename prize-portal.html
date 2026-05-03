@@ -209,8 +209,11 @@
   );
   let currentUser = null, currentPoints = 0, selectedPrize = null;
   async function init() {
-    const user = await requireLogin();
-    if (!user) return;
+    const user = await getSignedInUser();
+    if (!user) {
+      document.getElementById('not-logged-in').style.display = 'block';
+      return;
+    }
     currentUser = user;
     document.getElementById('logged-in').style.display = 'block';
     const { data: pts } = await _sb.from('points').select('*').eq('email', currentUser.email).single();
