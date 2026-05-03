@@ -283,7 +283,7 @@ function buildDesktopNav() {
       <button class="nav-drop-btn">About Us <span class="nav-drop-arrow">▾</span></button>
       <div class="nav-drop-menu">
         <a href="about.html">Our Mission</a>
-        <a href="news.html">News &amp; Updates</a>
+        <a href="news.html">Blog &amp; News</a>
         <a href="faq.html">FAQ</a>
       </div>
     </div>

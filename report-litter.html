@@ -1,20 +1,20 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#1D9E75" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Report Litter – Litter Prevention Network</title>
-  <link rel="stylesheet" href="shared.css?v=20260503e" />
+  <title>Report Litter � Litter Prevention Network</title>
+  <link rel="stylesheet" href="shared.css?v=20260503h" />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
-  <script src="shared.js?v=20260503e"></script>
+  <script src="shared.js?v=20260503h"></script>
   <style>
     .safety-banner { background: #FFF8E1; border-left: 4px solid #FFB300; border-radius: 10px; padding: 20px 24px; margin-bottom: 28px; }
     .safety-banner h3 { font-size: 15px; font-weight: 700; color: #7B5E00; margin-bottom: 10px; font-family: 'Outfit', sans-serif; }
     .safety-banner ul { list-style: none; padding: 0; margin: 0; }
     .safety-banner ul li { font-size: 13px; color: #5a4200; padding: 4px 0; line-height: 1.6; }
-    .safety-banner ul li::before { content: "⚠️ "; }
+    .safety-banner ul li::before { content: "?? "; }
     .points-badge { display: inline-block; background: #E1F5EE; color: #0F6E56; font-size: 13px; font-weight: 700; padding: 6px 14px; border-radius: 20px; margin-bottom: 24px; }
     .location-box { background: #f9f9f7; border: 1px solid #eee; border-radius: 10px; padding: 16px; margin-bottom: 20px; }
     .location-box .loc-status { font-size: 13px; color: #555; display: flex; align-items: center; gap: 8px; }
@@ -27,7 +27,7 @@
 <body>
   <div class="lang-bar">
     <button class="active" onclick="setLang('en')">English</button>
-    <button onclick="setLang('es')">Español</button>
+    <button onclick="setLang('es')">Espa�ol</button>
   </div>
 
   <nav>
@@ -40,45 +40,45 @@
   <div class="drawer" id="drawer">
     <div class="drawer-header">
       <div class="drawer-logo" style="font-family:'Outfit',sans-serif;">Litter Prevention Network</div>
-      <button class="drawer-close" onclick="closeDrawer()">✕</button>
+      <button class="drawer-close" onclick="closeDrawer()">?</button>
     </div>
     <div class="drawer-nav">
-      <a href="index.html"><span class="nav-icon">🏠</span><span class="en">Home</span><span class="es">Inicio</span></a>
-      <a href="events.html"><span class="nav-icon">📅</span><span class="en">Events</span><span class="es">Eventos</span></a>
-      <a href="map.html"><span class="nav-icon">🗺️</span><span class="en">Litter Map</span><span class="es">Mapa de Basura</span></a>
-      <a href="report-litter.html" class="active"><span class="nav-icon">📍</span><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
-      <a href="rewards.html"><span class="nav-icon">🏆</span><span class="en">Rewards</span><span class="es">Recompensas</span></a>
-      <a href="volunteer.html"><span class="nav-icon">🙌</span><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
-      <a href="submit-proof.html"><span class="nav-icon">📸</span><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
-      <a href="prize-portal.html"><span class="nav-icon">🎁</span><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
-      <a href="sponsors.html"><span class="nav-icon">🤝</span><span class="en">Sponsors</span><span class="es">Patrocinadores</span></a>
+      <a href="index.html"><span class="nav-icon">??</span><span class="en">Home</span><span class="es">Inicio</span></a>
+      <a href="events.html"><span class="nav-icon">??</span><span class="en">Events</span><span class="es">Eventos</span></a>
+      <a href="map.html"><span class="nav-icon">???</span><span class="en">Litter Map</span><span class="es">Mapa de Basura</span></a>
+      <a href="report-litter.html" class="active"><span class="nav-icon">??</span><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
+      <a href="rewards.html"><span class="nav-icon">??</span><span class="en">Rewards</span><span class="es">Recompensas</span></a>
+      <a href="volunteer.html"><span class="nav-icon">??</span><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
+      <a href="submit-proof.html"><span class="nav-icon">??</span><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
+      <a href="prize-portal.html"><span class="nav-icon">??</span><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
+      <a href="sponsors.html"><span class="nav-icon">??</span><span class="en">Sponsors</span><span class="es">Patrocinadores</span></a>
       <div class="drawer-divider"></div>
-      <a href="dashboard.html"><span class="nav-icon">📊</span><span class="en">My Dashboard</span><span class="es">Mi Panel</span></a>
-      <a href="login.html"><span class="nav-icon">🔐</span><span class="en">Login</span><span class="es">Iniciar Sesión</span></a>
+      <a href="dashboard.html"><span class="nav-icon">??</span><span class="en">My Dashboard</span><span class="es">Mi Panel</span></a>
+      <a href="login.html"><span class="nav-icon">??</span><span class="en">Login</span><span class="es">Iniciar Sesi�n</span></a>
       <div class="drawer-divider"></div>
-      <a href="about.html"><span class="nav-icon">ℹ️</span><span class="en">About</span><span class="es">Acerca de</span></a>
-      <a href="faq.html"><span class="nav-icon">❓</span>FAQ</a>
-      <a href="contact.html"><span class="nav-icon">📬</span><span class="en">Contact</span><span class="es">Contacto</span></a>
+      <a href="about.html"><span class="nav-icon">??</span><span class="en">About</span><span class="es">Acerca de</span></a>
+      <a href="faq.html"><span class="nav-icon">?</span>FAQ</a>
+      <a href="contact.html"><span class="nav-icon">??</span><span class="en">Contact</span><span class="es">Contacto</span></a>
     </div>
-    <div class="drawer-footer-note">© 2026 Litter Prevention Network · Willis, TX</div>
+    <div class="drawer-footer-note">� 2026 Litter Prevention Network � Willis, TX</div>
   </div>
 
   <section class="page-hero">
     <h1><span class="en">Report Litter</span><span class="es">Reportar Basura</span></h1>
-    <p><span class="en">Spot litter in Willis? Report it safely and earn 10 points. Your safety always comes first.</span><span class="es">¿Ves basura en Willis? Repórtala de forma segura y gana 10 puntos. Tu seguridad siempre es primero.</span></p>
+    <p><span class="en">Spot litter in Willis? Report it safely and earn 10 points. Your safety always comes first.</span><span class="es">�Ves basura en Willis? Rep�rtala de forma segura y gana 10 puntos. Tu seguridad siempre es primero.</span></p>
   </section>
 
   <section class="content" style="max-width:560px">
 
-    <div class="points-badge">📍 <span class="en">Earn +10 points per approved report</span><span class="es">Gana +10 puntos por reporte aprobado</span></div>
+    <div class="points-badge">?? <span class="en">Earn +10 points per approved report</span><span class="es">Gana +10 puntos por reporte aprobado</span></div>
 
     <div class="safety-banner">
-      <h3><span class="en">⚠️ Safety Guidelines — Read Before Reporting</span><span class="es">⚠️ Normas de Seguridad — Lee Antes de Reportar</span></h3>
+      <h3><span class="en">?? Safety Guidelines � Read Before Reporting</span><span class="es">?? Normas de Seguridad � Lee Antes de Reportar</span></h3>
       <ul>
-        <li><span class="en">Always report from a safe location — your car, sidewalk, or a safe distance away.</span><span class="es">Siempre reporta desde un lugar seguro — tu auto, acera o a distancia segura.</span></li>
-        <li><span class="en">Never stop in traffic or enter a roadway to photograph litter.</span><span class="es">Nunca te detengas en el tráfico ni entres a la carretera para fotografiar basura.</span></li>
-        <li><span class="en">Do not attempt to pick up hazardous materials — needles, chemicals, or unknown substances. Report only.</span><span class="es">No intentes recoger materiales peligrosos — jeringas, químicos o sustancias desconocidas. Solo repórtalos.</span></li>
-        <li><span class="en">If litter is on private property, report it from public ground only.</span><span class="es">Si la basura está en propiedad privada, repórtala solo desde terreno público.</span></li>
+        <li><span class="en">Always report from a safe location � your car, sidewalk, or a safe distance away.</span><span class="es">Siempre reporta desde un lugar seguro � tu auto, acera o a distancia segura.</span></li>
+        <li><span class="en">Never stop in traffic or enter a roadway to photograph litter.</span><span class="es">Nunca te detengas en el tr�fico ni entres a la carretera para fotografiar basura.</span></li>
+        <li><span class="en">Do not attempt to pick up hazardous materials � needles, chemicals, or unknown substances. Report only.</span><span class="es">No intentes recoger materiales peligrosos � jeringas, qu�micos o sustancias desconocidas. Solo rep�rtalos.</span></li>
+        <li><span class="en">If litter is on private property, report it from public ground only.</span><span class="es">Si la basura est� en propiedad privada, rep�rtala solo desde terreno p�blico.</span></li>
       </ul>
     </div>
 
@@ -87,19 +87,19 @@
       <input type="text" id="report-name" placeholder="Your name" />
     </div>
     <div class="form-group">
-      <label><span class="en">Location / Street Address</span><span class="es">Ubicación / Dirección</span></label>
+      <label><span class="en">Location / Street Address</span><span class="es">Ubicaci�n / Direcci�n</span></label>
       <input type="text" id="report-location" placeholder="123 Main St, Willis TX" />
     </div>
 
     <!-- GPS Location -->
     <div class="location-box">
       <div class="loc-status" id="loc-status">
-        📍 <span class="en">Add your GPS location to pin this report on the map (optional but recommended)</span>
-        <span class="es">Agrega tu ubicación GPS para marcar este reporte en el mapa (opcional pero recomendado)</span>
+        ?? <span class="en">Add your GPS location to pin this report on the map (optional but recommended)</span>
+        <span class="es">Agrega tu ubicaci�n GPS para marcar este reporte en el mapa (opcional pero recomendado)</span>
       </div>
       <div class="loc-coords" id="loc-coords" style="display:none;"></div>
       <button class="btn-locate" id="loc-btn" onclick="getLocation()">
-        <span class="en">📍 Get My Location</span><span class="es">📍 Obtener Mi Ubicación</span>
+        <span class="en">?? Get My Location</span><span class="es">?? Obtener Mi Ubicaci�n</span>
       </button>
     </div>
 
@@ -110,7 +110,7 @@
     <div class="form-group">
       <label><span class="en">Upload a photo <span style="color:#e74c3c">*required</span></span><span class="es">Sube una foto <span style="color:#e74c3c">*requerida</span></span></label>
       <input type="file" id="report-photo" accept="image/*" />
-      <p style="font-size:12px;color:#888;margin-top:6px;"><span class="en">Photo must be taken from a safe location. +10 points awarded upon admin approval.</span><span class="es">La foto debe tomarse desde un lugar seguro. +10 puntos otorgados tras aprobación del administrador.</span></p>
+      <p style="font-size:12px;color:#888;margin-top:6px;"><span class="en">Photo must be taken from a safe location. +10 points awarded upon admin approval.</span><span class="es">La foto debe tomarse desde un lugar seguro. +10 puntos otorgados tras aprobaci�n del administrador.</span></p>
     </div>
     <button class="btn-submit" id="report-btn"><span class="en">Submit Report</span><span class="es">Enviar Reporte</span></button>
   </section>
@@ -119,12 +119,12 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <h3 style="font-family:'Outfit',sans-serif;">Litter Prevention Network</h3>
-        <p class="en">Keeping Willis, TX clean — one cleanup at a time.</p>
-        <p class="es">Manteniendo Willis, TX limpio — una limpieza a la vez.</p>
+        <p class="en">Keeping Willis, TX clean � one cleanup at a time.</p>
+        <p class="es">Manteniendo Willis, TX limpio � una limpieza a la vez.</p>
         <div class="footer-contact">
-          📍 Willis, TX<br/>
-          📞 <a href="tel:2819359097">(281) 935-9097</a><br/>
-          📧 <a href="mailto:stanley@litterpreventionnetwork.org">stanley@litterpreventionnetwork.org</a>
+          ?? Willis, TX<br/>
+          ?? <a href="tel:2819359097">(281) 935-9097</a><br/>
+          ?? <a href="mailto:stanley@litterpreventionnetwork.org">stanley@litterpreventionnetwork.org</a>
         </div>
         <div class="footer-social">
           <a href="https://facebook.com/litterpreventionnetwork" target="_blank">FB</a>
@@ -149,13 +149,13 @@
       </div>
       <div class="footer-col">
         <h4><span class="en">About</span><span class="es">Acerca de</span></h4>
-        <a href="about.html"><span class="en">Our Mission</span><span class="es">Nuestra Misión</span></a>
+        <a href="about.html"><span class="en">Our Mission</span><span class="es">Nuestra Misi�n</span></a>
         <a href="faq.html">FAQ</a>
-        <a href="contact.html"><span class="en">Contact Us</span><span class="es">Contáctanos</span></a>
+        <a href="contact.html"><span class="en">Contact Us</span><span class="es">Cont�ctanos</span></a>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 Litter Prevention Network · Willis, TX</span>
+      <span>� 2026 Litter Prevention Network � Willis, TX</span>
       <div style="display:flex;gap:20px;"><a href="faq.html">FAQ</a><a href="about.html"><span class="en">About</span><span class="es">Acerca de</span></a><a href="contact.html"><span class="en">Contact</span><span class="es">Contacto</span></a></div>
     </div>
   </footer>
@@ -181,29 +181,29 @@
     const coords = document.getElementById('loc-coords');
 
     if (!navigator.geolocation) {
-      status.innerHTML = '❌ <span>Geolocation is not supported by your browser.</span>';
+      status.innerHTML = '? <span>Geolocation is not supported by your browser.</span>';
       return;
     }
 
     btn.disabled = true;
-    btn.innerHTML = '<span class="en">Getting location...</span><span class="es">Obteniendo ubicación...</span>';
+    btn.innerHTML = '<span class="en">Getting location...</span><span class="es">Obteniendo ubicaci�n...</span>';
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
         userLat = position.coords.latitude;
         userLng = position.coords.longitude;
-        status.innerHTML = '✅ <span class="en">Location captured! This report will appear as a pin on the map.</span><span class="es">¡Ubicación capturada! Este reporte aparecerá como un pin en el mapa.</span>';
+        status.innerHTML = '? <span class="en">Location captured! This report will appear as a pin on the map.</span><span class="es">�Ubicaci�n capturada! Este reporte aparecer� como un pin en el mapa.</span>';
         status.style.color = '#0F6E56';
         coords.style.display = 'block';
         coords.textContent = `Lat: ${userLat.toFixed(5)}, Lng: ${userLng.toFixed(5)}`;
-        btn.innerHTML = '✅ <span class="en">Location Saved</span><span class="es">Ubicación Guardada</span>';
+        btn.innerHTML = '? <span class="en">Location Saved</span><span class="es">Ubicaci�n Guardada</span>';
         btn.style.background = '#0F6E56';
       },
       (error) => {
-        status.innerHTML = '⚠️ <span class="en">Could not get location. You can still submit without it.</span><span class="es">No se pudo obtener la ubicación. Puedes enviar sin ella.</span>';
+        status.innerHTML = '?? <span class="en">Could not get location. You can still submit without it.</span><span class="es">No se pudo obtener la ubicaci�n. Puedes enviar sin ella.</span>';
         status.style.color = '#856404';
         btn.disabled = false;
-        btn.innerHTML = '<span class="en">📍 Try Again</span><span class="es">📍 Intentar de Nuevo</span>';
+        btn.innerHTML = '<span class="en">?? Try Again</span><span class="es">?? Intentar de Nuevo</span>';
       },
       { enableHighAccuracy: true, timeout: 10000 }
     );
@@ -248,10 +248,10 @@
     } else {
       document.querySelector('.content').innerHTML = `
         <div style="text-align:center;padding:60px 20px">
-          <div style="font-size:60px;margin-bottom:16px">📍</div>
+          <div style="font-size:60px;margin-bottom:16px">??</div>
           <h2 style="font-size:28px;margin-bottom:12px;color:#1D9E75;font-family:'Outfit',sans-serif;">Report received!</h2>
           <p style="color:#555;font-size:16px;line-height:1.7">Thank you for reporting litter in Willis.<br>Once approved you'll earn <strong>+10 points</strong>.</p>
-          ${userLat ? '<p style="color:#1D9E75;font-size:14px;margin-top:12px;">📍 Your report has been pinned on the <a href="map.html" style="color:#1D9E75;font-weight:700;">Litter Map</a>!</p>' : ''}
+          ${userLat ? '<p style="color:#1D9E75;font-size:14px;margin-top:12px;">?? Your report has been pinned on the <a href="map.html" style="color:#1D9E75;font-weight:700;">Litter Map</a>!</p>' : ''}
         </div>`;
     }
   });

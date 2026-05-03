@@ -1,14 +1,14 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#1D9E75" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Submit Proof â€“ Litter Prevention Network</title>
-  <link rel="stylesheet" href="shared.css?v=20260503e" />
+  <title>Submit Proof – Litter Prevention Network</title>
+  <link rel="stylesheet" href="shared.css?v=20260503h" />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
-  <script src="shared.js?v=20260503e"></script>
+  <script src="shared.js?v=20260503h"></script>
   <style>
     .proof-type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 28px; }
     .proof-type-card { background: #f9f9f7; border-radius: 10px; padding: 20px; text-align: center; border: 2px solid transparent; cursor: pointer; transition: all 0.2s; }
@@ -23,7 +23,7 @@
 <body>
   <div class="lang-bar">
     <button class="active" onclick="setLang('en')">English</button>
-    <button onclick="setLang('es')">EspaÃ±ol</button>
+    <button onclick="setLang('es')">Español</button>
   </div>
 
   <nav>
@@ -36,52 +36,52 @@
   <div class="drawer" id="drawer">
     <div class="drawer-header">
       <div class="drawer-logo" style="font-family:'Outfit',sans-serif;">Litter Prevention Network</div>
-      <button class="drawer-close" onclick="closeDrawer()">âœ•</button>
+      <button class="drawer-close" onclick="closeDrawer()">?</button>
     </div>
     <div class="drawer-nav">
-      <a href="index.html"><span class="nav-icon">ğŸ </span><span class="en">Home</span><span class="es">Inicio</span></a>
-      <a href="events.html"><span class="nav-icon">ğŸ“…</span><span class="en">Events</span><span class="es">Eventos</span></a>
-      <a href="map.html"><span class="nav-icon">ğŸ—ºï¸</span><span class="en">Litter Map</span><span class="es">Mapa de Basura</span></a>
-      <a href="report-litter.html"><span class="nav-icon">ğŸ“</span><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
-      <a href="rewards.html"><span class="nav-icon">ğŸ†</span><span class="en">Rewards</span><span class="es">Recompensas</span></a>
-      <a href="volunteer.html"><span class="nav-icon">ğŸ™Œ</span><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
-      <a href="submit-proof.html" class="active"><span class="nav-icon">ğŸ“¸</span><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
-      <a href="prize-portal.html"><span class="nav-icon">ğŸ</span><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
+      <a href="index.html"><span class="nav-icon">??</span><span class="en">Home</span><span class="es">Inicio</span></a>
+      <a href="events.html"><span class="nav-icon">??</span><span class="en">Events</span><span class="es">Eventos</span></a>
+      <a href="map.html"><span class="nav-icon">???</span><span class="en">Litter Map</span><span class="es">Mapa de Basura</span></a>
+      <a href="report-litter.html"><span class="nav-icon">??</span><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
+      <a href="rewards.html"><span class="nav-icon">??</span><span class="en">Rewards</span><span class="es">Recompensas</span></a>
+      <a href="volunteer.html"><span class="nav-icon">??</span><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
+      <a href="submit-proof.html" class="active"><span class="nav-icon">??</span><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
+      <a href="prize-portal.html"><span class="nav-icon">??</span><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
       <div class="drawer-divider"></div>
-      <a href="dashboard.html"><span class="nav-icon">ğŸ“Š</span><span class="en">My Dashboard</span><span class="es">Mi Panel</span></a>
-      <a href="login.html"><span class="nav-icon">ğŸ”</span><span class="en">Login</span><span class="es">Iniciar SesiÃ³n</span></a>
+      <a href="dashboard.html"><span class="nav-icon">??</span><span class="en">My Dashboard</span><span class="es">Mi Panel</span></a>
+      <a href="login.html"><span class="nav-icon">??</span><span class="en">Login</span><span class="es">Iniciar Sesión</span></a>
       <div class="drawer-divider"></div>
-      <a href="about.html"><span class="nav-icon">â„¹ï¸</span><span class="en">About</span><span class="es">Acerca de</span></a>
-      <a href="faq.html"><span class="nav-icon">â“</span>FAQ</a>
-      <a href="contact.html"><span class="nav-icon">ğŸ“¬</span><span class="en">Contact</span><span class="es">Contacto</span></a>
+      <a href="about.html"><span class="nav-icon">??</span><span class="en">About</span><span class="es">Acerca de</span></a>
+      <a href="faq.html"><span class="nav-icon">?</span>FAQ</a>
+      <a href="contact.html"><span class="nav-icon">??</span><span class="en">Contact</span><span class="es">Contacto</span></a>
     </div>
-    <div class="drawer-footer-note">Â© 2026 Litter Prevention Network Â· Willis, TX</div>
+    <div class="drawer-footer-note">© 2026 Litter Prevention Network · Willis, TX</div>
   </div>
 
   <section class="page-hero">
     <h1><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></h1>
-    <p><span class="en">Completed a cleanup? Submit your proof and earn points once approved by our team.</span><span class="es">Â¿Completaste una limpieza? EnvÃ­a tu prueba y gana puntos una vez aprobado por nuestro equipo.</span></p>
+    <p><span class="en">Completed a cleanup? Submit your proof and earn points once approved by our team.</span><span class="es">¿Completaste una limpieza? Envía tu prueba y gana puntos una vez aprobado por nuestro equipo.</span></p>
   </section>
 
   <section class="content" style="max-width:560px" id="proof-form">
 
     <div style="background:#E1F5EE;border-radius:10px;padding:16px 20px;margin-bottom:24px;font-size:14px;color:#0F6E56;line-height:1.7;">
-      <strong><span class="en">How it works:</span><span class="es">CÃ³mo funciona:</span></strong><br/>
+      <strong><span class="en">How it works:</span><span class="es">Cómo funciona:</span></strong><br/>
       <span class="en">Submit your proof below. Our admin team reviews every submission before points are awarded. Reviews typically happen within 24 hours.</span>
-      <span class="es">EnvÃ­a tu prueba abajo. Nuestro equipo revisa cada envÃ­o antes de otorgar puntos. Las revisiones suelen ocurrir en 24 horas.</span>
+      <span class="es">Envía tu prueba abajo. Nuestro equipo revisa cada envío antes de otorgar puntos. Las revisiones suelen ocurrir en 24 horas.</span>
     </div>
 
     <!-- Proof Type Selection -->
-    <p style="font-size:14px;font-weight:700;color:#333;margin-bottom:12px;font-family:'Outfit',sans-serif;"><span class="en">What are you submitting proof for?</span><span class="es">Â¿Para quÃ© estÃ¡s enviando prueba?</span></p>
+    <p style="font-size:14px;font-weight:700;color:#333;margin-bottom:12px;font-family:'Outfit',sans-serif;"><span class="en">What are you submitting proof for?</span><span class="es">¿Para qué estás enviando prueba?</span></p>
     <div class="proof-type-grid">
       <div class="proof-type-card" onclick="selectType('event', this)">
-        <div class="icon">ğŸ“…</div>
+        <div class="icon">??</div>
         <h3><span class="en">LPN Cleanup Event</span><span class="es">Evento de Limpieza LPN</span></h3>
         <p><span class="en">You attended one of our organized events</span><span class="es">Asististe a uno de nuestros eventos</span></p>
         <div class="pts">+50 pts</div>
       </div>
       <div class="proof-type-card" onclick="selectType('own', this)">
-        <div class="icon">ğŸ§¹</div>
+        <div class="icon">??</div>
         <h3><span class="en">My Own Cleanup</span><span class="es">Mi Propia Limpieza</span></h3>
         <p><span class="en">You organized your own cleanup solo or with others</span><span class="es">Organizaste tu propia limpieza solo o con otros</span></p>
         <div class="pts">+75 pts</div>
@@ -89,8 +89,8 @@
     </div>
 
     <div class="before-after-note" id="before-after-note">
-      ğŸ“¸ <span class="en"><strong>Before & After required:</strong> For your own cleanup you must upload both a BEFORE photo and an AFTER photo. Submit this form twice â€” once for each photo â€” and note which is which in the description.</span>
-      <span class="es"><strong>Antes y despuÃ©s requerido:</strong> Para tu propia limpieza debes subir una foto ANTES y una DESPUÃ‰S. EnvÃ­a este formulario dos veces â€” una por cada foto â€” e indica cuÃ¡l es cuÃ¡l en la descripciÃ³n.</span>
+      ?? <span class="en"><strong>Before & After required:</strong> For your own cleanup you must upload both a BEFORE photo and an AFTER photo. Submit this form twice — once for each photo — and note which is which in the description.</span>
+      <span class="es"><strong>Antes y después requerido:</strong> Para tu propia limpieza debes subir una foto ANTES y una DESPUÉS. Envía este formulario dos veces — una por cada foto — e indica cuál es cuál en la descripción.</span>
     </div>
 
     <div class="form-group">
@@ -98,7 +98,7 @@
       <input type="text" id="proof-name" placeholder="Your name" />
     </div>
     <div class="form-group">
-      <label><span class="en">Email Address</span><span class="es">Correo ElectrÃ³nico</span></label>
+      <label><span class="en">Email Address</span><span class="es">Correo Electrónico</span></label>
       <input type="email" id="proof-email" placeholder="you@email.com" />
     </div>
     <div class="form-group">
@@ -124,12 +124,12 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <h3 style="font-family:'Outfit',sans-serif;">Litter Prevention Network</h3>
-        <p class="en">Keeping Willis, TX clean â€” one cleanup at a time.</p>
-        <p class="es">Manteniendo Willis, TX limpio â€” una limpieza a la vez.</p>
+        <p class="en">Keeping Willis, TX clean — one cleanup at a time.</p>
+        <p class="es">Manteniendo Willis, TX limpio — una limpieza a la vez.</p>
         <div class="footer-contact">
-          ğŸ“ Willis, TX<br/>
-          ğŸ“ <a href="tel:2819359097">(281) 935-9097</a><br/>
-          ğŸ“§ <a href="mailto:stanley@litterpreventionnetwork.org">stanley@litterpreventionnetwork.org</a>
+          ?? Willis, TX<br/>
+          ?? <a href="tel:2819359097">(281) 935-9097</a><br/>
+          ?? <a href="mailto:stanley@litterpreventionnetwork.org">stanley@litterpreventionnetwork.org</a>
         </div>
         <div class="footer-social">
           <a href="https://facebook.com/litterpreventionnetwork" target="_blank">FB</a>
@@ -149,17 +149,17 @@
         <a href="volunteer.html"><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
         <a href="submit-proof.html"><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
         <a href="prize-portal.html"><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
-        <a href="login.html"><span class="en">Sign In</span><span class="es">Iniciar SesiÃ³n</span></a>
+        <a href="login.html"><span class="en">Sign In</span><span class="es">Iniciar Sesión</span></a>
       </div>
       <div class="footer-col">
         <h4><span class="en">About</span><span class="es">Acerca de</span></h4>
-        <a href="about.html"><span class="en">Our Mission</span><span class="es">Nuestra MisiÃ³n</span></a>
+        <a href="about.html"><span class="en">Our Mission</span><span class="es">Nuestra Misión</span></a>
         <a href="faq.html">FAQ</a>
-        <a href="contact.html"><span class="en">Contact Us</span><span class="es">ContÃ¡ctanos</span></a>
+        <a href="contact.html"><span class="en">Contact Us</span><span class="es">Contáctanos</span></a>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>Â© 2026 Litter Prevention Network Â· Willis, TX</span>
+      <span>© 2026 Litter Prevention Network · Willis, TX</span>
       <div style="display:flex;gap:20px;"><a href="faq.html">FAQ</a><a href="about.html"><span class="en">About</span><span class="es">Acerca de</span></a><a href="contact.html"><span class="en">Contact</span><span class="es">Contacto</span></a></div>
     </div>
   </footer>
@@ -217,7 +217,7 @@
       if (dbError) { alert('Something went wrong. Please try again.'); btn.disabled = false; btn.textContent = 'Submit Proof'; return; }
       document.getElementById('proof-form').innerHTML = `
         <div style="text-align:center;padding:60px 20px">
-          <div style="font-size:60px;margin-bottom:16px">ğŸ“¸</div>
+          <div style="font-size:60px;margin-bottom:16px">??</div>
           <h2 style="font-size:28px;margin-bottom:12px;color:#1D9E75;font-family:'Outfit',sans-serif;">Proof submitted!</h2>
           <p style="color:#555;font-size:16px;line-height:1.7">Thank you! Our team will review your submission within 24 hours.<br>Points will be added to your account once approved.</p>
         </div>`;
