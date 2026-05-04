@@ -81,7 +81,39 @@
         </div>
       </div>
       <button class="btn" onclick="handleLogin()"><span class="en">Log In</span><span class="es">Iniciar Sesión</span></button>
+      <div style="text-align:center;margin-top:16px;display:flex;justify-content:center;gap:20px;flex-wrap:wrap;">
+        <a href="#" onclick="showPanel('forgot');return false;" style="color:#1D9E75;font-size:13px;font-weight:600;text-decoration:none;"><span class="en">Forgot password?</span><span class="es">¿Olvidaste tu contraseña?</span></a>
+        <a href="#" onclick="showPanel('forgot-email');return false;" style="color:#888;font-size:13px;text-decoration:none;"><span class="en">Forgot your email?</span><span class="es">¿Olvidaste tu correo?</span></a>
+      </div>
     </div>
+
+    <div id="form-forgot" style="display:none">
+      <div style="margin-bottom:20px;">
+        <h3 style="font-size:17px;font-family:'Outfit',sans-serif;margin-bottom:6px;"><span class="en">Reset your password</span><span class="es">Restablecer contraseña</span></h3>
+        <p style="font-size:13px;color:#666;line-height:1.6;"><span class="en">Enter the email you signed up with and we'll send you a reset link.</span><span class="es">Ingresa el correo con el que te registraste y te enviaremos un enlace.</span></p>
+      </div>
+      <div class="form-group">
+        <label><span class="en">Email Address</span><span class="es">Correo Electrónico</span></label>
+        <input type="email" id="forgot-email-input" placeholder="you@email.com" />
+      </div>
+      <button class="btn" id="forgot-btn" onclick="handleForgotPassword()"><span class="en">Send Reset Link</span><span class="es">Enviar Enlace</span></button>
+      <div style="text-align:center;margin-top:14px;">
+        <a href="#" onclick="showPanel('login');return false;" style="color:#888;font-size:13px;text-decoration:none;"><span class="en">Back to login</span><span class="es">Volver al inicio</span></a>
+      </div>
+    </div>
+
+    <div id="form-forgot-email" style="display:none">
+      <div style="text-align:center;padding:12px 0 20px;">
+        <div style="font-size:40px;margin-bottom:12px;">📧</div>
+        <h3 style="font-size:17px;font-family:'Outfit',sans-serif;margin-bottom:10px;"><span class="en">Not sure which email you used?</span><span class="es">¿No recuerdas qué correo usaste?</span></h3>
+        <p style="font-size:13px;color:#666;line-height:1.7;margin-bottom:20px;"><span class="en">Your username is the email address you signed up with. If you can't remember it, contact us and we'll help you find your account.</span><span class="es">Tu nombre de usuario es el correo con el que te registraste. Si no lo recuerdas, contáctanos y te ayudaremos a encontrar tu cuenta.</span></p>
+        <a href="contact.html" style="display:inline-block;background:#1D9E75;color:white;padding:12px 24px;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none;font-family:'Outfit',sans-serif;"><span class="en">Contact Support</span><span class="es">Contactar Soporte</span></a>
+        <div style="margin-top:14px;">
+          <a href="#" onclick="showPanel('login');return false;" style="color:#888;font-size:13px;text-decoration:none;"><span class="en">Back to login</span><span class="es">Volver</span></a>
+        </div>
+      </div>
+    </div>
+
     <div id="form-signup" style="display:none">
       <div class="form-group">
         <label><span class="en">Full Name</span><span class="es">Nombre Completo</span></label>
@@ -159,11 +191,17 @@
   );
   _sb.auth.getSession().then(({ data }) => { if (data.session) window.location.href = 'dashboard.html'; });
   function showTab(tab) {
-    document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
-    document.getElementById('form-signup').style.display = tab === 'signup' ? 'block' : 'none';
-    document.querySelectorAll('.tab-btn').forEach((b, i) => {
-      b.classList.toggle('active', (tab === 'login' && i === 0) || (tab === 'signup' && i === 1));
+    showPanel(tab);
+  }
+  function showPanel(panel) {
+    ['form-login','form-signup','form-forgot','form-forgot-email'].forEach(id => {
+      document.getElementById(id).style.display = 'none';
     });
+    document.getElementById('form-' + panel).style.display = 'block';
+    document.querySelectorAll('.tab-btn').forEach((b, i) => {
+      b.classList.toggle('active', (panel === 'login' && i === 0) || (panel === 'signup' && i === 1));
+    });
+    document.getElementById('msg').style.display = 'none';
   }
   function showMsg(text, type) {
     const el = document.getElementById('msg');
@@ -175,6 +213,18 @@
     const { error } = await _sb.auth.signInWithPassword({ email, password });
     if (error) return showMsg(error.message, 'error');
     window.location.href = 'dashboard.html';
+  }
+  async function handleForgotPassword() {
+    const email = document.getElementById('forgot-email-input').value.trim();
+    if (!email) return showMsg('Please enter your email address.', 'error');
+    const btn = document.getElementById('forgot-btn');
+    btn.disabled = true;
+    const { error } = await _sb.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + '/reset-password.html'
+    });
+    btn.disabled = false;
+    if (error) return showMsg(error.message, 'error');
+    showMsg('Check your email — a reset link is on its way!', 'success');
   }
   async function handleSignup() {
     const name = document.getElementById('signup-name').value;
