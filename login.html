@@ -243,11 +243,19 @@
     showMsg('Check your email — a reset link is on its way!', 'success');
   }
   async function handleSignup() {
-    const name = document.getElementById('signup-name').value;
-    const email = document.getElementById('signup-email').value;
+    const name = document.getElementById('signup-name').value.trim();
+    const email = document.getElementById('signup-email').value.trim();
     const password = document.getElementById('signup-password').value;
-    const { error } = await _sb.auth.signUp({ email, password, options: { data: { full_name: name } } });
+    if (!name || !email || !password) return showMsg('Please fill in all fields.', 'error');
+    if (password.length < 6) return showMsg('Password must be at least 6 characters.', 'error');
+    const btn = document.querySelector('#form-signup .btn');
+    btn.disabled = true;
+    const { data, error } = await _sb.auth.signUp({ email, password, options: { data: { full_name: name } } });
+    btn.disabled = false;
     if (error) return showMsg(error.message, 'error');
+    if (data.user && data.user.identities && data.user.identities.length === 0) {
+      return showMsg('An account with that email already exists. Try logging in instead.', 'error');
+    }
     if (_refCode) {
       try {
         const referrerEmail = atob(_refCode);
