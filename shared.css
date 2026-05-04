@@ -426,35 +426,26 @@ nav {
 
 /* ── DESKTOP DROPDOWN NAV ── */
 
-/* On desktop: pull hamburger and logo into normal flex flow so
-   the dropdown nav can sit on the right via margin-left:auto */
+/* On desktop: logo stays centered (hamburger stays absolute-left),
+   dropdown nav sits absolute-right */
 @media (min-width: 769px) {
   nav {
-    justify-content: flex-start !important;
-    gap: 12px;
     padding-left: 16px !important;
     padding-right: 16px !important;
   }
-  .hamburger {
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    right: auto !important;
-    transform: none !important;
-    order: -1;
-    flex-shrink: 0;
+  .nav-links-desktop {
+    display: flex;
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
   }
-  .nav-logo { order: 0; flex-shrink: 0; }
 }
 
 .nav-links-desktop {
   display: none;
   align-items: center;
   gap: 2px;
-  margin-left: auto;
-}
-@media (min-width: 769px) {
-  .nav-links-desktop { display: flex; }
 }
 .nav-dropdown { position: relative; }
 .nav-drop-btn {
