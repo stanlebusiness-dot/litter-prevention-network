@@ -6,11 +6,14 @@
   <meta name="theme-color" content="#1D9E75" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Litter Prevention Network – Willis, TX</title>
-  <link rel="stylesheet" href="shared.css?v=20260504d" />
+  <link rel="stylesheet" href="shared.css?v=20260504g" />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
-  <script src="shared.js?v=20260504d"></script>
+  <script src="shared.js?v=20260504g"></script>
   <style>
-    .hero { background: linear-gradient(135deg, #1D9E75 0%, #0F6E56 100%); color: white; padding: 80px 40px; text-align: center; }
+    .hero { background-color: #1D9E75; background-size: cover; background-position: center; background-attachment: fixed; color: white; padding: 80px 40px; text-align: center; position: relative; overflow: hidden; }
+    .hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(29,158,117,0.85) 0%, rgba(15,110,86,0.9) 100%); z-index: 0; }
+    .hero h1, .hero p, .hero .hero-buttons { position: relative; z-index: 1; }
+    @media (max-width: 768px) { .hero { background-attachment: scroll; } }
     .hero h1 { font-size: 48px; font-weight: 800; margin-bottom: 16px; line-height: 1.2; font-family: 'Outfit', sans-serif; }
     .hero p { font-size: 20px; opacity: 0.9; max-width: 600px; margin: 0 auto 32px; line-height: 1.6; }
     .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
@@ -200,6 +203,21 @@
     </div>
   </section>
 
+  <!-- Parallax 1: directly below hero -->
+  <div class="parallax-section" id="parallax-1">
+    <svg class="grass-svg grass-top" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#0F6E56" d="M0,0 L1440,0 L1440,35 Q1428,73 1416,35 Q1404,92 1392,35 Q1380,76 1368,35 Q1356,99 1344,35 Q1332,68 1320,35 Q1308,91 1296,35 Q1284,81 1272,35 Q1260,106 1248,35 Q1236,64 1224,35 Q1212,101 1200,35 Q1188,71 1176,35 Q1164,87 1152,35 Q1140,77 1128,35 Q1116,95 1104,35 Q1092,65 1080,35 Q1068,107 1056,35 Q1044,70 1032,35 Q1020,83 1008,35 Q996,85 984,35 Q972,103 960,35 Q948,60 936,35 Q924,93 912,35 Q900,75 888,35 Q876,100 864,35 Q852,67 840,35 Q828,90 816,35 Q804,80 792,35 Q780,105 768,35 Q756,63 744,35 Q732,97 720,35 Q708,73 696,35 Q684,92 672,35 Q660,76 648,35 Q636,99 624,35 Q612,68 600,35 Q588,91 576,35 Q564,81 552,35 Q540,106 528,35 Q516,64 504,35 Q492,101 480,35 Q468,71 456,35 Q444,87 432,35 Q420,77 408,35 Q396,95 384,35 Q372,65 360,35 Q348,107 336,35 Q324,70 312,35 Q300,83 288,35 Q276,85 264,35 Q252,103 240,35 Q228,60 216,35 Q204,93 192,35 Q180,75 168,35 Q156,100 144,35 Q132,67 120,35 Q108,90 96,35 Q84,80 72,35 Q60,105 48,35 Q36,63 24,35 Q12,97 0,35 Z"/>
+    </svg>
+    <div class="parallax-content">
+      <h2><span class="en">Keeping Willis Clean</span><span class="es">Manteniendo Willis Limpio</span></h2>
+      <p><span class="en">One pickup at a time — join neighbors making real, lasting change in our community.</span><span class="es">Una recogida a la vez — únete a vecinos haciendo un cambio real en nuestra comunidad.</span></p>
+      <a href="events.html"><span class="en">See Upcoming Events</span><span class="es">Ver Próximos Eventos</span></a>
+    </div>
+    <svg class="grass-svg grass-bottom" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#0a4a35" d="M0,120 L1440,120 L1440,85 Q1428,47 1416,85 Q1404,28 1392,85 Q1380,44 1368,85 Q1356,21 1344,85 Q1332,52 1320,85 Q1308,29 1296,85 Q1284,39 1272,85 Q1260,14 1248,85 Q1236,56 1224,85 Q1212,19 1200,85 Q1188,49 1176,85 Q1164,33 1152,85 Q1140,43 1128,85 Q1116,25 1104,85 Q1092,55 1080,85 Q1068,13 1056,85 Q1044,50 1032,85 Q1020,37 1008,85 Q996,35 984,85 Q972,17 960,85 Q948,60 936,85 Q924,27 912,85 Q900,45 888,85 Q876,20 864,85 Q852,53 840,85 Q828,30 816,85 Q804,40 792,85 Q780,15 768,85 Q756,57 744,85 Q732,23 720,85 Q708,47 696,85 Q684,28 672,85 Q660,44 648,85 Q636,21 624,85 Q612,52 600,85 Q588,29 576,85 Q564,39 552,85 Q540,14 528,85 Q516,56 504,85 Q492,19 480,85 Q468,49 456,85 Q444,33 432,85 Q420,43 408,85 Q396,25 384,85 Q372,55 360,85 Q348,13 336,85 Q324,50 312,85 Q300,37 288,85 Q276,35 264,85 Q252,17 240,85 Q228,60 216,85 Q204,27 192,85 Q180,45 168,85 Q156,20 144,85 Q132,53 120,85 Q108,30 96,85 Q84,40 72,85 Q60,15 48,85 Q36,57 24,85 Q12,23 0,85 Z"/>
+    </svg>
+  </div>
+
   <section class="donate-section">
     <div class="donate-scene">
       <div class="donate-card" id="donate-card">
@@ -236,21 +254,6 @@
       </div>
     </div>
   </section>
-
-  <!-- Parallax 1: between donate and stats -->
-  <div class="parallax-section" id="parallax-1">
-    <svg class="grass-svg grass-top" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path fill="#0a4a35" d="M0,0 L1440,0 L1440,35 Q1428,73 1416,35 Q1404,92 1392,35 Q1380,76 1368,35 Q1356,99 1344,35 Q1332,68 1320,35 Q1308,91 1296,35 Q1284,81 1272,35 Q1260,106 1248,35 Q1236,64 1224,35 Q1212,101 1200,35 Q1188,71 1176,35 Q1164,87 1152,35 Q1140,77 1128,35 Q1116,95 1104,35 Q1092,65 1080,35 Q1068,107 1056,35 Q1044,70 1032,35 Q1020,83 1008,35 Q996,85 984,35 Q972,103 960,35 Q948,60 936,35 Q924,93 912,35 Q900,75 888,35 Q876,100 864,35 Q852,67 840,35 Q828,90 816,35 Q804,80 792,35 Q780,105 768,35 Q756,63 744,35 Q732,97 720,35 Q708,73 696,35 Q684,92 672,35 Q660,76 648,35 Q636,99 624,35 Q612,68 600,35 Q588,91 576,35 Q564,81 552,35 Q540,106 528,35 Q516,64 504,35 Q492,101 480,35 Q468,71 456,35 Q444,87 432,35 Q420,77 408,35 Q396,95 384,35 Q372,65 360,35 Q348,107 336,35 Q324,70 312,35 Q300,83 288,35 Q276,85 264,35 Q252,103 240,35 Q228,60 216,35 Q204,93 192,35 Q180,75 168,35 Q156,100 144,35 Q132,67 120,35 Q108,90 96,35 Q84,80 72,35 Q60,105 48,35 Q36,63 24,35 Q12,97 0,35 Z"/>
-    </svg>
-    <div class="parallax-content">
-      <h2><span class="en">Keeping Willis Clean</span><span class="es">Manteniendo Willis Limpio</span></h2>
-      <p><span class="en">One pickup at a time — join neighbors making real, lasting change in our community.</span><span class="es">Una recogida a la vez — únete a vecinos haciendo un cambio real en nuestra comunidad.</span></p>
-      <a href="events.html"><span class="en">See Upcoming Events</span><span class="es">Ver Próximos Eventos</span></a>
-    </div>
-    <svg class="grass-svg grass-bottom" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path fill="#f9f9f7" d="M0,120 L1440,120 L1440,85 Q1428,47 1416,85 Q1404,28 1392,85 Q1380,44 1368,85 Q1356,21 1344,85 Q1332,52 1320,85 Q1308,29 1296,85 Q1284,39 1272,85 Q1260,14 1248,85 Q1236,56 1224,85 Q1212,19 1200,85 Q1188,49 1176,85 Q1164,33 1152,85 Q1140,43 1128,85 Q1116,25 1104,85 Q1092,55 1080,85 Q1068,13 1056,85 Q1044,50 1032,85 Q1020,37 1008,85 Q996,35 984,85 Q972,17 960,85 Q948,60 936,85 Q924,27 912,85 Q900,45 888,85 Q876,20 864,85 Q852,53 840,85 Q828,30 816,85 Q804,40 792,85 Q780,15 768,85 Q756,57 744,85 Q732,23 720,85 Q708,47 696,85 Q684,28 672,85 Q660,44 648,85 Q636,21 624,85 Q612,52 600,85 Q588,29 576,85 Q564,39 552,85 Q540,14 528,85 Q516,56 504,85 Q492,19 480,85 Q468,49 456,85 Q444,33 432,85 Q420,43 408,85 Q396,25 384,85 Q372,55 360,85 Q348,13 336,85 Q324,50 312,85 Q300,37 288,85 Q276,35 264,85 Q252,17 240,85 Q228,60 216,85 Q204,27 192,85 Q180,45 168,85 Q156,20 144,85 Q132,53 120,85 Q108,30 96,85 Q84,40 72,85 Q60,15 48,85 Q36,57 24,85 Q12,23 0,85 Z"/>
-    </svg>
-  </div>
 
   <section class="stats">
     <div class="stat">
@@ -410,6 +413,21 @@
     </div>
   </section>
 
+  <!-- Parallax 3: bottom of page -->
+  <div class="parallax-section" id="parallax-3">
+    <svg class="grass-svg grass-top" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#ffffff" d="M0,0 L1440,0 L1440,35 Q1428,73 1416,35 Q1404,92 1392,35 Q1380,76 1368,35 Q1356,99 1344,35 Q1332,68 1320,35 Q1308,91 1296,35 Q1284,81 1272,35 Q1260,106 1248,35 Q1236,64 1224,35 Q1212,101 1200,35 Q1188,71 1176,35 Q1164,87 1152,35 Q1140,77 1128,35 Q1116,95 1104,35 Q1092,65 1080,35 Q1068,107 1056,35 Q1044,70 1032,35 Q1020,83 1008,35 Q996,85 984,35 Q972,103 960,35 Q948,60 936,35 Q924,93 912,35 Q900,75 888,35 Q876,100 864,35 Q852,67 840,35 Q828,90 816,35 Q804,80 792,35 Q780,105 768,35 Q756,63 744,35 Q732,97 720,35 Q708,73 696,35 Q684,92 672,35 Q660,76 648,35 Q636,99 624,35 Q612,68 600,35 Q588,91 576,35 Q564,81 552,35 Q540,106 528,35 Q516,64 504,35 Q492,101 480,35 Q468,71 456,35 Q444,87 432,35 Q420,77 408,35 Q396,95 384,35 Q372,65 360,35 Q348,107 336,35 Q324,70 312,35 Q300,83 288,35 Q276,85 264,35 Q252,103 240,35 Q228,60 216,35 Q204,93 192,35 Q180,75 168,35 Q156,100 144,35 Q132,67 120,35 Q108,90 96,35 Q84,80 72,35 Q60,105 48,35 Q36,63 24,35 Q12,97 0,35 Z"/>
+    </svg>
+    <div class="parallax-content">
+      <h2><span class="en">Willis Is Worth It</span><span class="es">Willis Vale la Pena</span></h2>
+      <p><span class="en">Every cleanup, every report, every volunteer hour builds something bigger. Come be part of it.</span><span class="es">Cada limpieza, cada reporte, cada hora de voluntariado construye algo más grande. Ven a ser parte de ello.</span></p>
+      <a href="volunteer.html"><span class="en">Join as a Volunteer</span><span class="es">Únete como Voluntario</span></a>
+    </div>
+    <svg class="grass-svg grass-bottom" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path fill="#0F2318" d="M0,120 L1440,120 L1440,85 Q1428,47 1416,85 Q1404,28 1392,85 Q1380,44 1368,85 Q1356,21 1344,85 Q1332,52 1320,85 Q1308,29 1296,85 Q1284,39 1272,85 Q1260,14 1248,85 Q1236,56 1224,85 Q1212,19 1200,85 Q1188,49 1176,85 Q1164,33 1152,85 Q1140,43 1128,85 Q1116,25 1104,85 Q1092,55 1080,85 Q1068,13 1056,85 Q1044,50 1032,85 Q1020,37 1008,85 Q996,35 984,85 Q972,17 960,85 Q948,60 936,85 Q924,27 912,85 Q900,45 888,85 Q876,20 864,85 Q852,53 840,85 Q828,30 816,85 Q804,40 792,85 Q780,15 768,85 Q756,57 744,85 Q732,23 720,85 Q708,47 696,85 Q684,28 672,85 Q660,44 648,85 Q636,21 624,85 Q612,52 600,85 Q588,29 576,85 Q564,39 552,85 Q540,14 528,85 Q516,56 504,85 Q492,19 480,85 Q468,49 456,85 Q444,33 432,85 Q420,43 408,85 Q396,25 384,85 Q372,55 360,85 Q348,13 336,85 Q324,50 312,85 Q300,37 288,85 Q276,35 264,85 Q252,17 240,85 Q228,60 216,85 Q204,27 192,85 Q180,45 168,85 Q156,20 144,85 Q132,53 120,85 Q108,30 96,85 Q84,40 72,85 Q60,15 48,85 Q36,57 24,85 Q12,23 0,85 Z"/>
+    </svg>
+  </div>
+
   <footer class="site-footer">
     <div class="footer-grid">
       <div class="footer-brand">
@@ -469,11 +487,24 @@
   // Load parallax background images from site settings
   (async function() {
     try {
-      const { data } = await _sb.from('site_settings').select('key,value').in('key', ['parallax_1_img','parallax_2_img']);
+      const { data } = await _sb.from('site_settings').select('key,value').in('key', [
+        'hero_index_image','hero_index_position','hero_index_xposition','hero_index_zoom',
+        'parallax_1_img','parallax_2_img','parallax_3_img'
+      ]);
       if (data) {
         const s = Object.fromEntries(data.map(r => [r.key, r.value]));
+        if (s.hero_index_image) {
+          const heroEl = document.querySelector('.hero');
+          heroEl.style.backgroundImage = `url('${s.hero_index_image}')`;
+          const yRaw = s.hero_index_position || 'center 50%';
+          const y = (yRaw.match(/(\d+)%/) || ['','50'])[1];
+          const x = s.hero_index_xposition || '50';
+          heroEl.style.backgroundPosition = x + '% ' + y + '%';
+          if (s.hero_index_zoom) heroEl.style.backgroundSize = s.hero_index_zoom + '%';
+        }
         if (s.parallax_1_img) document.getElementById('parallax-1').style.backgroundImage = `url('${s.parallax_1_img}')`;
         if (s.parallax_2_img) document.getElementById('parallax-2').style.backgroundImage = `url('${s.parallax_2_img}')`;
+        if (s.parallax_3_img) document.getElementById('parallax-3').style.backgroundImage = `url('${s.parallax_3_img}')`;
       }
     } catch(e) {}
   })();

@@ -511,10 +511,10 @@
 
     <!-- Parallax Section Images -->
     <div class="settings-card">
-      <h3>🌿 Parallax Sections (Home Page)</h3>
-      <p class="card-desc">Background photos for the two grass-transition scrolling sections on the home page. Paste any direct image URL (jpg, png, webp). Tip: use a wide landscape photo at least 1400px wide for best results.</p>
+      <h3>🌿 Scrolling Sections (Home Page)</h3>
+      <p class="card-desc">Background photos for the three grass-transition scrolling sections on the home page. Use the <strong>Pages tab</strong> to set the main header image. Paste any direct image URL (jpg, png, webp).</p>
       <div class="settings-row">
-        <span class="settings-label">Section 1 Image</span>
+        <span class="settings-label">Section 1 Image <span style="font-size:11px;color:#999;">(below header)</span></span>
         <input class="settings-input" id="parallax-1-img" type="url" placeholder="https://example.com/photo.jpg" oninput="showParallaxPreview('parallax-1-preview',this.value.trim())" />
       </div>
       <div id="parallax-1-preview" style="margin-bottom:16px;display:none;">
@@ -525,6 +525,13 @@
         <input class="settings-input" id="parallax-2-img" type="url" placeholder="https://example.com/photo2.jpg" oninput="showParallaxPreview('parallax-2-preview',this.value.trim())" />
       </div>
       <div id="parallax-2-preview" style="margin-bottom:16px;display:none;">
+        <img src="" style="width:100%;max-height:140px;object-fit:cover;border-radius:8px;border:1px solid #ddd;" />
+      </div>
+      <div class="settings-row">
+        <span class="settings-label">Section 3 Image <span style="font-size:11px;color:#999;">(bottom of page)</span></span>
+        <input class="settings-input" id="parallax-3-img" type="url" placeholder="https://example.com/photo3.jpg" oninput="showParallaxPreview('parallax-3-preview',this.value.trim())" />
+      </div>
+      <div id="parallax-3-preview" style="margin-bottom:16px;display:none;">
         <img src="" style="width:100%;max-height:140px;object-fit:cover;border-radius:8px;border:1px solid #ddd;" />
       </div>
     </div>
@@ -1065,6 +1072,15 @@ async function loadPagesTab() {
           </div>
         </div>
 
+        ${p.key === 'index' ? `<div style="border-top:1px solid #f0f0ee;padding-top:14px;margin-top:14px;">
+          <div style="font-size:13px;font-weight:700;color:#0F2318;margin-bottom:10px;">🌿 Bottom Section Image</div>
+          <label style="font-size:12px;font-weight:600;color:#666;display:block;margin-bottom:4px;">Image URL</label>
+          <input type="text" id="bottom-img-index" value="${s['parallax_3_img'] || ''}"
+            placeholder="Paste image URL for the bottom grass section..."
+            style="width:100%;padding:9px 12px;border:1px solid #ddd;border-radius:6px;font-size:13px;outline:none;margin-bottom:6px;" />
+          <p style="font-size:12px;color:#888;margin:0;">Full-width image at the bottom of the home page, just above the footer.</p>
+        </div>` : ''}
+
       </div>
     </div>`;
   }).join('');
@@ -1127,6 +1143,10 @@ async function savePageImages() {
     updates.push({ key: 'hero_'+p.key+'_position',  value: 'center '+yPos+'%' });
     updates.push({ key: 'hero_'+p.key+'_xposition', value: xPos });
     updates.push({ key: 'hero_'+p.key+'_zoom',      value: zoom });
+    if (p.key === 'index') {
+      const bottomImg = document.getElementById('bottom-img-index')?.value?.trim() || '';
+      updates.push({ key: 'parallax_3_img', value: bottomImg });
+    }
     contentUpdates.push({ page: p.key, hero_headline_en: headEn, hero_headline_es: headEs, hero_subtext_en: subEn, hero_subtext_es: subEs, updated_at: new Date().toISOString() });
   });
 
@@ -1196,10 +1216,13 @@ async function loadSettingsTab() {
 
   const p1 = s.parallax_1_img || '';
   const p2 = s.parallax_2_img || '';
+  const p3 = s.parallax_3_img || '';
   document.getElementById('parallax-1-img').value = p1;
   document.getElementById('parallax-2-img').value = p2;
+  document.getElementById('parallax-3-img').value = p3;
   showParallaxPreview('parallax-1-preview', p1);
   showParallaxPreview('parallax-2-preview', p2);
+  showParallaxPreview('parallax-3-preview', p3);
 
   updateAnnouncementPreview();
 }
@@ -1277,6 +1300,7 @@ async function saveSettings() {
     { key: 'referral_reward_points', value: String(parseInt(document.getElementById('ref-reward-pts').value) || 500) },
     { key: 'parallax_1_img', value: document.getElementById('parallax-1-img').value.trim() },
     { key: 'parallax_2_img', value: document.getElementById('parallax-2-img').value.trim() },
+    { key: 'parallax_3_img', value: document.getElementById('parallax-3-img').value.trim() },
   ];
 
   for (const u of updates) {
