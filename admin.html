@@ -509,6 +509,26 @@
       </div>
     </div>
 
+    <!-- Parallax Section Images -->
+    <div class="settings-card">
+      <h3>🌿 Parallax Sections (Home Page)</h3>
+      <p class="card-desc">Background photos for the two grass-transition scrolling sections on the home page. Paste any direct image URL (jpg, png, webp). Tip: use a wide landscape photo at least 1400px wide for best results.</p>
+      <div class="settings-row">
+        <span class="settings-label">Section 1 Image</span>
+        <input class="settings-input" id="parallax-1-img" type="url" placeholder="https://example.com/photo.jpg" oninput="showParallaxPreview('parallax-1-preview',this.value.trim())" />
+      </div>
+      <div id="parallax-1-preview" style="margin-bottom:16px;display:none;">
+        <img src="" style="width:100%;max-height:140px;object-fit:cover;border-radius:8px;border:1px solid #ddd;" />
+      </div>
+      <div class="settings-row">
+        <span class="settings-label">Section 2 Image</span>
+        <input class="settings-input" id="parallax-2-img" type="url" placeholder="https://example.com/photo2.jpg" oninput="showParallaxPreview('parallax-2-preview',this.value.trim())" />
+      </div>
+      <div id="parallax-2-preview" style="margin-bottom:16px;display:none;">
+        <img src="" style="width:100%;max-height:140px;object-fit:cover;border-radius:8px;border:1px solid #ddd;" />
+      </div>
+    </div>
+
     <!-- Save Button -->
     <div style="display:flex;align-items:center;gap:16px;">
       <button class="btn-save-settings" onclick="saveSettings()">💾 Save All Settings</button>
@@ -1174,7 +1194,25 @@ async function loadSettingsTab() {
   document.getElementById('ref-reward-pts').value = refPts;
   document.getElementById('ref-reward-dollar').textContent = '= $' + (parseInt(refPts) / 100).toFixed(2);
 
+  const p1 = s.parallax_1_img || '';
+  const p2 = s.parallax_2_img || '';
+  document.getElementById('parallax-1-img').value = p1;
+  document.getElementById('parallax-2-img').value = p2;
+  showParallaxPreview('parallax-1-preview', p1);
+  showParallaxPreview('parallax-2-preview', p2);
+
   updateAnnouncementPreview();
+}
+
+function showParallaxPreview(previewId, url) {
+  const wrap = document.getElementById(previewId);
+  if (!wrap) return;
+  if (url) {
+    wrap.style.display = 'block';
+    wrap.querySelector('img').src = url;
+  } else {
+    wrap.style.display = 'none';
+  }
 }
 
 function updateAnnouncementPreview() {
@@ -1237,6 +1275,8 @@ async function saveSettings() {
     { key: 'secondary_color', value: secondary },
     { key: 'active_preset', value: activePreset },
     { key: 'referral_reward_points', value: String(parseInt(document.getElementById('ref-reward-pts').value) || 500) },
+    { key: 'parallax_1_img', value: document.getElementById('parallax-1-img').value.trim() },
+    { key: 'parallax_2_img', value: document.getElementById('parallax-2-img').value.trim() },
   ];
 
   for (const u of updates) {
