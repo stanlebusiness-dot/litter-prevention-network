@@ -6,9 +6,9 @@
   <meta name="theme-color" content="#1D9E75" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>My Dashboard – Litter Prevention Network</title>
-  <link rel="stylesheet" href="shared.css?v=20260503h" />
+  <link rel="stylesheet" href="shared.css?v=20260503j" />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
-  <script src="shared.js?v=20260503h"></script>
+  <script src="shared.js?v=20260503j"></script>
   <style>
     .dash-hero { background: linear-gradient(135deg, #1D9E75 0%, #0F6E56 100%); color: white; padding: 40px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
     .dash-hero-text h1 { font-size: 26px; font-weight: 800; font-family: 'Outfit', sans-serif; }
@@ -109,6 +109,36 @@
       <a href="events.html"><span class="en">📅 View Events</span><span class="es">📅 Ver Eventos</span></a>
       <a href="report-litter.html"><span class="en">📍 Report Litter</span><span class="es">📍 Reportar Basura</span></a>
     </div>
+    <!-- Invite Friends -->
+    <div style="background:linear-gradient(135deg,#E1F5EE,#d0f0e4);border-radius:14px;padding:28px;margin-bottom:36px;border:1.5px solid #b5e8d0;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:20px;">
+        <div style="flex:1;min-width:200px;">
+          <div style="font-size:24px;margin-bottom:8px;">🎁</div>
+          <h3 style="font-size:17px;font-weight:800;font-family:'Outfit',sans-serif;color:#0F6E56;margin-bottom:8px;">
+            <span class="en">Invite Friends, Earn Together</span><span class="es">Invita Amigos, Ganen Juntos</span>
+          </h3>
+          <p style="font-size:14px;color:#2e7d32;line-height:1.6;max-width:400px;">
+            <span class="en">Share your personal invite link. When a friend signs up and completes their first cleanup, you <strong>both earn $5 in rewards</strong>!</span>
+            <span class="es">Comparte tu enlace personal. Cuando un amigo se registre y complete su primera limpieza, ¡<strong>ambos ganan $5 en recompensas</strong>!</span>
+          </p>
+        </div>
+        <div style="min-width:220px;flex:1;max-width:380px;">
+          <label style="font-size:11px;font-weight:700;color:#0F6E56;display:block;margin-bottom:6px;letter-spacing:0.5px;text-transform:uppercase;">
+            <span class="en">Your Invite Link</span><span class="es">Tu Enlace de Invitación</span>
+          </label>
+          <div style="display:flex;gap:8px;">
+            <input id="invite-link" readonly style="flex:1;padding:10px 12px;border:1.5px solid #1D9E75;border-radius:8px;font-size:12px;background:white;color:#333;outline:none;min-width:0;" />
+            <button onclick="copyInviteLink()" style="background:#1D9E75;color:white;border:none;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:'Outfit',sans-serif;">
+              <span class="en">Copy</span><span class="es">Copiar</span>
+            </button>
+          </div>
+          <div id="copy-msg" style="font-size:12px;color:#0F6E56;margin-top:6px;font-weight:600;display:none;">
+            <span class="en">✓ Copied!</span><span class="es">✓ ¡Copiado!</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="section-title en">Points History</div>
     <div class="section-title es">Historial de Puntos</div>
     <table>
@@ -179,6 +209,7 @@
     const name = user.user_metadata?.full_name || user.email;
     document.getElementById('user-name').textContent = name;
     document.getElementById('user-name-es').textContent = name;
+    document.getElementById('invite-link').value = `https://litterpreventionnetwork.org/login.html?ref=${btoa(user.email)}`;
     const { data: pts } = await _sb.from('points').select('*').eq('email', user.email).single();
     if (pts) { document.getElementById('current-points').textContent = pts.points; document.getElementById('total-points').textContent = pts.total_earned; }
     const { data: subs } = await _sb.from('proof_submissions').select('id').eq('email', user.email);
@@ -187,6 +218,13 @@
     document.getElementById('history-body').innerHTML = history?.length
       ? history.map(h => `<tr><td>${h.reason}</td><td style="color:#0F6E56;font-weight:700;">+${h.points}</td><td>${fmt(h.created_at)}</td></tr>`).join('')
       : '<tr><td colspan="3" class="empty">No points earned yet — submit proof to get started!</td></tr>';
+  }
+  function copyInviteLink() {
+    const link = document.getElementById('invite-link').value;
+    navigator.clipboard.writeText(link).then(() => {
+      document.getElementById('copy-msg').style.display = 'block';
+      setTimeout(() => { document.getElementById('copy-msg').style.display = 'none'; }, 2500);
+    });
   }
   async function handleLogout() { await _sb.auth.signOut(); window.location.href = 'login.html'; }
   init();

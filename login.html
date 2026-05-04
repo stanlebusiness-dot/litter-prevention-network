@@ -6,9 +6,9 @@
   <meta name="theme-color" content="#1D9E75" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Login – Litter Prevention Network</title>
-  <link rel="stylesheet" href="shared.css?v=20260503h" />
+  <link rel="stylesheet" href="shared.css?v=20260503j" />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
-  <script src="shared.js?v=20260503h"></script>
+  <script src="shared.js?v=20260503j"></script>
   <style>
     .container { max-width: 460px; margin: 60px auto; background: white; border-radius: 16px; padding: 48px 40px; box-shadow: 0 2px 20px rgba(0,0,0,0.08); }
     .logo { text-align: center; margin-bottom: 28px; }
@@ -56,6 +56,20 @@
       <a href="login.html" class="active"><span class="nav-icon">🔐</span><span class="en">Login</span><span class="es">Iniciar Sesión</span></a>
     </div>
     <div class="drawer-footer-note">© 2026 Litter Prevention Network · Willis, TX</div>
+  </div>
+
+  <!-- Referral invite banner -->
+  <div id="ref-banner" style="display:none;max-width:460px;margin:24px auto 0;padding:0 16px;">
+    <div style="background:linear-gradient(135deg,#E1F5EE,#d0f0e4);border-radius:12px;padding:18px 22px;border:1.5px solid #b5e8d0;text-align:center;">
+      <div style="font-size:28px;margin-bottom:6px;">🎁</div>
+      <p style="font-size:15px;font-weight:800;color:#0F6E56;font-family:'Outfit',sans-serif;margin-bottom:6px;">
+        <span class="en">You were invited to LPN!</span><span class="es">¡Fuiste invitado a LPN!</span>
+      </p>
+      <p style="font-size:13px;color:#2e7d32;line-height:1.6;">
+        <span class="en">Sign up below — you and your friend will <strong>each earn $5 in rewards</strong> when you complete your first cleanup.</span>
+        <span class="es">Regístrate abajo — tú y tu amigo <strong>ganarán $5 cada uno</strong> al completar tu primera limpieza.</span>
+      </p>
+    </div>
   </div>
 
   <div class="container">
@@ -190,6 +204,8 @@
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
   );
   _sb.auth.getSession().then(({ data }) => { if (data.session) window.location.href = 'dashboard.html'; });
+  const _refCode = new URLSearchParams(window.location.search).get('ref');
+  if (_refCode) { document.getElementById('ref-banner').style.display = 'block'; showPanel('signup'); }
   function showTab(tab) {
     showPanel(tab);
   }
@@ -232,6 +248,12 @@
     const password = document.getElementById('signup-password').value;
     const { error } = await _sb.auth.signUp({ email, password, options: { data: { full_name: name } } });
     if (error) return showMsg(error.message, 'error');
+    if (_refCode) {
+      try {
+        const referrerEmail = atob(_refCode);
+        await _sb.from('referrals').insert([{ referrer_email: referrerEmail, invitee_email: email, status: 'pending' }]);
+      } catch(e) {}
+    }
     showMsg('✅ Check your email to confirm your account!', 'success');
   }
   </script>
