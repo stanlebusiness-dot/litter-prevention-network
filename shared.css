@@ -428,6 +428,12 @@ nav {
 
 /* On desktop: logo stays centered (hamburger stays absolute-left),
    dropdown nav sits absolute-right */
+.nav-links-desktop {
+  display: none;
+  align-items: center;
+  gap: 2px;
+}
+
 @media (min-width: 769px) {
   nav {
     padding-left: 16px !important;
@@ -440,12 +446,6 @@ nav {
     top: 50%;
     transform: translateY(-50%);
   }
-}
-
-.nav-links-desktop {
-  display: none;
-  align-items: center;
-  gap: 2px;
 }
 .nav-dropdown { position: relative; }
 .nav-drop-btn {
