@@ -116,6 +116,41 @@
     .btn-save-settings:hover { background: #0F6E56; }
     .settings-msg { margin-left: 16px; font-size: 13px; color: #0F6E56; font-weight: 600; }
     .announcement-preview { background: #1D9E75; color: white; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; text-align: center; margin-top: 12px; display: none; }
+
+    /* ── PAGE EDITOR ── */
+    .page-pill { padding:7px 15px;border-radius:20px;border:1px solid #ddd;background:white;font-size:13px;font-weight:600;color:#555;cursor:pointer;transition:all 0.15s;white-space:nowrap; }
+    .page-pill:hover { border-color:#1D9E75;color:#1D9E75; }
+    .page-pill.active { background:#1D9E75;color:white;border-color:#1D9E75; }
+    .page-pill.has-img::after { content:'●';font-size:8px;margin-left:5px;color:#1D9E75;vertical-align:middle; }
+    .page-pill.active.has-img::after { color:rgba(255,255,255,0.65); }
+    .page-editor-grid { display:grid;grid-template-columns:1.15fr 1fr;gap:24px;align-items:start; }
+    @media(max-width:900px) { .page-editor-grid { grid-template-columns:1fr; } }
+    .pe-preview-label { font-size:11px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px; }
+    .pe-hero-frame { position:relative;width:100%;aspect-ratio:21/8;border-radius:10px 10px 0 0;overflow:hidden;background:#1D9E75; }
+    .pe-hero-bg { position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat; }
+    .pe-hero-overlay { position:absolute;inset:0; }
+    .pe-hero-text { position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:16px;text-align:center; }
+    .pe-hero-title { color:white;font-size:18px;font-weight:800;font-family:'Outfit',sans-serif;text-shadow:0 2px 8px rgba(0,0,0,0.4);line-height:1.2; }
+    .pe-hero-sub { color:rgba(255,255,255,0.85);font-size:12px;margin-top:6px;max-width:80%;line-height:1.5; }
+    .pe-section-blocks { display:flex;flex-direction:column; }
+    .pe-block { height:30px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase; }
+    .pe-green { background:#1D9E75;color:rgba(255,255,255,0.45); }
+    .pe-light { background:#f9f9f7;color:#ccc;border-left:1px solid #eee;border-right:1px solid #eee; }
+    .pe-img-block { height:58px;background:#e0e0e0;color:#bbb;font-size:11px;border-left:1px solid #eee;border-right:1px solid #eee;background-size:cover;background-position:center; }
+    .pe-footer { background:#0F2318;color:rgba(255,255,255,0.3);border-radius:0 0 10px 10px; }
+    .pe-panel { margin:0; }
+    .pe-field { margin-bottom:14px; }
+    .pe-field label { font-size:12px;font-weight:600;color:#666;display:block;margin-bottom:4px; }
+    .pe-field input[type=text],.pe-field textarea { width:100%;padding:9px 12px;border:1px solid #ddd;border-radius:6px;font-size:13px;outline:none;box-sizing:border-box; }
+    .pe-field input[type=text]:focus,.pe-field textarea:focus { border-color:#1D9E75; }
+    .pe-field textarea { resize:vertical; }
+    .pe-slider-row { margin-bottom:11px; }
+    .pe-slider-row label { font-size:12px;font-weight:600;color:#666;display:block;margin-bottom:3px; }
+    .pe-slider-row input[type=range] { width:100%; }
+    .pe-sv { color:#1D9E75;font-weight:700; }
+    .pe-fg-label { font-size:13px;font-weight:700;color:#0F2318;margin-bottom:10px; }
+    .pe-2col { display:grid;grid-template-columns:1fr 1fr;gap:12px; }
+    @media(max-width:600px) { .pe-2col { grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
@@ -390,30 +425,11 @@
     </table>
   </div>
 
-  <!-- �🖼️ Pages -->
+  <!-- Pages -->
   <div class="tab-content" id="tab-pages">
-    <div class="section-title">🖼️ Page Hero Images</div>
-    <div class="settings-card">
-      <h3>Hero Image Settings</h3>
-      Set a background photo, adjust vertical, horizontal, and zoom with 3 sliders, edit hero text, and preview desktop/mobile crops. v2
-
-      <div class="settings-row" style="margin-bottom:24px;">
-        <span class="settings-label">Overlay Opacity</span>
-        <div style="display:flex;align-items:center;gap:12px;flex:1;">
-          <input type="range" id="overlay-opacity" min="0.1" max="0.9" step="0.05" value="0.6"
-            style="flex:1;max-width:200px;" oninput="document.getElementById('opacity-val').textContent=Math.round(this.value*100)+'%'" />
-          <span id="opacity-val" style="font-size:14px;font-weight:700;color:#333;min-width:40px;">60%</span>
-          <span style="font-size:12px;color:#999;">Lower = more photo visible</span>
-        </div>
-      </div>
-
-      <div id="page-hero-list" style="display:flex;flex-direction:column;gap:8px;"></div>
-
-      <div style="margin-top:24px;display:flex;align-items:center;gap:16px;">
-        <button class="btn-save-settings" onclick="savePageImages()">💾 Save All Hero Images</button>
-        <span class="settings-msg" id="pages-msg"></span>
-      </div>
-    </div>
+    <div class="section-title">🖼️ Page Editor</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;" id="page-pills-bar"></div>
+    <div id="page-editor-area"></div>
   </div>
 
   <!-- ⚙️ Site Settings -->
@@ -1056,7 +1072,9 @@ const PAGE_LIST = [
   { key: 'contact',  label: '📬 Contact',        title: 'Contact Us' },
 ];
 
-let _openPageKey = null;
+let _currentPageKey = null;
+let _pagesData = {};
+let _pageContentData = {};
 
 async function loadPagesTab() {
   const [settingsRes, contentRes] = await Promise.all([
@@ -1067,204 +1085,264 @@ async function loadPagesTab() {
   (settingsRes.data || []).forEach(r => s[r.key] = r.value);
   const pc = {};
   (contentRes.data || []).forEach(r => pc[r.page] = r);
+  _pagesData = s;
+  _pageContentData = pc;
 
-  const opacity = parseFloat(s.hero_overlay_opacity || '0.6');
-  document.getElementById('overlay-opacity').value = opacity;
-  document.getElementById('opacity-val').textContent = Math.round(opacity * 100) + '%';
+  const bar = document.getElementById('page-pills-bar');
+  bar.innerHTML = PAGE_LIST.map(p => {
+    const hasImg = !!(s['hero_'+p.key+'_image']);
+    return `<button class="page-pill${hasImg?' has-img':''}" id="pill-${p.key}" onclick="selectPage('${p.key}')">${p.label}</button>`;
+  }).join('');
 
-  const container = document.getElementById('page-hero-list');
-  container.innerHTML = PAGE_LIST.map(p => {
-    const imgVal  = s['hero_'+p.key+'_image'] || '';
-    const yPos    = (s['hero_'+p.key+'_position'] || 'center 50%').match(/(\d+)%/) ? (s['hero_'+p.key+'_position'].match(/(\d+)%/)[1]) : '50';
-    const xPos    = s['hero_'+p.key+'_xposition'] || '50';
-    const zoom    = s['hero_'+p.key+'_zoom'] || '110';
-    const hasImg  = imgVal.length > 0;
-    const isOpen  = _openPageKey === p.key;
-    const content = pc[p.key] || {};
-    const headEn  = content.hero_headline_en || p.title;
-    const headEs  = content.hero_headline_es || '';
-    const subEn   = content.hero_subtext_en || '';
-    const subEs   = content.hero_subtext_es || '';
+  selectPage(_currentPageKey || PAGE_LIST[0].key);
+}
 
-    return `<div style="border:1px solid #eee;border-radius:10px;overflow:hidden;background:white;">
-      <div onclick="togglePageAccordion('${p.key}')" style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;user-select:none;${isOpen?'background:#f0fdf8;':''}">
-        <div style="display:flex;align-items:center;gap:12px;">
-          <span style="font-size:15px;font-weight:700;color:#0F2318;">${p.label}</span>
-          ${hasImg ? '<span style="background:#E1F5EE;color:#0F6E56;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;">Image set</span>' : '<span style="background:#f0f0ee;color:#aaa;font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px;">No image</span>'}
+function selectPage(key) {
+  _currentPageKey = key;
+  PAGE_LIST.forEach(p => {
+    const pill = document.getElementById('pill-'+p.key);
+    if (pill) pill.classList.toggle('active', p.key === key);
+  });
+  renderPageEditor(key);
+}
+
+function renderPageEditor(key) {
+  const s = _pagesData;
+  const pc = _pageContentData;
+  const p = PAGE_LIST.find(x => x.key === key);
+  if (!p) return;
+
+  const imgVal   = s['hero_'+key+'_image'] || '';
+  const posStr   = s['hero_'+key+'_position'] || 'center 50%';
+  const yPos     = (posStr.match(/(\d+)%/) || ['','50'])[1];
+  const xPos     = s['hero_'+key+'_xposition'] || '50';
+  const zoom     = s['hero_'+key+'_zoom'] || '110';
+  const opacity  = parseFloat(s.hero_overlay_opacity || '0.6');
+  const opPct    = Math.round(opacity * 100);
+  const content  = pc[key] || {};
+  const headEnRaw = content.hero_headline_en || p.title;
+  const headEsRaw = content.hero_headline_es || '';
+  const headEn   = headEnRaw.replace(/"/g, '&quot;');
+  const headEs   = headEsRaw.replace(/"/g, '&quot;');
+  const subEn    = content.hero_subtext_en || '';
+  const subEs    = content.hero_subtext_es || '';
+  const bottomImg = key === 'index' ? (s['parallax_3_img'] || '') : '';
+
+  const bgStyle   = imgVal ? `url('${imgVal}')` : 'linear-gradient(135deg,#1D9E75,#0F6E56)';
+  const bgSz      = imgVal ? zoom+'%' : 'cover';
+  const bgPos     = imgVal ? xPos+'% '+yPos+'%' : 'center';
+  const overlayRgba = `rgba(15,110,86,${opacity})`;
+
+  const yLbl = yPos==50?'Center':yPos<50?'Top '+yPos+'%':'Bottom '+yPos+'%';
+  const xLbl = xPos==50?'Center':xPos<50?'Left '+xPos+'%':'Right '+xPos+'%';
+
+  const bottomBlockHtml = key === 'index' ? `
+    <div class="pe-block pe-img-block" id="pe-bottom-prev-${key}" ${bottomImg ? `style="background-image:url('${bottomImg}')"` : ''}>${bottomImg ? '' : 'Bottom Image'}</div>` : '';
+
+  const bottomFieldHtml = key === 'index' ? `
+          <div style="border-top:1px solid #f0f0ee;padding-top:14px;margin-top:4px;">
+            <div class="pe-fg-label">🌿 Bottom Section Image</div>
+            <div class="pe-field">
+              <label>Image URL</label>
+              <input type="text" id="pe-bottom-${key}" value="${bottomImg}" placeholder="Paste image URL for the bottom section..." oninput="updateBottomPreview('${key}')" />
+            </div>
+            <p style="font-size:12px;color:#888;margin:0;">Full-width image at the bottom of the home page.</p>
+          </div>` : '';
+
+  document.getElementById('page-editor-area').innerHTML = `
+    <div class="page-editor-grid">
+      <div>
+        <div class="pe-preview-label">Live Preview</div>
+        <div class="pe-hero-frame">
+          <div class="pe-hero-bg" id="pe-bg-${key}" style="background-image:${bgStyle};background-size:${bgSz};background-position:${bgPos};"></div>
+          <div class="pe-hero-overlay" id="pe-ov-${key}" style="background:${overlayRgba};"></div>
+          <div class="pe-hero-text">
+            <div class="pe-hero-title" id="pe-title-${key}">${headEnRaw}</div>
+            <div class="pe-hero-sub" id="pe-sub-${key}">${subEn.slice(0,80)}${subEn.length>80?'...':''}</div>
+          </div>
         </div>
-        <span style="font-size:18px;color:#aaa;transition:transform 0.2s;${isOpen?'transform:rotate(180deg);':''}">⌄</span>
+        <div class="pe-section-blocks">
+          <div class="pe-block pe-green">Section</div>
+          <div class="pe-block pe-light">Section</div>
+          <div class="pe-block pe-green">Section</div>
+          ${bottomBlockHtml}
+          <div class="pe-block pe-footer">Footer</div>
+        </div>
       </div>
 
-      <div id="accordion-${p.key}" style="display:${isOpen?'block':'none'};padding:18px;border-top:1px solid #f0f0ee;">
+      <div>
+        <div class="settings-card pe-panel">
+          <h3 style="margin-bottom:16px;">${p.label}</h3>
 
-        <!-- Image URL -->
-        <label style="font-size:12px;font-weight:600;color:#666;display:block;margin-bottom:4px;">Image URL</label>
-        <input type="text" id="hero-img-${p.key}" value="${imgVal}"
-          placeholder="Paste image URL from Supabase Storage or any public URL..."
-          oninput="updateHeroPreview('${p.key}')"
-          style="width:100%;padding:9px 12px;border:1px solid #ddd;border-radius:6px;font-size:13px;outline:none;margin-bottom:16px;" />
+          <div class="pe-field">
+            <label>Hero Image URL</label>
+            <input type="text" id="pe-img-${key}" value="${imgVal}" placeholder="Paste image URL..." oninput="livePreview('${key}')" />
+          </div>
 
-        <!-- 3 sliders -->
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;">
-          <div>
-            <label style="font-size:12px;font-weight:600;color:#666;display:block;margin-bottom:4px;">
-              ↕ Vertical &nbsp;<span id="pos-y-label-${p.key}" style="color:#1D9E75;font-weight:700;">${yPos==50?'Center':yPos<50?'Top '+yPos+'%':'Bottom '+yPos+'%'}</span>
-            </label>
-            <input type="range" id="hero-pos-${p.key}" min="0" max="100" value="${yPos}" style="width:100%;" oninput="updateHeroPreview('${p.key}')" />
+          <div style="margin-bottom:4px;">
+            <div class="pe-slider-row">
+              <label>&#x2195; Vertical <span class="pe-sv" id="pe-y-lbl-${key}">${yLbl}</span></label>
+              <input type="range" id="pe-y-${key}" min="0" max="100" value="${yPos}" oninput="livePreview('${key}')" />
+            </div>
+            <div class="pe-slider-row">
+              <label>&#x2194; Horizontal <span class="pe-sv" id="pe-x-lbl-${key}">${xLbl}</span></label>
+              <input type="range" id="pe-x-${key}" min="0" max="100" value="${xPos}" oninput="livePreview('${key}')" />
+            </div>
+            <div class="pe-slider-row">
+              <label>&#x1F50D; Zoom <span class="pe-sv" id="pe-z-lbl-${key}">${zoom}%</span></label>
+              <input type="range" id="pe-z-${key}" min="100" max="200" value="${zoom}" oninput="livePreview('${key}')" />
+            </div>
+            <div class="pe-slider-row">
+              <label>&#x1F3A8; Overlay <span class="pe-sv" id="pe-o-lbl-${key}">${opPct}%</span></label>
+              <input type="range" id="pe-o-${key}" min="10" max="90" step="5" value="${opPct}" oninput="livePreview('${key}')" />
+            </div>
           </div>
-          <div>
-            <label style="font-size:12px;font-weight:600;color:#666;display:block;margin-bottom:4px;">
-              ↔ Horizontal &nbsp;<span id="pos-x-label-${p.key}" style="color:#1D9E75;font-weight:700;">${xPos==50?'Center':xPos<50?'Left '+xPos+'%':'Right '+xPos+'%'}</span>
-            </label>
-            <input type="range" id="hero-xpos-${p.key}" min="0" max="100" value="${xPos}" style="width:100%;" oninput="updateHeroPreview('${p.key}')" />
-          </div>
-          <div>
-            <label style="font-size:12px;font-weight:600;color:#666;display:block;margin-bottom:4px;">
-              🔍 Zoom &nbsp;<span id="zoom-label-${p.key}" style="color:#1D9E75;font-weight:700;">${zoom}%</span>
-            </label>
-            <input type="range" id="hero-zoom-${p.key}" min="100" max="200" value="${zoom}" style="width:100%;" oninput="updateHeroPreview('${p.key}')" />
-          </div>
-        </div>
 
-        <!-- Previews -->
-        <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;">
-          <div style="flex:1;">
-            <div style="font-size:11px;color:#aaa;margin-bottom:4px;text-align:center;">🖥 Desktop</div>
-            <div style="width:100%;aspect-ratio:16/5;border-radius:6px;overflow:hidden;background:#eee;position:relative;">
-              <div id="preview-img-desktop-${p.key}" style="position:absolute;inset:0;background-size:${zoom}%;background-image:${hasImg?'url(\''+imgVal+'\')':'none'};background-position:${xPos}% ${yPos}%;"></div>
-              <div style="position:absolute;inset:0;background:rgba(15,110,86,0.45);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px;">
-                <span id="preview-title-${p.key}" style="color:white;font-size:13px;font-weight:800;text-shadow:0 1px 4px rgba(0,0,0,0.6);text-align:center;">${headEn}</span>
-                <span style="color:rgba(255,255,255,0.8);font-size:10px;margin-top:3px;text-align:center;max-width:80%;">${subEn.slice(0,60)}${subEn.length>60?'...':''}</span>
+          <div style="border-top:1px solid #f0f0ee;padding-top:14px;margin-top:4px;">
+            <div class="pe-fg-label">Hero Text</div>
+            <div class="pe-2col">
+              <div class="pe-field">
+                <label>Headline (English)</label>
+                <input type="text" id="pe-hen-${key}" value="${headEn}" oninput="document.getElementById('pe-title-${key}').textContent=this.value" />
+              </div>
+              <div class="pe-field">
+                <label>Headline (Spanish)</label>
+                <input type="text" id="pe-hes-${key}" value="${headEs}" />
+              </div>
+            </div>
+            <div class="pe-2col">
+              <div class="pe-field">
+                <label>Subtext (English)</label>
+                <textarea id="pe-sen-${key}" rows="2" oninput="document.getElementById('pe-sub-${key}').textContent=this.value.slice(0,80)">${subEn}</textarea>
+              </div>
+              <div class="pe-field">
+                <label>Subtext (Spanish)</label>
+                <textarea id="pe-ses-${key}" rows="2">${subEs}</textarea>
               </div>
             </div>
           </div>
-          <div style="width:70px;flex-shrink:0;">
-            <div style="font-size:11px;color:#aaa;margin-bottom:4px;text-align:center;">📱 Mobile</div>
-            <div style="width:70px;height:124px;border-radius:6px;overflow:hidden;background:#eee;position:relative;">
-              <div id="preview-img-mobile-${p.key}" style="position:absolute;inset:0;background-size:${zoom}%;background-image:${hasImg?'url(\''+imgVal+'\')':'none'};background-position:${xPos}% ${yPos}%;"></div>
-              <div style="position:absolute;inset:0;background:rgba(15,110,86,0.45);"></div>
-            </div>
+
+          ${bottomFieldHtml}
+
+          <div style="margin-top:20px;display:flex;align-items:center;gap:16px;">
+            <button class="btn-save-settings" onclick="savePageEditor('${key}')">&#x1F4BE; Save Changes</button>
+            <span class="settings-msg" id="pe-msg-${key}"></span>
           </div>
         </div>
-
-        <!-- Hero Text Editing -->
-        <div style="border-top:1px solid #f0f0ee;padding-top:14px;margin-top:4px;">
-          <div style="font-size:13px;font-weight:700;color:#0F2318;margin-bottom:10px;">✏️ Hero Text (optional override)</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px;">
-            <div>
-              <label style="font-size:11px;font-weight:600;color:#666;display:block;margin-bottom:3px;">Headline (English)</label>
-              <input type="text" id="hero-head-en-${p.key}" value="${headEn.replace(/"/g,'&quot;')}"
-                oninput="document.getElementById('preview-title-${p.key}').textContent=this.value"
-                style="width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:6px;font-size:13px;outline:none;" />
-            </div>
-            <div>
-              <label style="font-size:11px;font-weight:600;color:#666;display:block;margin-bottom:3px;">Headline (Spanish)</label>
-              <input type="text" id="hero-head-es-${p.key}" value="${headEs.replace(/"/g,'&quot;')}"
-                style="width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:6px;font-size:13px;outline:none;" />
-            </div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-            <div>
-              <label style="font-size:11px;font-weight:600;color:#666;display:block;margin-bottom:3px;">Subtext (English)</label>
-              <textarea id="hero-sub-en-${p.key}" rows="2"
-                style="width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:6px;font-size:12px;outline:none;resize:vertical;">${subEn}</textarea>
-            </div>
-            <div>
-              <label style="font-size:11px;font-weight:600;color:#666;display:block;margin-bottom:3px;">Subtext (Spanish)</label>
-              <textarea id="hero-sub-es-${p.key}" rows="2"
-                style="width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:6px;font-size:12px;outline:none;resize:vertical;">${subEs}</textarea>
-            </div>
-          </div>
-        </div>
-
-        ${p.key === 'index' ? `<div style="border-top:1px solid #f0f0ee;padding-top:14px;margin-top:14px;">
-          <div style="font-size:13px;font-weight:700;color:#0F2318;margin-bottom:10px;">🌿 Bottom Section Image</div>
-          <label style="font-size:12px;font-weight:600;color:#666;display:block;margin-bottom:4px;">Image URL</label>
-          <input type="text" id="bottom-img-index" value="${s['parallax_3_img'] || ''}"
-            placeholder="Paste image URL for the bottom grass section..."
-            style="width:100%;padding:9px 12px;border:1px solid #ddd;border-radius:6px;font-size:13px;outline:none;margin-bottom:6px;" />
-          <p style="font-size:12px;color:#888;margin:0;">Full-width image at the bottom of the home page, just above the footer.</p>
-        </div>` : ''}
-
       </div>
-    </div>`;
-  }).join('');
+    </div>
+  `;
 }
 
-function togglePageAccordion(key) {
-  _openPageKey = _openPageKey === key ? null : key;
-  PAGE_LIST.forEach(p => {
-    const body = document.getElementById('accordion-'+p.key);
-    const header = body?.previousElementSibling;
-    if (!body) return;
-    const isOpen = p.key === _openPageKey;
-    body.style.display = isOpen ? 'block' : 'none';
-    if (header) {
-      header.style.background = isOpen ? '#f0fdf8' : '';
-      const arrow = header.querySelector('span:last-child');
-      if (arrow) arrow.style.transform = isOpen ? 'rotate(180deg)' : '';
+function livePreview(key) {
+  const url    = document.getElementById('pe-img-'+key)?.value || '';
+  const yPos   = document.getElementById('pe-y-'+key)?.value || '50';
+  const xPos   = document.getElementById('pe-x-'+key)?.value || '50';
+  const zoom   = document.getElementById('pe-z-'+key)?.value || '110';
+  const opPct  = document.getElementById('pe-o-'+key)?.value || '60';
+  const opacity = opPct / 100;
+
+  const yLbl = yPos==50?'Center':yPos<50?'Top '+yPos+'%':'Bottom '+yPos+'%';
+  const xLbl = xPos==50?'Center':xPos<50?'Left '+xPos+'%':'Right '+xPos+'%';
+  const el = document.getElementById('pe-y-lbl-'+key);
+  const xl = document.getElementById('pe-x-lbl-'+key);
+  const zl = document.getElementById('pe-z-lbl-'+key);
+  const ol = document.getElementById('pe-o-lbl-'+key);
+  if (el) el.textContent = yLbl;
+  if (xl) xl.textContent = xLbl;
+  if (zl) zl.textContent = zoom+'%';
+  if (ol) ol.textContent = opPct+'%';
+
+  const bg = document.getElementById('pe-bg-'+key);
+  const ov = document.getElementById('pe-ov-'+key);
+  if (bg) {
+    if (url) {
+      bg.style.backgroundImage = `url('${url}')`;
+      bg.style.backgroundSize  = zoom+'%';
+      bg.style.backgroundPosition = xPos+'% '+yPos+'%';
+    } else {
+      bg.style.backgroundImage  = 'linear-gradient(135deg,#1D9E75,#0F6E56)';
+      bg.style.backgroundSize   = 'cover';
+      bg.style.backgroundPosition = 'center';
     }
-  });
+  }
+  if (ov) ov.style.background = `rgba(15,110,86,${opacity})`;
 }
 
-function updateHeroPreview(key) {
-  const url  = document.getElementById('hero-img-'+key)?.value || '';
-  const yPos = document.getElementById('hero-pos-'+key)?.value || '50';
-  const xPos = document.getElementById('hero-xpos-'+key)?.value || '50';
-  const zoom = document.getElementById('hero-zoom-'+key)?.value || '110';
-  const bgPos = xPos+'% '+yPos+'%';
-  const yLabel = yPos==50?'Center':yPos<50?'Top '+yPos+'%':'Bottom '+yPos+'%';
-  const xLabel = xPos==50?'Center':xPos<50?'Left '+xPos+'%':'Right '+xPos+'%';
-  const zLabel = zoom+'%';
-  const el = document.getElementById('pos-y-label-'+key);
-  const xl = document.getElementById('pos-x-label-'+key);
-  const zl = document.getElementById('zoom-label-'+key);
-  if (el) el.textContent = yLabel;
-  if (xl) xl.textContent = xLabel;
-  if (zl) zl.textContent = zLabel;
-  const bgStr = url ? "url('"+url+"')" : 'none';
-  const bgSize = zoom+'%';
-  const d = document.getElementById('preview-img-desktop-'+key);
-  const m = document.getElementById('preview-img-mobile-'+key);
-  if (d) { d.style.backgroundImage = bgStr; d.style.backgroundPosition = bgPos; d.style.backgroundSize = bgSize; }
-  if (m) { m.style.backgroundImage = bgStr; m.style.backgroundPosition = bgPos; m.style.backgroundSize = bgSize; }
+function updateBottomPreview(key) {
+  const url = document.getElementById('pe-bottom-'+key)?.value || '';
+  const el  = document.getElementById('pe-bottom-prev-'+key);
+  if (!el) return;
+  if (url) {
+    el.style.backgroundImage = `url('${url}')`;
+    el.innerHTML = '';
+  } else {
+    el.style.backgroundImage = '';
+    el.innerHTML = 'Bottom Image';
+  }
 }
 
-async function savePageImages() {
-  const opacity = document.getElementById('overlay-opacity').value;
-  const updates = [{ key: 'hero_overlay_opacity', value: String(opacity) }];
-  const contentUpdates = [];
+async function savePageEditor(key) {
+  const p = PAGE_LIST.find(x => x.key === key);
+  if (!p) return;
 
-  PAGE_LIST.forEach(p => {
-    const imgVal  = document.getElementById('hero-img-'+p.key)?.value?.trim() || '';
-    const yPos    = document.getElementById('hero-pos-'+p.key)?.value || '50';
-    const xPos    = document.getElementById('hero-xpos-'+p.key)?.value || '50';
-    const zoom    = document.getElementById('hero-zoom-'+p.key)?.value || '110';
-    const headEn  = document.getElementById('hero-head-en-'+p.key)?.value?.trim() || '';
-    const headEs  = document.getElementById('hero-head-es-'+p.key)?.value?.trim() || '';
-    const subEn   = document.getElementById('hero-sub-en-'+p.key)?.value?.trim() || '';
-    const subEs   = document.getElementById('hero-sub-es-'+p.key)?.value?.trim() || '';
-    updates.push({ key: 'hero_'+p.key+'_image',     value: imgVal });
-    updates.push({ key: 'hero_'+p.key+'_position',  value: 'center '+yPos+'%' });
-    updates.push({ key: 'hero_'+p.key+'_xposition', value: xPos });
-    updates.push({ key: 'hero_'+p.key+'_zoom',      value: zoom });
-    if (p.key === 'index') {
-      const bottomImg = document.getElementById('bottom-img-index')?.value?.trim() || '';
-      updates.push({ key: 'parallax_3_img', value: bottomImg });
-    }
-    contentUpdates.push({ page: p.key, hero_headline_en: headEn, hero_headline_es: headEs, hero_subtext_en: subEn, hero_subtext_es: subEs, updated_at: new Date().toISOString() });
-  });
+  const imgVal  = document.getElementById('pe-img-'+key)?.value?.trim() || '';
+  const yPos    = document.getElementById('pe-y-'+key)?.value || '50';
+  const xPos    = document.getElementById('pe-x-'+key)?.value || '50';
+  const zoom    = document.getElementById('pe-z-'+key)?.value || '110';
+  const opPct   = document.getElementById('pe-o-'+key)?.value || '60';
+  const opacity = (opPct / 100).toFixed(2);
+  const headEn  = document.getElementById('pe-hen-'+key)?.value?.trim() || '';
+  const headEs  = document.getElementById('pe-hes-'+key)?.value?.trim() || '';
+  const subEn   = document.getElementById('pe-sen-'+key)?.value?.trim() || '';
+  const subEs   = document.getElementById('pe-ses-'+key)?.value?.trim() || '';
+
+  const updates = [
+    { key: 'hero_overlay_opacity',   value: opacity },
+    { key: 'hero_'+key+'_image',     value: imgVal },
+    { key: 'hero_'+key+'_position',  value: 'center '+yPos+'%' },
+    { key: 'hero_'+key+'_xposition', value: xPos },
+    { key: 'hero_'+key+'_zoom',      value: zoom },
+  ];
+
+  if (key === 'index') {
+    const bottomImg = document.getElementById('pe-bottom-'+key)?.value?.trim() || '';
+    updates.push({ key: 'parallax_3_img', value: bottomImg });
+    _pagesData['parallax_3_img'] = bottomImg;
+  }
+
+  _pagesData['hero_'+key+'_image']     = imgVal;
+  _pagesData['hero_'+key+'_position']  = 'center '+yPos+'%';
+  _pagesData['hero_'+key+'_xposition'] = xPos;
+  _pagesData['hero_'+key+'_zoom']      = zoom;
+  _pagesData['hero_overlay_opacity']   = opacity;
 
   for (const u of updates) {
     await _sb.from('site_settings').upsert(u, { onConflict: 'key' });
   }
-  for (const c of contentUpdates) {
-    await _sb.from('page_content').upsert(c, { onConflict: 'page' });
-  }
+  await _sb.from('page_content').upsert({
+    page: key,
+    hero_headline_en: headEn,
+    hero_headline_es: headEs,
+    hero_subtext_en:  subEn,
+    hero_subtext_es:  subEs,
+    updated_at: new Date().toISOString()
+  }, { onConflict: 'page' });
 
-  const msg = document.getElementById('pages-msg');
-  msg.textContent = '✅ Saved! Changes are live on the site.';
-  setTimeout(() => msg.textContent = '', 3000);
+  if (!_pageContentData[key]) _pageContentData[key] = {};
+  Object.assign(_pageContentData[key], {
+    hero_headline_en: headEn, hero_headline_es: headEs,
+    hero_subtext_en: subEn,   hero_subtext_es: subEs
+  });
+
+  const pill = document.getElementById('pill-'+key);
+  if (pill) pill.classList.toggle('has-img', !!imgVal);
+
+  const msg = document.getElementById('pe-msg-'+key);
+  if (msg) {
+    msg.textContent = '✅ Saved! Changes are live.';
+    setTimeout(() => msg.textContent = '', 3000);
+  }
 }
 
 // ── SITE SETTINGS ──
