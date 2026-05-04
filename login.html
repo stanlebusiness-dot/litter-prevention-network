@@ -219,9 +219,8 @@
     if (!email) return showMsg('Please enter your email address.', 'error');
     const btn = document.getElementById('forgot-btn');
     btn.disabled = true;
-    const base = window.location.href.split('/').slice(0, -1).join('/');
     const { error } = await _sb.auth.resetPasswordForEmail(email, {
-      redirectTo: base + '/reset-password.html'
+      redirectTo: 'https://litterpreventionnetwork.org/reset-password.html'
     });
     btn.disabled = false;
     if (error) return showMsg(error.message, 'error');
