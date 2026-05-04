@@ -203,8 +203,8 @@
     'https://elgzfppmlsrrmskgloeo.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
   );
-  _sb.auth.getSession().then(({ data }) => { if (data.session) window.location.href = 'dashboard.html'; });
   const _refCode = new URLSearchParams(window.location.search).get('ref');
+  _sb.auth.getSession().then(({ data }) => { if (data.session && !_refCode) window.location.href = 'dashboard.html'; });
   if (_refCode) { document.getElementById('ref-banner').style.display = 'block'; showPanel('signup'); }
   function showTab(tab) {
     showPanel(tab);
