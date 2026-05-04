@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1D9E75" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Emergencies – Litter Prevention Network</title>
+  <link rel="stylesheet" href="shared.css?v=20260504b" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <script src="shared.js?v=20260504b"></script>
+  <style>
+    .page-body { max-width: 900px; margin: 0 auto; padding: 56px 32px; }
+    .section-label { display: inline-block; background: #E1F5EE; color: #0F6E56; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 16px; }
+    .alert-label { display: inline-block; background: #FFF3CD; color: #7B4F00; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 16px; border: 1px solid #FFD86E; }
+    .page-body h2 { font-size: 28px; font-weight: 800; font-family: 'Outfit', sans-serif; color: #0F2318; margin-bottom: 14px; }
+    .page-body p { font-size: 16px; color: #555; line-height: 1.9; margin-bottom: 14px; }
+    .emergency-banner { background: #FFF8E1; border: 2px solid #FFD54F; border-radius: 14px; padding: 28px 32px; margin-bottom: 48px; display: flex; gap: 20px; align-items: flex-start; }
+    .emergency-banner .icon { font-size: 40px; flex-shrink: 0; }
+    .emergency-banner h3 { font-size: 20px; font-weight: 800; font-family: 'Outfit', sans-serif; color: #7B4F00; margin-bottom: 8px; }
+    .emergency-banner p { font-size: 15px; color: #7B4F00; line-height: 1.7; margin: 0; }
+    .emergency-banner a { color: #7B4F00; font-weight: 700; }
+    .type-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; margin: 40px 0; }
+    .type-card { border-radius: 14px; padding: 28px 24px; border: 2px solid #eee; }
+    .type-card.red { border-color: #FFCDD2; background: #FFF5F5; }
+    .type-card.orange { border-color: #FFE0B2; background: #FFFAF5; }
+    .type-card.yellow { border-color: #FFF9C4; background: #FFFEEF; }
+    .type-card .icon { font-size: 32px; margin-bottom: 14px; }
+    .type-card h3 { font-size: 17px; font-weight: 800; font-family: 'Outfit', sans-serif; color: #0F2318; margin-bottom: 8px; }
+    .type-card p { font-size: 14px; color: #666; line-height: 1.8; margin-bottom: 12px; }
+    .type-card .action { font-size: 13px; font-weight: 700; }
+    .type-card.red .action { color: #c62828; }
+    .type-card.orange .action { color: #e65100; }
+    .type-card.yellow .action { color: #f57f17; }
+    .steps-list { counter-reset: step; list-style: none; padding: 0; margin: 24px 0 40px; }
+    .steps-list li { counter-increment: step; display: flex; gap: 16px; align-items: flex-start; margin-bottom: 20px; }
+    .steps-list li::before { content: counter(step); min-width: 36px; height: 36px; border-radius: 50%; background: #1D9E75; color: white; font-weight: 800; font-size: 15px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-family: 'Outfit', sans-serif; }
+    .steps-list li div h4 { font-size: 16px; font-weight: 700; font-family: 'Outfit', sans-serif; color: #0F2318; margin-bottom: 4px; }
+    .steps-list li div p { font-size: 14px; color: #666; line-height: 1.7; margin: 0; }
+    .report-cta { background: linear-gradient(135deg, #1D9E75 0%, #0F6E56 100%); border-radius: 16px; padding: 48px 40px; text-align: center; color: white; margin-top: 56px; }
+    .report-cta h2 { font-size: 28px; font-weight: 800; font-family: 'Outfit', sans-serif; margin-bottom: 12px; }
+    .report-cta p { font-size: 16px; opacity: 0.9; margin-bottom: 28px; max-width: 500px; margin-left: auto; margin-right: auto; line-height: 1.7; color: white; }
+    .btn-white { background: white; color: #1D9E75; padding: 14px 32px; border-radius: 8px; font-weight: 700; font-size: 15px; text-decoration: none; display: inline-block; font-family: 'Outfit', sans-serif; margin: 6px; }
+    .btn-outline-white { background: transparent; color: white; padding: 13px 28px; border-radius: 8px; font-weight: 600; font-size: 15px; text-decoration: none; display: inline-block; font-family: 'Outfit', sans-serif; border: 2px solid rgba(255,255,255,0.7); margin: 6px; }
+  </style>
+</head>
+<body>
+  <div class="lang-bar">
+    <button class="active" onclick="setLang('en')">English</button>
+    <button onclick="setLang('es')">Español</button>
+  </div>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <span style="font-family:'Outfit',sans-serif;font-weight:800;font-size:18px;color:#0F6E56;">LPN Willis</span>
+    </a>
+    <button class="hamburger" onclick="openDrawer()"><span></span><span></span><span></span></button>
+  </nav>
+
+  <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">
+      <div class="drawer-logo" style="font-family:'Outfit',sans-serif;">Litter Prevention Network</div>
+      <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    </div>
+    <div class="drawer-nav">
+      <a href="index.html"><span class="nav-icon">🏠</span><span class="en">Home</span><span class="es">Inicio</span></a>
+      <a href="events.html"><span class="nav-icon">📅</span><span class="en">Events</span><span class="es">Eventos</span></a>
+      <a href="map.html"><span class="nav-icon">🗺️</span><span class="en">Litter Map</span><span class="es">Mapa de Basura</span></a>
+      <a href="report-litter.html"><span class="nav-icon">📍</span><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
+      <a href="rewards.html"><span class="nav-icon">🏆</span><span class="en">Rewards</span><span class="es">Recompensas</span></a>
+      <a href="volunteer.html"><span class="nav-icon">🙌</span><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
+      <a href="submit-proof.html"><span class="nav-icon">📸</span><span class="en">Submit Proof</span><span class="es">Enviar Prueba</span></a>
+      <a href="prize-portal.html"><span class="nav-icon">🎁</span><span class="en">Prize Portal</span><span class="es">Portal de Premios</span></a>
+      <a href="sponsors.html"><span class="nav-icon">🤝</span><span class="en">Sponsors</span><span class="es">Patrocinadores</span></a>
+      <div class="drawer-divider"></div>
+      <a href="dashboard.html"><span class="nav-icon">📊</span><span class="en">My Dashboard</span><span class="es">Mi Panel</span></a>
+      <a href="login.html"><span class="nav-icon">🔐</span><span class="en">Login</span><span class="es">Iniciar Sesión</span></a>
+      <div class="drawer-divider"></div>
+      <a href="our-work.html"><span class="nav-icon">🛠️</span><span class="en">Our Work</span><span class="es">Nuestro Trabajo</span></a>
+      <a href="our-impact.html"><span class="nav-icon">📈</span><span class="en">Our Impact</span><span class="es">Nuestro Impacto</span></a>
+      <a href="emergencies.html" class="active"><span class="nav-icon">🚨</span><span class="en">Emergencies</span><span class="es">Emergencias</span></a>
+      <div class="drawer-divider"></div>
+      <a href="about.html"><span class="nav-icon">ℹ️</span><span class="en">About</span><span class="es">Acerca de</span></a>
+      <a href="faq.html"><span class="nav-icon">❓</span>FAQ</a>
+      <a href="contact.html"><span class="nav-icon">📬</span><span class="en">Contact</span><span class="es">Contacto</span></a>
+    </div>
+    <div class="drawer-footer-note">© 2026 Litter Prevention Network · Willis, TX</div>
+  </div>
+
+  <section class="page-hero">
+    <h1><span class="en">Emergencies</span><span class="es">Emergencias</span></h1>
+    <p><span class="en">How to report hazardous litter, illegal dumping, and environmental emergencies in Willis, TX.</span><span class="es">Cómo reportar basura peligrosa, vertidos ilegales y emergencias ambientales en Willis, TX.</span></p>
+  </section>
+
+  <div class="page-body">
+
+    <div class="emergency-banner">
+      <div class="icon">⚠️</div>
+      <div>
+        <h3>Life-threatening emergency? Call 911.</h3>
+        <p>This page covers environmental and litter-related emergencies. If you see a situation that puts someone's safety at immediate risk — fire, injury, active chemical spill — <strong>call 911 first.</strong> Then report it to us at <a href="tel:2819359097">(281) 935-9097</a>.</p>
+      </div>
+    </div>
+
+    <div style="margin-bottom:48px;">
+      <span class="section-label">Types of Emergencies</span>
+      <h2>What counts as an environmental emergency?</h2>
+      <p>Not all litter is equal. Some situations need an immediate response — from us, from the city, or from state agencies. Here's how we categorize what we see in Willis.</p>
+      <div class="type-grid">
+        <div class="type-card red">
+          <div class="icon">☣️</div>
+          <h3>Hazardous Materials</h3>
+          <p>Chemicals, oil drums, medical waste, or unknown liquids dumped on roadsides or in drainage areas. Do not approach or touch.</p>
+          <div class="action">→ Call (281) 935-9097 immediately</div>
+        </div>
+        <div class="type-card red">
+          <div class="icon">🪣</div>
+          <h3>Illegal Dumping — Large Scale</h3>
+          <p>Truckloads of construction debris, appliances, or bulk waste dumped on public or private land. Often happens overnight.</p>
+          <div class="action">→ Report via our litter map or call us</div>
+        </div>
+        <div class="type-card orange">
+          <div class="icon">🌊</div>
+          <h3>Waterway Contamination</h3>
+          <p>Litter, chemicals, or runoff entering storm drains, ditches, creeks, or Lake Conroe tributaries in the Willis area.</p>
+          <div class="action">→ Report + contact TCEQ if chemical</div>
+        </div>
+        <div class="type-card orange">
+          <div class="icon">🔥</div>
+          <h3>Litter Fire Hazard</h3>
+          <p>Large accumulations of dry debris, cardboard, or waste near structures or dry vegetation during high fire-risk conditions.</p>
+          <div class="action">→ Call 911 if active, report to us if not</div>
+        </div>
+        <div class="type-card yellow">
+          <div class="icon">🐾</div>
+          <h3>Wildlife Entanglement Risk</h3>
+          <p>Fishing line, netting, plastic rings, or other debris posing a hazard to local wildlife in green spaces or near water.</p>
+          <div class="action">→ Report via litter map</div>
+        </div>
+        <div class="type-card yellow">
+          <div class="icon">🏚️</div>
+          <h3>Abandoned Property Litter</h3>
+          <p>Vacant lots or abandoned properties accumulating large volumes of waste attracting pests or creating neighborhood blight.</p>
+          <div class="action">→ Report to us + contact the city</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:48px;">
+      <span class="section-label">How to Report</span>
+      <h2>What to do when you see an emergency</h2>
+      <ol class="steps-list">
+        <li>
+          <div>
+            <h4>Stay safe — don't approach hazardous materials</h4>
+            <p>If you see chemicals, unknown liquids, or anything that smells dangerous, stay at a distance. Document from a safe position.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h4>Take a photo if it's safe to do so</h4>
+            <p>A clear photo with the location in frame helps our team and city officials prioritize and respond faster.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h4>Report it on our litter map</h4>
+            <p>Use the "Report Litter" tool to pin the location, describe what you see, and attach your photo. Select "Emergency / Hazardous" as the type.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h4>Call us directly for urgent situations</h4>
+            <p>For anything that needs same-day attention, call <strong>(281) 935-9097</strong>. We coordinate with city public works, TxDOT, and TCEQ depending on the situation.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div style="margin-bottom:48px;">
+      <span class="section-label">Key Contacts</span>
+      <h2>Who handles what in Willis</h2>
+      <p>Depending on the type and location of the emergency, different agencies have jurisdiction. Here's a quick reference:</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:24px;">
+        <div style="background:#f9f9f7;border-radius:12px;padding:20px 18px;border:1px solid #eee;">
+          <div style="font-weight:800;font-size:15px;color:#0F2318;margin-bottom:6px;">LPN Willis</div>
+          <div style="font-size:13px;color:#666;line-height:1.7;">Community reporting, volunteer response coordination<br/><a href="tel:2819359097" style="color:#1D9E75;font-weight:700;">(281) 935-9097</a></div>
+        </div>
+        <div style="background:#f9f9f7;border-radius:12px;padding:20px 18px;border:1px solid #eee;">
+          <div style="font-weight:800;font-size:15px;color:#0F2318;margin-bottom:6px;">City of Willis</div>
+          <div style="font-size:13px;color:#666;line-height:1.7;">Public property, city roads, code enforcement<br/><a href="tel:9368561600" style="color:#1D9E75;font-weight:700;">(936) 856-1600</a></div>
+        </div>
+        <div style="background:#f9f9f7;border-radius:12px;padding:20px 18px;border:1px solid #eee;">
+          <div style="font-weight:800;font-size:15px;color:#0F2318;margin-bottom:6px;">TxDOT</div>
+          <div style="font-size:13px;color:#666;line-height:1.7;">State highway corridors, roadside dumping<br/><a href="tel:18004525723" style="color:#1D9E75;font-weight:700;">1-800-452-5723</a></div>
+        </div>
+        <div style="background:#f9f9f7;border-radius:12px;padding:20px 18px;border:1px solid #eee;">
+          <div style="font-weight:800;font-size:15px;color:#0F2318;margin-bottom:6px;">TCEQ</div>
+          <div style="font-size:13px;color:#666;line-height:1.7;">Chemical spills, waterway contamination<br/><a href="tel:18882777798" style="color:#1D9E75;font-weight:700;">1-888-777-7798</a></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="report-cta">
+      <h2>See something? Report it now.</h2>
+      <p>Every report helps us respond faster and keeps Willis cleaner and safer for everyone.</p>
+      <a href="report-litter.html" class="btn-white">Report Litter</a>
+      <a href="map.html" class="btn-outline-white">View Litter Map</a>
+    </div>
+
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3 style="font-family:'Outfit',sans-serif;">Litter Prevention Network</h3>
+        <p class="en">Keeping Willis, TX clean — one cleanup at a time.</p>
+        <p class="es">Manteniendo Willis, TX limpio — una limpieza a la vez.</p>
+        <div class="footer-contact">
+          📍 Willis, TX<br/>
+          📞 <a href="tel:2819359097">(281) 935-9097</a><br/>
+          📧 <a href="mailto:stanley@litterpreventionnetwork.org">stanley@litterpreventionnetwork.org</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">What We Do</span><span class="es">Qué Hacemos</span></h4>
+        <a href="our-work.html"><span class="en">Our Work</span><span class="es">Nuestro Trabajo</span></a>
+        <a href="our-impact.html"><span class="en">Our Impact</span><span class="es">Nuestro Impacto</span></a>
+        <a href="emergencies.html"><span class="en">Emergencies</span><span class="es">Emergencias</span></a>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">Get Involved</span><span class="es">Participa</span></h4>
+        <a href="volunteer.html"><span class="en">Volunteer</span><span class="es">Voluntario</span></a>
+        <a href="events.html"><span class="en">Events</span><span class="es">Eventos</span></a>
+        <a href="report-litter.html"><span class="en">Report Litter</span><span class="es">Reportar Basura</span></a>
+        <a href="rewards.html"><span class="en">Rewards</span><span class="es">Recompensas</span></a>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">About</span><span class="es">Acerca de</span></h4>
+        <a href="about.html"><span class="en">Our Mission</span><span class="es">Nuestra Misión</span></a>
+        <a href="faq.html">FAQ</a>
+        <a href="contact.html"><span class="en">Contact Us</span><span class="es">Contáctanos</span></a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Litter Prevention Network · Willis, TX</span>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js');
+  </script>
+</body>
+</html>

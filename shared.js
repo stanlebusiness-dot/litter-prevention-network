@@ -280,6 +280,14 @@ function buildDesktopNav() {
   el.className = 'nav-links-desktop';
   el.innerHTML = `
     <div class="nav-dropdown">
+      <button class="nav-drop-btn">What We Do <span class="nav-drop-arrow">▾</span></button>
+      <div class="nav-drop-menu">
+        <a href="our-work.html">Our Work</a>
+        <a href="our-impact.html">Our Impact</a>
+        <a href="emergencies.html">Emergencies</a>
+      </div>
+    </div>
+    <div class="nav-dropdown">
       <button class="nav-drop-btn">About Us <span class="nav-drop-arrow">▾</span></button>
       <div class="nav-drop-menu">
         <a href="about.html">Our Mission</a>
