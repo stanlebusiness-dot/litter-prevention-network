@@ -274,11 +274,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function buildDesktopNav() {
   const nav = document.querySelector('nav');
-  if (!nav || nav.querySelector('.nav-links-desktop')) return;
+  if (!nav) return;
 
-  const el = document.createElement('div');
-  el.className = 'nav-links-desktop';
-  el.innerHTML = `
+  let el = nav.querySelector('.nav-links-desktop');
+
+  if (!el) {
+    el = document.createElement('div');
+    el.className = 'nav-links-desktop';
+    el.innerHTML = `
     <div class="nav-dropdown">
       <button class="nav-drop-btn">What We Do <span class="nav-drop-arrow">▾</span></button>
       <div class="nav-drop-menu">
@@ -325,13 +328,16 @@ function buildDesktopNav() {
     </div>
     <a href="login.html" class="nav-signin-btn" id="desktop-nav-auth">Sign In</a>
   `;
+    const hamburger = nav.querySelector('.hamburger');
+    if (hamburger) nav.insertBefore(el, hamburger);
+    else nav.appendChild(el);
+  }
 
-  const hamburger = nav.querySelector('.hamburger');
-  if (hamburger) nav.insertBefore(el, hamburger);
-  else nav.appendChild(el);
+  if (el.dataset.listenersAttached) return;
+  el.dataset.listenersAttached = 'true';
 
   el.querySelectorAll('.nav-dropdown').forEach(dd => {
-    dd.querySelector('.nav-drop-btn').addEventListener('click', e => {
+    dd.querySelector('.nav-drop-btn')?.addEventListener('click', e => {
       e.stopPropagation();
       const wasOpen = dd.classList.contains('open');
       el.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
