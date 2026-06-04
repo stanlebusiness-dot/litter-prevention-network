@@ -79,6 +79,26 @@
     .pay-badge { background: #f5f5f5; border: 1px solid #ddd; border-radius: 5px; padding: 3px 8px; font-size: 10px; font-weight: 700; color: #555; }
     .donate-secure { font-size: 11px; color: #bbb; text-align: center; margin-top: 6px; }
 
+    /* How You Can Help */
+    .help-section { padding: 64px 40px; background: white; text-align: center; }
+    .help-section h2 { font-size: 32px; font-family: 'Outfit', sans-serif; margin-bottom: 12px; color: #0F2318; }
+    .help-section > p { font-size: 17px; color: #666; max-width: 620px; margin: 0 auto 48px; line-height: 1.7; }
+    .help-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; max-width: 1020px; margin: 0 auto 56px; text-align: left; }
+    .help-tip { background: #f9f9f7; border-radius: 14px; padding: 24px; border: 1px solid #e8f0ec; }
+    .help-tip-icon { font-size: 28px; margin-bottom: 12px; }
+    .help-tip h3 { font-size: 16px; font-weight: 800; font-family: 'Outfit', sans-serif; color: #0F2318; margin-bottom: 8px; }
+    .help-tip p { font-size: 14px; color: #666; line-height: 1.7; margin: 0; }
+    .help-products-label { font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #1D9E75; margin-bottom: 16px; }
+    .help-products-grid { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; max-width: 720px; margin: 0 auto; }
+    .help-product { background: white; border: 2px solid #e8f0ec; border-radius: 14px; padding: 20px 22px; text-align: left; text-decoration: none; color: inherit; flex: 1; min-width: 200px; max-width: 300px; transition: border-color 0.2s, box-shadow 0.2s; display: block; }
+    .help-product:hover { border-color: #1D9E75; box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+    .help-product-icon { font-size: 26px; margin-bottom: 10px; }
+    .help-product-name { font-size: 15px; font-weight: 800; font-family: 'Outfit', sans-serif; color: #0F2318; margin-bottom: 4px; }
+    .help-product-price { font-size: 13px; font-weight: 700; color: #1D9E75; margin-bottom: 8px; }
+    .help-product-desc { font-size: 13px; color: #777; line-height: 1.6; }
+    .help-product-cta { font-size: 12px; color: #1D9E75; font-weight: 700; margin-top: 10px; display: block; }
+    @media (max-width: 600px) { .help-section { padding: 48px 20px; } .help-grid { grid-template-columns: 1fr; } .help-products-grid { flex-direction: column; align-items: stretch; } .help-product { max-width: none; } }
+
     /* Parallax grass sections */
     .parallax-section { position: relative; min-height: 400px; background-size: cover; background-position: center; background-attachment: fixed; background-color: #1a4a32; display: flex; align-items: center; justify-content: center; overflow: visible; }
     .parallax-section::before { content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0.32); z-index: 1; }
@@ -300,10 +320,67 @@
     </div>
   </section>
 
-  <!-- Parallax 2: between how and signup -->
+  <section class="help-section" id="help">
+    <span class="section-tag"><span class="en">How You Can Help</span><span class="es">Cómo Puedes Ayudar</span></span>
+    <h2><span class="en">Simple habits that make a real difference</span><span class="es">Hábitos simples que hacen una diferencia real</span></h2>
+    <p><span class="en">You don't need to join a cleanup to fight litter. These everyday actions stop it before it starts.</span><span class="es">No necesitas unirte a una limpieza para luchar contra la basura. Estas acciones cotidianas la detienen antes de que comience.</span></p>
+
+    <div class="help-grid">
+      <div class="help-tip">
+        <div class="help-tip-icon">🚛</div>
+        <h3><span class="en">Secure your load</span><span class="es">Asegura tu carga</span></h3>
+        <p><span class="en">Use a cargo net, tarp, or straps whenever you haul anything in a truck bed or open trailer. One bump sends an unsecured load straight onto the road.</span><span class="es">Usa una red de carga, lona o correas cuando transportes algo en la caja de una camioneta o remolque. Un bache envía una carga no asegurada directamente a la carretera.</span></p>
+      </div>
+      <div class="help-tip">
+        <div class="help-tip-icon">💨</div>
+        <h3><span class="en">Nothing loose in the truck bed</span><span class="es">Nada suelto en la caja</span></h3>
+        <p><span class="en">Bags, boxes, and loose debris fly off at highway speeds without warning. If it's not strapped down, put it in the cab or bag it first.</span><span class="es">Las bolsas, cajas y escombros sueltos salen volando a velocidades de autopista sin previo aviso. Si no está amarrado, ponlo en la cabina o ensáquelo primero.</span></p>
+      </div>
+      <div class="help-tip">
+        <div class="help-tip-icon">🗑️</div>
+        <h3><span class="en">Keep a trash bag in your car</span><span class="es">Mantén una bolsa de basura en tu auto</span></h3>
+        <p><span class="en">A small car trash can or hanging bag means no more wrappers or cups left on the roadside. Empty it every time you fill up — takes 10 seconds.</span><span class="es">Un pequeño contenedor o bolsa colgante en el auto significa que no más envoltorios o vasos quedan en la carretera. Vacíalo cada vez que llenas — tarda 10 segundos.</span></p>
+      </div>
+      <div class="help-tip">
+        <div class="help-tip-icon">🤏</div>
+        <h3><span class="en">Pick up one piece a day</span><span class="es">Recoge una pieza al día</span></h3>
+        <p><span class="en">Takes 3 seconds. If every Willis resident did this, thousands of pieces of litter would vanish every week — no events, no sign-ups required.</span><span class="es">Tarda 3 segundos. Si cada residente de Willis hiciera esto, miles de piezas de basura desaparecerían cada semana, sin eventos ni registros requeridos.</span></p>
+      </div>
+      <div class="help-tip">
+        <div class="help-tip-icon">🪣</div>
+        <h3><span class="en">Use lidded outdoor bins</span><span class="es">Usa contenedores exteriores con tapa</span></h3>
+        <p><span class="en">Wind doesn't respect uncovered trash. A bin with a secure lid keeps your loose items out of the street and off your neighbors' lawns.</span><span class="es">El viento no respeta la basura descubierta. Un contenedor con tapa segura mantiene los artículos fuera de la calle y del jardín de tus vecinos.</span></p>
+      </div>
+      <div class="help-tip">
+        <div class="help-tip-icon">👶</div>
+        <h3><span class="en">Set the example at home</span><span class="es">Da el ejemplo en casa</span></h3>
+        <p><span class="en">Kids copy what they see. Show them the right move — bag it, carry it, pick it up. The habits that prevent litter start before anyone leaves the driveway.</span><span class="es">Los niños copian lo que ven. Enséñales el movimiento correcto — ensáquelo, llévelo, recójalo. Los hábitos que previenen la basura empiezan antes de salir de casa.</span></p>
+      </div>
+    </div>
+
+    <div class="help-products-label"><span class="en">Recommended Tools</span><span class="es">Herramientas Recomendadas</span></div>
+    <div class="help-products-grid">
+      <a href="#" class="help-product"><!-- TODO: paste product URL here -->
+        <div class="help-product-icon">🗑️</div>
+        <div class="help-product-name"><span class="en">Car Trash Can</span><span class="es">Contenedor para Auto</span></div>
+        <div class="help-product-price">~$9.99</div>
+        <div class="help-product-desc"><span class="en">Leak-proof, fits front or back seat. The easiest way to keep your car — and the road — clean.</span><span class="es">A prueba de fugas, cabe en el asiento delantero o trasero. La forma más fácil de mantener tu auto y la carretera limpios.</span></div>
+        <span class="help-product-cta"><span class="en">View on Amazon &#8594;</span><span class="es">Ver en Amazon &#8594;</span></span>
+      </a>
+      <a href="#" class="help-product"><!-- TODO: paste product URL here -->
+        <div class="help-product-icon">&#x1F578;&#xFE0F;</div>
+        <div class="help-product-name"><span class="en">Truck Bed Cargo Net</span><span class="es">Red de Carga para Camioneta</span></div>
+        <div class="help-product-price">~$15&ndash;25</div>
+        <div class="help-product-desc"><span class="en">Stretches to cover any truck bed. Keeps loose loads secured so nothing ends up on the road.</span><span class="es">Se extiende para cubrir cualquier caja de camioneta. Mantiene las cargas sueltas aseguradas para que nada termine en la carretera.</span></div>
+        <span class="help-product-cta"><span class="en">View on Amazon &#8594;</span><span class="es">Ver en Amazon &#8594;</span></span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Parallax 2: between help and signup -->
   <div class="parallax-section" id="parallax-2">
     <svg class="grass-svg grass-top" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path fill="#f9f9f7" d="M0,0 L1440,0 L1440,35 Q1428,73 1416,35 Q1404,92 1392,35 Q1380,76 1368,35 Q1356,99 1344,35 Q1332,68 1320,35 Q1308,91 1296,35 Q1284,81 1272,35 Q1260,106 1248,35 Q1236,64 1224,35 Q1212,101 1200,35 Q1188,71 1176,35 Q1164,87 1152,35 Q1140,77 1128,35 Q1116,95 1104,35 Q1092,65 1080,35 Q1068,107 1056,35 Q1044,70 1032,35 Q1020,83 1008,35 Q996,85 984,35 Q972,103 960,35 Q948,60 936,35 Q924,93 912,35 Q900,75 888,35 Q876,100 864,35 Q852,67 840,35 Q828,90 816,35 Q804,80 792,35 Q780,105 768,35 Q756,63 744,35 Q732,97 720,35 Q708,73 696,35 Q684,92 672,35 Q660,76 648,35 Q636,99 624,35 Q612,68 600,35 Q588,91 576,35 Q564,81 552,35 Q540,106 528,35 Q516,64 504,35 Q492,101 480,35 Q468,71 456,35 Q444,87 432,35 Q420,77 408,35 Q396,95 384,35 Q372,65 360,35 Q348,107 336,35 Q324,70 312,35 Q300,83 288,35 Q276,85 264,35 Q252,103 240,35 Q228,60 216,35 Q204,93 192,35 Q180,75 168,35 Q156,100 144,35 Q132,67 120,35 Q108,90 96,35 Q84,80 72,35 Q60,105 48,35 Q36,63 24,35 Q12,97 0,35 Z"/>
+      <path fill="#ffffff" d="M0,0 L1440,0 L1440,35 Q1428,73 1416,35 Q1404,92 1392,35 Q1380,76 1368,35 Q1356,99 1344,35 Q1332,68 1320,35 Q1308,91 1296,35 Q1284,81 1272,35 Q1260,106 1248,35 Q1236,64 1224,35 Q1212,101 1200,35 Q1188,71 1176,35 Q1164,87 1152,35 Q1140,77 1128,35 Q1116,95 1104,35 Q1092,65 1080,35 Q1068,107 1056,35 Q1044,70 1032,35 Q1020,83 1008,35 Q996,85 984,35 Q972,103 960,35 Q948,60 936,35 Q924,93 912,35 Q900,75 888,35 Q876,100 864,35 Q852,67 840,35 Q828,90 816,35 Q804,80 792,35 Q780,105 768,35 Q756,63 744,35 Q732,97 720,35 Q708,73 696,35 Q684,92 672,35 Q660,76 648,35 Q636,99 624,35 Q612,68 600,35 Q588,91 576,35 Q564,81 552,35 Q540,106 528,35 Q516,64 504,35 Q492,101 480,35 Q468,71 456,35 Q444,87 432,35 Q420,77 408,35 Q396,95 384,35 Q372,65 360,35 Q348,107 336,35 Q324,70 312,35 Q300,83 288,35 Q276,85 264,35 Q252,103 240,35 Q228,60 216,35 Q204,93 192,35 Q180,75 168,35 Q156,100 144,35 Q132,67 120,35 Q108,90 96,35 Q84,80 72,35 Q60,105 48,35 Q36,63 24,35 Q12,97 0,35 Z"/>
     </svg>
     <div class="parallax-content">
       <h2><span class="en">Together, We're Stronger</span><span class="es">Juntos, Somos Más Fuertes</span></h2>
