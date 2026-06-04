@@ -276,6 +276,13 @@ function buildDesktopNav() {
   const nav = document.querySelector('nav');
   if (!nav) return;
 
+  if (!document.getElementById('lpn-dropdown-style')) {
+    const s = document.createElement('style');
+    s.id = 'lpn-dropdown-style';
+    s.textContent = '@media(min-width:769px){.nav-dropdown:hover .nav-drop-menu{display:block!important}}';
+    document.head.appendChild(s);
+  }
+
   let el = nav.querySelector('.nav-links-desktop');
 
   if (!el) {
