@@ -298,6 +298,7 @@ function buildDesktopNav() {
     <div class="nav-dropdown">
       <button class="nav-drop-btn">Get Involved <span class="nav-drop-arrow">▾</span></button>
       <div class="nav-drop-menu">
+        <a href="index.html#help">How You Can Help</a>
         <a href="sponsors.html">Become a Sponsor</a>
         <a href="contact.html">Contact Us</a>
         <a href="coming-soon.html">Future Phases</a>
