@@ -298,25 +298,20 @@ function buildDesktopNav() {
     <div class="nav-dropdown">
       <button class="nav-drop-btn">Get Involved <span class="nav-drop-arrow">▾</span></button>
       <div class="nav-drop-menu">
-        <a href="volunteer.html">Volunteer</a>
-        <a href="events.html">Cleanup Events</a>
-        <a href="submit-proof.html">Submit Proof</a>
-        <a href="report-litter.html">Report Litter</a>
-        <a href="rewards.html">Earn Rewards</a>
-        <a href="prize-portal.html">Prize Portal</a>
+        <a href="sponsors.html">Become a Sponsor</a>
+        <a href="contact.html">Contact Us</a>
+        <a href="coming-soon.html">Future Phases</a>
       </div>
     </div>
     <div class="nav-dropdown">
       <button class="nav-drop-btn">Education <span class="nav-drop-arrow">▾</span></button>
       <div class="nav-drop-menu">
         <div class="nav-drop-section">Schools</div>
-        <a href="volunteer.html">School Partnerships</a>
+        <a href="contact.html">School Partnerships</a>
         <a href="contact.html">Bring LPN to Your School</a>
         <div class="nav-drop-divider"></div>
-        <div class="nav-drop-section">Litter &amp; Trash</div>
-        <a href="rewards.html">Safety Tips</a>
+        <div class="nav-drop-section">Prevention</div>
         <a href="faq.html">Litter Facts &amp; FAQ</a>
-        <a href="map.html">Litter Map</a>
       </div>
     </div>
     <div class="nav-dropdown">
@@ -325,7 +320,6 @@ function buildDesktopNav() {
         <a href="contact.html">Contact Us</a>
         <a href="sponsors.html">Become a Sponsor</a>
         <a href="faq.html">FAQ</a>
-        <a href="contact.html">School Partnerships</a>
       </div>
     </div>
     <a href="login.html" class="nav-signin-btn" id="desktop-nav-auth">Sign In</a>
