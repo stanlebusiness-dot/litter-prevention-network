@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1D9E75" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Donate – Litter Prevention Network</title>
+  <link rel="stylesheet" href="shared.css?v=20260604d" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <script src="shared.js?v=20260604d"></script>
+  <style>
+    .donate-wrap { max-width: 520px; margin: 0 auto; padding: 56px 24px 80px; }
+    .donate-card { background: white; border-radius: 20px; padding: 36px 32px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+    .donate-card-title { font-size: 22px; font-weight: 800; font-family: 'Outfit', sans-serif; color: #0F2318; margin-bottom: 6px; }
+    .donate-card-sub { font-size: 14px; color: #888; margin-bottom: 24px; }
+    .donate-tabs { display: flex; background: #f0f0f0; border-radius: 8px; padding: 4px; margin-bottom: 20px; }
+    .donate-tab { flex: 1; padding: 9px; border: none; background: none; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; color: #888; transition: all 0.2s; font-family: 'Outfit', sans-serif; }
+    .donate-tab.active { background: white; color: #0F6E56; box-shadow: 0 1px 4px rgba(0,0,0,0.12); }
+    .donate-amts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+    .donate-amt { padding: 12px; border: 2px solid #e0e0e0; border-radius: 10px; background: white; font-weight: 700; font-size: 16px; color: #333; cursor: pointer; transition: all 0.15s; font-family: 'Outfit', sans-serif; }
+    .donate-amt.active { border-color: #1D9E75; color: #1D9E75; background: #E1F5EE; }
+    .donate-amt:hover { border-color: #1D9E75; }
+    .donate-custom { width: 100%; border: 2px solid #e0e0e0; border-radius: 10px; padding: 11px 14px; font-size: 15px; font-weight: 600; margin-bottom: 12px; box-sizing: border-box; outline: none; font-family: 'Outfit', sans-serif; }
+    .donate-custom:focus { border-color: #1D9E75; }
+    .donate-impact { font-size: 13px; color: #1D9E75; font-weight: 600; text-align: center; margin-bottom: 16px; min-height: 18px; }
+    .donate-btn { width: 100%; padding: 15px; background: linear-gradient(135deg, #1D9E75, #0F6E56); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 800; cursor: pointer; font-family: 'Outfit', sans-serif; letter-spacing: 0.5px; transition: opacity 0.2s; margin-bottom: 14px; }
+    .donate-btn:hover { opacity: 0.88; }
+    .donate-methods { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-bottom: 8px; }
+    .pay-badge { background: #f5f5f5; border: 1px solid #ddd; border-radius: 5px; padding: 4px 10px; font-size: 11px; font-weight: 700; color: #555; }
+    .donate-secure { font-size: 12px; color: #bbb; text-align: center; }
+    .impact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 48px; }
+    .impact-item { background: #f9f9f7; border-radius: 14px; padding: 22px 18px; border: 1px solid #e8f0ec; }
+    .impact-item .amt { font-size: 22px; font-weight: 800; color: #0F6E56; font-family: 'Outfit', sans-serif; margin-bottom: 6px; }
+    .impact-item p { font-size: 13px; color: #666; line-height: 1.6; margin: 0; }
+    @media (max-width: 520px) { .donate-card { padding: 28px 20px; } .impact-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="lang-bar">
+    <button class="active" onclick="setLang('en')">English</button>
+    <button onclick="setLang('es')">Español</button>
+  </div>
+
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="logo_500x500.svg" alt="LPN Willis" />
+      <span class="nav-logo-label">Litter Prevention Network</span>
+    </a>
+    <div class="nav-links-desktop">
+      <div class="nav-dropdown">
+        <button class="nav-drop-btn">What We Do <span class="nav-drop-arrow">&#9662;</span></button>
+        <div class="nav-drop-menu">
+          <a href="our-work.html">Our Work</a>
+          <a href="our-impact.html">Our Impact</a>
+          <a href="emergencies.html">Emergencies</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-drop-btn">About Us <span class="nav-drop-arrow">&#9662;</span></button>
+        <div class="nav-drop-menu">
+          <a href="about.html">Our Mission</a>
+          <a href="news.html">Blog &amp; News</a>
+          <a href="faq.html">FAQ</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-drop-btn">Get Involved <span class="nav-drop-arrow">&#9662;</span></button>
+        <div class="nav-drop-menu">
+          <a href="index.html#help">How You Can Help</a>
+          <a href="donate.html">Donate</a>
+          <a href="sponsors.html">Become a Sponsor</a>
+          <a href="coming-soon.html">Future Phases</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-drop-btn">Education <span class="nav-drop-arrow">&#9662;</span></button>
+        <div class="nav-drop-menu">
+          <div class="nav-drop-section">Schools</div>
+          <a href="contact.html">School Partnerships</a>
+          <a href="contact.html">Bring LPN to Your School</a>
+          <div class="nav-drop-divider"></div>
+          <div class="nav-drop-section">Prevention</div>
+          <a href="faq.html">Litter Facts &amp; FAQ</a>
+        </div>
+      </div>
+      <div class="nav-dropdown">
+        <button class="nav-drop-btn">Contact <span class="nav-drop-arrow">&#9662;</span></button>
+        <div class="nav-drop-menu">
+          <a href="contact.html">Contact Us</a>
+          <a href="sponsors.html">Become a Sponsor</a>
+          <a href="faq.html">FAQ</a>
+        </div>
+      </div>
+      <a href="login.html" class="nav-signin-btn" id="desktop-nav-auth">Sign In</a>
+    </div>
+    <button class="hamburger" onclick="openDrawer()"><span></span><span></span><span></span></button>
+  </nav>
+
+  <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">
+      <div class="drawer-logo" style="font-family:'Outfit',sans-serif;">Litter Prevention Network</div>
+      <button class="drawer-close" onclick="closeDrawer()">✕</button>
+    </div>
+    <div class="drawer-nav">
+      <a href="index.html"><span class="nav-icon">🏠</span><span class="en">Home</span><span class="es">Inicio</span></a>
+      <a href="index.html#help"><span class="nav-icon">&#x1F4A1;</span><span class="en">How You Can Help</span><span class="es">Cómo Puedes Ayudar</span></a>
+      <a href="donate.html" class="active"><span class="nav-icon">💚</span><span class="en">Donate</span><span class="es">Donar</span></a>
+      <a href="sponsors.html"><span class="nav-icon">🤝</span><span class="en">Sponsors</span><span class="es">Patrocinadores</span></a>
+      <a href="coming-soon.html"><span class="nav-icon">&#x1F680;</span><span class="en">Future Phases</span><span class="es">Fases Futuras</span></a>
+      <div class="drawer-divider"></div>
+      <a href="login.html"><span class="nav-icon">🔐</span><span class="en">Login</span><span class="es">Iniciar Sesión</span></a>
+      <div class="drawer-divider"></div>
+      <a href="about.html"><span class="nav-icon">ℹ️</span><span class="en">About</span><span class="es">Acerca de</span></a>
+      <a href="faq.html"><span class="nav-icon">❓</span>FAQ</a>
+      <a href="contact.html"><span class="nav-icon">📬</span><span class="en">Contact</span><span class="es">Contacto</span></a>
+    </div>
+    <div class="drawer-footer-note">© 2026 Litter Prevention Network · Willis, TX</div>
+  </div>
+
+  <section class="page-hero">
+    <h1><span class="en">Support LPN Willis</span><span class="es">Apoya LPN Willis</span></h1>
+    <p><span class="en">Every dollar goes directly toward prevention education, community outreach, and keeping Willis clean.</span><span class="es">Cada dólar va directamente a la educación de prevención, divulgación comunitaria y mantener Willis limpio.</span></p>
+  </section>
+
+  <div class="donate-wrap">
+
+    <div class="donate-card">
+      <div class="donate-card-title"><span class="en">Choose your amount</span><span class="es">Elige tu cantidad</span></div>
+      <div class="donate-card-sub"><span class="en">100% goes to LPN Willis programs</span><span class="es">El 100% va a los programas de LPN Willis</span></div>
+
+      <div class="donate-tabs">
+        <button class="donate-tab active" onclick="setDonateFreq('one-time',this)"><span class="en">One-Time</span><span class="es">Una vez</span></button>
+        <button class="donate-tab" onclick="setDonateFreq('monthly',this)"><span class="en">Monthly</span><span class="es">Mensual</span></button>
+      </div>
+
+      <div class="donate-amts">
+        <button class="donate-amt active" onclick="setDonateAmt(10,this)">$10</button>
+        <button class="donate-amt" onclick="setDonateAmt(25,this)">$25</button>
+        <button class="donate-amt" onclick="setDonateAmt(50,this)">$50</button>
+        <button class="donate-amt" onclick="setDonateAmt(100,this)">$100</button>
+      </div>
+
+      <input class="donate-custom" type="number" id="donate-custom" placeholder="Custom amount $" oninput="setCustomAmt(this.value)" min="1" />
+
+      <div class="donate-impact" id="donate-impact">Helps print prevention flyers for our community</div>
+
+      <button class="donate-btn" onclick="handleDonate()"><span class="en">DONATE NOW</span><span class="es">DONAR AHORA</span></button>
+
+      <div class="donate-methods">
+        <span class="pay-badge">VISA</span>
+        <span class="pay-badge">MC</span>
+        <span class="pay-badge">PayPal</span>
+        <span class="pay-badge">G Pay</span>
+        <span class="pay-badge">Apple Pay</span>
+      </div>
+      <div class="donate-secure">🔒 Secure · No account required</div>
+    </div>
+
+    <div class="impact-grid">
+      <div class="impact-item">
+        <div class="amt">$10</div>
+        <p><span class="en">Prints prevention flyers for a neighborhood block</span><span class="es">Imprime folletos de prevención para una cuadra</span></p>
+      </div>
+      <div class="impact-item">
+        <div class="amt">$25</div>
+        <p><span class="en">Covers outreach supplies for one community event</span><span class="es">Cubre materiales para un evento comunitario</span></p>
+      </div>
+      <div class="impact-item">
+        <div class="amt">$50</div>
+        <p><span class="en">Funds a month of social media awareness campaigns</span><span class="es">Financia un mes de campañas en redes sociales</span></p>
+      </div>
+      <div class="impact-item">
+        <div class="amt">$100</div>
+        <p><span class="en">Sponsors all LPN Willis operations for a full month</span><span class="es">Patrocina todas las operaciones de LPN Willis por un mes completo</span></p>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3 style="font-family:'Outfit',sans-serif;">Litter Prevention Network</h3>
+        <p class="en">Building a litter-free Willis, TX — through prevention, education, and community.</p>
+        <p class="es">Construyendo un Willis, TX libre de basura — a través de la prevención, la educación y la comunidad.</p>
+        <div class="footer-contact">
+          📍 Willis, TX<br/>
+          📞 <a href="tel:2819359097">(281) 935-9097</a><br/>
+          📧 <a href="mailto:stanley@litterpreventionnetwork.org">stanley@litterpreventionnetwork.org</a>
+        </div>
+        <div class="footer-social">
+          <a href="https://facebook.com/litterpreventionnetwork" target="_blank">FB</a>
+          <a href="https://instagram.com/litterpreventionnetwork" target="_blank">IG</a>
+          <a href="https://tiktok.com/@litterpreventionnetwork" target="_blank">TT</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">Navigate</span><span class="es">Navegar</span></h4>
+        <a href="index.html"><span class="en">Home</span><span class="es">Inicio</span></a>
+        <a href="our-work.html"><span class="en">Our Work</span><span class="es">Nuestro Trabajo</span></a>
+        <a href="our-impact.html"><span class="en">Our Impact</span><span class="es">Nuestro Impacto</span></a>
+        <a href="news.html"><span class="en">Blog &amp; News</span><span class="es">Blog y Noticias</span></a>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">Get Involved</span><span class="es">Participa</span></h4>
+        <a href="donate.html"><span class="en">Donate</span><span class="es">Donar</span></a>
+        <a href="sponsors.html"><span class="en">Become a Sponsor</span><span class="es">Sé Patrocinador</span></a>
+        <a href="coming-soon.html"><span class="en">Future Phases</span><span class="es">Fases Futuras</span></a>
+        <a href="login.html"><span class="en">Sign In</span><span class="es">Iniciar Sesión</span></a>
+      </div>
+      <div class="footer-col">
+        <h4><span class="en">About</span><span class="es">Acerca de</span></h4>
+        <a href="about.html"><span class="en">Our Mission</span><span class="es">Nuestra Misión</span></a>
+        <a href="faq.html">FAQ</a>
+        <a href="contact.html"><span class="en">Contact Us</span><span class="es">Contáctanos</span></a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Litter Prevention Network · Willis, TX</span>
+      <div style="display:flex;gap:20px;">
+        <a href="faq.html">FAQ</a>
+        <a href="about.html"><span class="en">About</span><span class="es">Acerca de</span></a>
+        <a href="contact.html"><span class="en">Contact</span><span class="es">Contacto</span></a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+  let _donateAmt = 10;
+  let _donateFreq = 'one-time';
+  const _impacts = {
+    'one-time': {
+      10: 'Helps print prevention flyers for our community',
+      25: 'Covers outreach supplies for a neighborhood block',
+      50: 'Funds a month of social media awareness campaigns',
+      100: 'Sponsors LPN Willis operations for a full month'
+    },
+    'monthly': {
+      5: 'Keeps our prevention outreach running every month',
+      10: 'Funds ongoing education content for the community',
+      25: 'Monthly sponsor of LPN Willis neighborhood outreach',
+      50: 'Covers all operating costs for our team each month'
+    }
+  };
+  const _amtSets = {
+    'one-time': [10, 25, 50, 100],
+    'monthly':  [5, 10, 25, 50]
+  };
+  function setDonateAmt(amt, el) {
+    _donateAmt = amt;
+    document.getElementById('donate-custom').value = '';
+    document.querySelectorAll('.donate-amt').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('donate-impact').textContent = (_impacts[_donateFreq] || {})[amt] || '';
+  }
+  function setDonateFreq(freq, el) {
+    _donateFreq = freq;
+    document.querySelectorAll('.donate-tab').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    const amts = _amtSets[freq];
+    const btns = document.querySelectorAll('.donate-amt');
+    btns.forEach((b, i) => {
+      b.textContent = '$' + amts[i];
+      b.onclick = function() { setDonateAmt(amts[i], this); };
+      b.classList.remove('active');
+    });
+    _donateAmt = amts[0];
+    btns[0].classList.add('active');
+    document.getElementById('donate-custom').value = '';
+    document.getElementById('donate-impact').textContent = (_impacts[freq] || {})[amts[0]] || '';
+  }
+  function setCustomAmt(val) {
+    _donateAmt = parseFloat(val) || 0;
+    document.querySelectorAll('.donate-amt').forEach(b => b.classList.remove('active'));
+    document.getElementById('donate-impact').textContent = _donateAmt > 0 ? 'Every bit helps keep Willis clean!' : '';
+  }
+  function handleDonate() {
+    alert('Thank you for your support! Payment processing coming soon.');
+  }
+  </script>
+  <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js');</script>
+</body>
+</html>

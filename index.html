@@ -48,36 +48,6 @@
     .signup > p { color: #666; margin-bottom: 32px; font-size: 16px; text-align: center; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .age-notice { background: #FFF8E1; border: 1px solid #FFD54F; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #7B5E00; margin-bottom: 20px; line-height: 1.6; }
-    /* Donation widget */
-    .donate-bar-wrap { background: linear-gradient(150deg, #0a4a35 0%, #1D9E75 60%, #0F6E56 100%); padding: 24px 24px 16px; }
-    .donate-bar { background: white; border-radius: 14px; padding: 16px 20px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; max-width: 1140px; margin: 0 auto; }
-    .donate-bar-info { flex-shrink: 0; }
-    .donate-bar-title { font-size: 15px; font-weight: 800; color: #0F6E56; font-family: 'Outfit', sans-serif; line-height: 1.2; }
-    .donate-bar-sub { font-size: 11px; color: #999; white-space: nowrap; }
-    .donate-bar .donate-tabs { margin-bottom: 0; flex-shrink: 0; }
-    .donate-bar .donate-amts { display: flex; gap: 6px; margin-bottom: 0; flex-shrink: 0; }
-    .donate-bar .donate-amt { padding: 7px 13px; font-size: 14px; }
-    .donate-bar .donate-custom { width: 120px; margin-bottom: 0; flex-shrink: 0; }
-    .donate-bar .donate-btn { width: auto; padding: 10px 22px; white-space: nowrap; flex-shrink: 0; }
-    .donate-bar-footer { max-width: 1140px; margin: 8px auto 0; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; }
-    .donate-bar-footer .donate-impact { font-size: 12px; color: rgba(255,255,255,0.9); font-weight: 600; min-height: unset; margin: 0; text-align: left; }
-    .donate-bar-footer .donate-secure { font-size: 11px; color: rgba(255,255,255,0.6); }
-    .donate-bar-footer .donate-methods { display: flex; gap: 4px; }
-    .donate-sub { font-size: 12px; color: #999; text-align: center; margin-bottom: 14px; }
-    .donate-tabs { display: flex; background: #f0f0f0; border-radius: 8px; padding: 4px; margin-bottom: 14px; }
-    .donate-tab { flex: 1; padding: 8px; border: none; background: none; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; color: #888; transition: all 0.2s; }
-    .donate-tab.active { background: white; color: #0F6E56; box-shadow: 0 1px 4px rgba(0,0,0,0.12); }
-    .donate-amts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-    .donate-amt { padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; background: white; font-weight: 700; font-size: 15px; color: #333; cursor: pointer; transition: all 0.15s; }
-    .donate-amt.active { border-color: #1D9E75; color: #1D9E75; background: #E1F5EE; }
-    .donate-custom { width: 100%; border: 2px solid #e0e0e0; border-radius: 8px; padding: 9px 12px; font-size: 14px; font-weight: 600; margin-bottom: 10px; box-sizing: border-box; outline: none; font-family: 'Outfit', sans-serif; }
-    .donate-custom:focus { border-color: #1D9E75; }
-    .donate-impact { font-size: 12px; color: #1D9E75; font-weight: 600; text-align: center; margin-bottom: 12px; min-height: 16px; }
-    .donate-btn { width: 100%; padding: 13px; background: linear-gradient(135deg, #1D9E75, #0F6E56); color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 800; cursor: pointer; font-family: 'Outfit', sans-serif; letter-spacing: 0.5px; transition: opacity 0.2s; }
-    .donate-btn:hover { opacity: 0.88; }
-    .donate-methods { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-top: 10px; }
-    .pay-badge { background: #f5f5f5; border: 1px solid #ddd; border-radius: 5px; padding: 3px 8px; font-size: 10px; font-weight: 700; color: #555; }
-    .donate-secure { font-size: 11px; color: #bbb; text-align: center; margin-top: 6px; }
 
     /* How You Can Help */
     .help-section { padding: 64px 40px; background: white; text-align: center; }
@@ -148,8 +118,8 @@
         <button class="nav-drop-btn">Get Involved <span class="nav-drop-arrow">&#9662;</span></button>
         <div class="nav-drop-menu">
           <a href="index.html#help">How You Can Help</a>
+          <a href="donate.html">Donate</a>
           <a href="sponsors.html">Become a Sponsor</a>
-          <a href="contact.html">Contact Us</a>
           <a href="coming-soon.html">Future Phases</a>
         </div>
       </div>
@@ -215,32 +185,9 @@
     </div>
   </section>
 
-  <div class="donate-bar-wrap">
-    <div class="donate-bar">
-      <div class="donate-bar-info">
-        <div class="donate-bar-title">Support LPN Willis</div>
-        <div class="donate-bar-sub">100% goes to local cleanups &amp; supplies</div>
-      </div>
-      <div class="donate-tabs">
-        <button class="donate-tab active" onclick="setDonateFreq('one-time',this)">One-Time</button>
-        <button class="donate-tab" onclick="setDonateFreq('monthly',this)">Monthly</button>
-      </div>
-      <div class="donate-amts">
-        <button class="donate-amt active" onclick="setDonateAmt(10,this)">$10</button>
-        <button class="donate-amt" onclick="setDonateAmt(25,this)">$25</button>
-        <button class="donate-amt" onclick="setDonateAmt(50,this)">$50</button>
-        <button class="donate-amt" onclick="setDonateAmt(100,this)">$100</button>
-      </div>
-      <input class="donate-custom" type="number" id="donate-custom" placeholder="Custom $" oninput="setCustomAmt(this.value)" min="1" />
-      <button class="donate-btn" onclick="handleDonate()">DONATE NOW</button>
-    </div>
-    <div class="donate-bar-footer">
-      <div class="donate-impact" id="donate-impact">Helps print prevention flyers for our community</div>
-      <span class="donate-secure">🔒 Secure · No account required</span>
-      <div class="donate-methods">
-        <span class="pay-badge">VISA</span><span class="pay-badge">MC</span><span class="pay-badge">PayPal</span><span class="pay-badge">G Pay</span><span class="pay-badge">Apple Pay</span>
-      </div>
-    </div>
+  <div style="background:linear-gradient(135deg,#0a4a35 0%,#1D9E75 60%,#0F6E56 100%);padding:22px 40px;text-align:center;">
+    <a href="donate.html" style="display:inline-block;background:white;color:#0F6E56;font-family:'Outfit',sans-serif;font-weight:800;font-size:15px;padding:11px 28px;border-radius:8px;text-decoration:none;transition:transform 0.15s,box-shadow 0.15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 16px rgba(0,0,0,0.18)'" onmouseout="this.style.transform='';this.style.boxShadow=''"><span class="en">Support LPN Willis →</span><span class="es">Apoya LPN Willis →</span></a>
+    <div style="color:rgba(255,255,255,0.7);font-size:12px;margin-top:8px;"><span class="en">100% goes to local outreach &amp; education</span><span class="es">El 100% va a la divulgación y educación local</span></div>
   </div>
 
   <!-- Parallax 1: directly below hero -->
@@ -560,60 +507,6 @@
     document.getElementById('referral-name-group').style.display =
       this.value === 'friend' ? 'block' : 'none';
   });
-
-  // Donation widget
-  let _donateAmt = 10;
-  let _donateFreq = 'one-time';
-  const _impacts = {
-    'one-time': {
-      10: 'Helps print prevention flyers for our community',
-      25: 'Covers outreach supplies for a neighborhood block',
-      50: 'Funds a month of social media awareness campaigns',
-      100: 'Sponsors LPN Willis operations for a full month'
-    },
-    'monthly': {
-      5: 'Keeps our prevention outreach running every month',
-      10: 'Funds ongoing education content for the community',
-      25: 'Monthly sponsor of LPN Willis neighborhood outreach',
-      50: 'Covers all operating costs for our team each month'
-    }
-  };
-  const _amtSets = {
-    'one-time': [10, 25, 50, 100],
-    'monthly':  [5, 10, 25, 50]
-  };
-  function setDonateAmt(amt, el) {
-    _donateAmt = amt;
-    document.getElementById('donate-custom').value = '';
-    document.querySelectorAll('.donate-amt').forEach(b => b.classList.remove('active'));
-    el.classList.add('active');
-    document.getElementById('donate-impact').textContent = (_impacts[_donateFreq] || {})[amt] || '';
-  }
-  function setDonateFreq(freq, el) {
-    _donateFreq = freq;
-    document.querySelectorAll('.donate-tab').forEach(b => b.classList.remove('active'));
-    el.classList.add('active');
-    const amts = _amtSets[freq];
-    const btns = document.querySelectorAll('.donate-amt');
-    btns.forEach((b, i) => {
-      b.textContent = '$' + amts[i];
-      b.onclick = function() { setDonateAmt(amts[i], this); };
-      b.classList.remove('active');
-    });
-    _donateAmt = amts[0];
-    btns[0].classList.add('active');
-    document.getElementById('donate-custom').value = '';
-    document.getElementById('donate-impact').textContent = (_impacts[freq] || {})[amts[0]] || '';
-  }
-  function setCustomAmt(val) {
-    _donateAmt = parseFloat(val) || 0;
-    document.querySelectorAll('.donate-amt').forEach(b => b.classList.remove('active'));
-    document.getElementById('donate-impact').textContent = _donateAmt > 0 ? 'Every bit helps keep Willis clean!' : '';
-  }
-  function handleDonate() {
-    // TODO: Connect to Stripe/PayPal
-    alert('Thank you for your support! Payment processing coming soon.');
-  }
 
   document.getElementById('signup-btn').addEventListener('click', async () => {
     const first_name = document.getElementById('first-name').value.trim();
