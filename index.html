@@ -121,7 +121,8 @@
 
   <nav>
     <a href="index.html" class="nav-logo">
-      <span style="font-family:'Outfit',sans-serif;font-weight:800;font-size:18px;color:#0F6E56;">LPN Willis</span>
+      <img src="logo_500x500.svg" alt="LPN Willis" />
+      <span class="nav-logo-label">Litter Prevention Network</span>
     </a>
     <button class="hamburger" onclick="openDrawer()">
       <span></span><span></span><span></span>
@@ -203,10 +204,10 @@
   </div>
 
   <section class="hero">
-    <h1><span class="en">Willis, TX — cleaner together.</span><span class="es">Willis, TX — más limpio juntos.</span></h1>
+    <h1><span class="en">Lead the Change</span><span class="es">Lidera el Cambio</span></h1>
     <p>
-      <span class="en">A Willis, TX community network focused on preventing litter at the source — through education, awareness, and neighbors who lead by example.</span>
-      <span class="es">Una red comunitaria de Willis, TX enfocada en prevenir la basura desde la fuente — a través de educación, conciencia y vecinos que dan el ejemplo.</span>
+      <span class="en">Empowering one city at a time to prevent litter.</span>
+      <span class="es">Empoderando una ciudad a la vez para prevenir la basura.</span>
     </p>
     <div class="hero-buttons">
       <a href="#signup" class="btn-primary"><span class="en">Join Our Community</span><span class="es">Únete a Nuestra Comunidad</span></a>
@@ -234,7 +235,7 @@
       <button class="donate-btn" onclick="handleDonate()">DONATE NOW</button>
     </div>
     <div class="donate-bar-footer">
-      <div class="donate-impact" id="donate-impact">Buys 2 trash grabbers for local volunteers</div>
+      <div class="donate-impact" id="donate-impact">Helps print prevention flyers for our community</div>
       <span class="donate-secure">🔒 Secure · No account required</span>
       <div class="donate-methods">
         <span class="pay-badge">VISA</span><span class="pay-badge">MC</span><span class="pay-badge">PayPal</span><span class="pay-badge">G Pay</span><span class="pay-badge">Apple Pay</span>
@@ -289,7 +290,7 @@
     <span class="section-tag"><span class="en">Our Mission</span><span class="es">Nuestra Misión</span></span>
     <h2><span class="en">Stop litter before it starts</span><span class="es">Detén la basura antes de que empiece</span></h2>
     <p>
-      <span class="en">We educate, connect, and empower Willis neighbors to prevent litter at the source — building community habits that keep our streets clean without waiting for a cleanup crew.</span>
+      <span class="en">We educate, connect, and empower Willis neighbors to prevent litter at the source — building community habits that keep our streets clean before litter ever hits the ground.</span>
       <span class="es">Educamos, conectamos y empoderamos a los vecinos de Willis para prevenir la basura desde la fuente — construyendo hábitos comunitarios que mantienen nuestras calles limpias.</span>
     </p>
     <p class="sub-tag"><span class="en">Prevention over cleanup. Always.</span><span class="es">Prevención sobre limpieza. Siempre.</span></p>
@@ -313,10 +314,10 @@
         <h3><span class="en">Spread the Word</span><span class="es">Corre la Voz</span></h3>
         <p><span class="en">Share prevention tips with neighbors, post on social media, or talk to your kids' school about starting an LPN chapter.</span><span class="es">Comparte consejos de prevención con vecinos, publica en redes sociales o habla con la escuela de tus hijos sobre iniciar un capítulo LPN.</span></p>
       </a>
-      <a href="coming-soon.html" class="step">
+      <a href="about.html" class="step">
         <div class="step-num">4</div>
-        <h3><span class="en">Shape Phase 2</span><span class="es">Moldea la Fase 2</span></h3>
-        <p><span class="en">As the network grows, we're building cleanup events, rewards, and a litter map. Members get first access when it launches.</span><span class="es">A medida que la red crece, estamos construyendo eventos de limpieza, recompensas y un mapa de basura. Los miembros obtienen acceso primero al lanzamiento.</span></p>
+        <h3><span class="en">Grow the Network</span><span class="es">Haz Crecer la Red</span></h3>
+        <p><span class="en">The bigger our community, the louder our voice. Invite a neighbor, share on social media, or talk to your kids' school about bringing LPN in.</span><span class="es">Cuanto más grande sea nuestra comunidad, más fuerte será nuestra voz. Invita a un vecino, comparte en redes o habla con la escuela de tus hijos sobre traer LPN.</span></p>
       </a>
     </div>
   </section>
@@ -565,16 +566,16 @@
   let _donateFreq = 'one-time';
   const _impacts = {
     'one-time': {
-      10: 'Buys 2 trash grabbers for local volunteers',
-      25: 'Funds a neighborhood cleanup event',
-      50: 'Sponsors a full cleanup crew for a day',
-      100: 'Covers a month of supplies for our team'
+      10: 'Helps print prevention flyers for our community',
+      25: 'Covers outreach supplies for a neighborhood block',
+      50: 'Funds a month of social media awareness campaigns',
+      100: 'Sponsors LPN Willis operations for a full month'
     },
     'monthly': {
-      5: 'Keeps a volunteer stocked with bags every month',
-      10: 'Funds one cleanup outing per month',
-      25: 'Monthly sponsor of a neighborhood route',
-      50: 'Covers event supplies for our whole team monthly'
+      5: 'Keeps our prevention outreach running every month',
+      10: 'Funds ongoing education content for the community',
+      25: 'Monthly sponsor of LPN Willis neighborhood outreach',
+      50: 'Covers all operating costs for our team each month'
     }
   };
   const _amtSets = {

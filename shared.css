@@ -59,18 +59,30 @@ nav {
 }
 .nav-logo {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 3px;
   text-decoration: none;
   color: #1D9E75;
   font-weight: 800;
   font-size: 16px;
 }
 .nav-logo img {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   object-fit: cover;
+  display: block;
+}
+.nav-logo-label {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 9px;
+  color: #0F6E56;
+  text-align: center;
+  line-height: 1.25;
+  letter-spacing: 0.2px;
+  max-width: 70px;
 }
 .hamburger {
   background: none;

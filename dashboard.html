@@ -42,7 +42,8 @@
 
   <nav>
     <a href="index.html" class="nav-logo">
-      <span style="font-family:'Outfit',sans-serif;font-weight:800;font-size:18px;color:#0F6E56;">LPN Willis</span>
+      <img src="logo_500x500.svg" alt="LPN Willis" />
+      <span class="nav-logo-label">Litter Prevention Network</span>
     </a>
     <div class="nav-links-desktop">
       <div class="nav-dropdown">
@@ -119,50 +120,24 @@
     <div class="dash-hero-text">
       <h1 class="en">Welcome back, <span id="user-name">...</span>! 👋</h1>
       <h1 class="es">¡Bienvenido, <span id="user-name-es">...</span>! 👋</h1>
-      <p class="en">Here's your impact so far.</p>
-      <p class="es">Aquí está tu impacto hasta ahora.</p>
+      <p class="en">You're part of the LPN Willis community.</p>
+      <p class="es">Eres parte de la comunidad de LPN Willis.</p>
     </div>
     <button class="logout-btn" onclick="handleLogout()"><span class="en">🚪 Log Out</span><span class="es">🚪 Cerrar Sesión</span></button>
   </div>
 
   <div class="dash-content">
-    <div class="cards">
-      <div class="card">
-        <div class="icon">⭐</div>
-        <div class="number" id="current-points">0</div>
-        <div class="label en">Current Points</div>
-        <div class="label es">Puntos Actuales</div>
-      </div>
-      <div class="card">
-        <div class="icon">🏆</div>
-        <div class="number" id="total-points">0</div>
-        <div class="label en">Total Earned</div>
-        <div class="label es">Total Ganado</div>
-      </div>
-      <div class="card">
-        <div class="icon">📸</div>
-        <div class="number" id="submission-count">0</div>
-        <div class="label en">Submissions</div>
-        <div class="label es">Envíos</div>
-      </div>
-    </div>
-    <div class="dash-actions">
-      <a href="submit-proof.html"><span class="en">📸 Submit Proof</span><span class="es">📸 Enviar Prueba</span></a>
-      <a href="prize-portal.html"><span class="en">🎁 Redeem Points</span><span class="es">🎁 Canjear Puntos</span></a>
-      <a href="events.html"><span class="en">📅 View Events</span><span class="es">📅 Ver Eventos</span></a>
-      <a href="report-litter.html"><span class="en">📍 Report Litter</span><span class="es">📍 Reportar Basura</span></a>
-    </div>
     <!-- Invite Friends -->
     <div style="background:linear-gradient(135deg,#E1F5EE,#d0f0e4);border-radius:14px;padding:28px;margin-bottom:36px;border:1.5px solid #b5e8d0;">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:20px;">
         <div style="flex:1;min-width:200px;">
-          <div style="font-size:24px;margin-bottom:8px;">🎁</div>
+          <div style="font-size:24px;margin-bottom:8px;">📣</div>
           <h3 style="font-size:17px;font-weight:800;font-family:'Outfit',sans-serif;color:#0F6E56;margin-bottom:8px;">
-            <span class="en">Invite Friends, Earn Together</span><span class="es">Invita Amigos, Ganen Juntos</span>
+            <span class="en">Spread the Word</span><span class="es">Corre la Voz</span>
           </h3>
           <p style="font-size:14px;color:#2e7d32;line-height:1.6;max-width:400px;">
-            <span class="en">Share your personal invite link. When a friend signs up and completes their first cleanup, you <strong>both earn $5 in rewards</strong>!</span>
-            <span class="es">Comparte tu enlace personal. Cuando un amigo se registre y complete su primera limpieza, ¡<strong>ambos ganan $5 en recompensas</strong>!</span>
+            <span class="en">Share your invite link with neighbors and friends. Every new member strengthens the LPN Willis community.</span>
+            <span class="es">Comparte tu enlace de invitación con vecinos y amigos. Cada nuevo miembro fortalece la comunidad de LPN Willis.</span>
           </p>
         </div>
         <div style="min-width:220px;flex:1;max-width:380px;">
@@ -182,26 +157,22 @@
       </div>
     </div>
 
-    <div class="section-title en">Points History</div>
-    <div class="section-title es">Historial de Puntos</div>
-    <table>
-      <thead>
-        <tr>
-          <th><span class="en">Reason</span><span class="es">Razón</span></th>
-          <th><span class="en">Points</span><span class="es">Puntos</span></th>
-          <th><span class="en">Date</span><span class="es">Fecha</span></th>
-        </tr>
-      </thead>
-      <tbody id="history-body"><tr><td colspan="3" class="empty">Loading...</td></tr></tbody>
-    </table>
+    <div class="section-title en">Quick Links</div>
+    <div class="section-title es">Enlaces Rápidos</div>
+    <div class="dash-actions" style="margin-bottom:0;">
+      <a href="about.html"><span class="en">🌿 Our Mission</span><span class="es">🌿 Nuestra Misión</span></a>
+      <a href="faq.html"><span class="en">❓ FAQ</span><span class="es">❓ Preguntas Frecuentes</span></a>
+      <a href="news.html"><span class="en">📰 Blog &amp; News</span><span class="es">📰 Blog y Noticias</span></a>
+      <a href="contact.html"><span class="en">📬 Contact Us</span><span class="es">📬 Contáctanos</span></a>
+    </div>
   </div>
 
   <footer class="site-footer">
     <div class="footer-grid">
       <div class="footer-brand">
         <h3 style="font-family:'Outfit',sans-serif;">Litter Prevention Network</h3>
-        <p class="en">Keeping Willis, TX clean — one cleanup at a time.</p>
-        <p class="es">Manteniendo Willis, TX limpio — una limpieza a la vez.</p>
+        <p class="en">Building a litter-free Willis, TX — through prevention, education, and community.</p>
+        <p class="es">Construyendo un Willis, TX libre de basura — a través de la prevención, la educación y la comunidad.</p>
         <div class="footer-contact">
           📍 Willis, TX<br/>
           📞 <a href="tel:2819359097">(281) 935-9097</a><br/>
@@ -246,7 +217,6 @@
     'https://elgzfppmlsrrmskgloeo.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
   );
-  function fmt(d) { return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
   async function init() {
     const user = await requireLogin();
     if (!user) return;
@@ -254,14 +224,6 @@
     document.getElementById('user-name').textContent = name;
     document.getElementById('user-name-es').textContent = name;
     document.getElementById('invite-link').value = `https://litterpreventionnetwork.org/login.html?ref=${btoa(user.email)}`;
-    const { data: pts } = await _sb.from('points').select('*').eq('email', user.email).single();
-    if (pts) { document.getElementById('current-points').textContent = pts.points; document.getElementById('total-points').textContent = pts.total_earned; }
-    const { data: subs } = await _sb.from('proof_submissions').select('id').eq('email', user.email);
-    document.getElementById('submission-count').textContent = subs?.length || 0;
-    const { data: history } = await _sb.from('points_history').select('*').eq('email', user.email).order('created_at', { ascending: false });
-    document.getElementById('history-body').innerHTML = history?.length
-      ? history.map(h => `<tr><td>${h.reason}</td><td style="color:#0F6E56;font-weight:700;">+${h.points}</td><td>${fmt(h.created_at)}</td></tr>`).join('')
-      : '<tr><td colspan="3" class="empty">No points earned yet — submit proof to get started!</td></tr>';
   }
   function copyInviteLink() {
     const link = document.getElementById('invite-link').value;
