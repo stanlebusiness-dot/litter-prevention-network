@@ -39,6 +39,17 @@
     .news-cta p { color: #4f5e60; line-height: 1.7; margin-bottom: 16px; }
     .news-cta a { display: inline-block; background: #1D9E75; color: white; padding: 12px 22px; border-radius: 10px; text-decoration: none; font-weight: 700; }
     .news-cta a:hover { background: #0F6E56; }
+    .ba-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 900px; margin: 0 auto 36px; }
+    @media (max-width: 700px) { .ba-grid { grid-template-columns: 1fr; } }
+    .ba-card { background: #f9f9f7; border-radius: 12px; overflow: hidden; text-align: left; box-shadow: 0 1px 8px rgba(0,0,0,0.06); }
+    .ba-card-images { display: flex; }
+    .ba-card-images > div { flex: 1; position: relative; aspect-ratio: 4/3; background: #e0e0e0; display: flex; align-items: center; justify-content: center; }
+    .ba-card-images img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .ba-card-divider { width: 3px; background: white; flex-shrink: 0; }
+    .ba-card-tag { position: absolute; top: 8px; left: 8px; background: rgba(0,0,0,0.6); color: white; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 20px; font-family: 'Outfit', sans-serif; letter-spacing: 0.5px; }
+    .ba-card-tag.after { background: rgba(29,158,117,0.9); }
+    .ba-card-meta { padding: 14px 16px; font-size: 13px; color: #555; line-height: 1.7; }
+    .ba-placeholder-msg { grid-column: 1 / -1; padding: 40px 20px; color: #888; font-size: 15px; background: #f9f9f7; border-radius: 12px; }
     .mission { max-width: 760px; margin: 0 auto; padding: 64px 40px; text-align: center; }
     .section-tag { display: inline-block; background: #E1F5EE; color: #0F6E56; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 6px 14px; border-radius: 20px; margin-bottom: 20px; }
     .mission h2 { font-size: 32px; margin-bottom: 20px; font-family: 'Outfit', sans-serif; }
@@ -179,12 +190,13 @@
 
   <section class="hero" id="main-content">
     <div class="hero-inner">
-      <!-- REPLACE: swap placeholder with actual Trash Rangers photo when received -->
+      <!-- Trash Rangers photo — managed via admin portal -->
       <div class="hero-photo-wrap">
         <img id="trash-rangers-photo"
              src="https://placehold.co/680x510/1a6b2f/ffffff?text=Trash+Rangers+Photo"
              alt="Trash Rangers students in Willis, Texas"
-             class="hero-photo" />
+             class="hero-photo"
+             onerror="this.onerror=null;this.src='https://placehold.co/680x510/1a6b2f/ffffff?text=Trash+Rangers+Photo';" />
         <div class="hero-photo-caption">Willis, Texas — Home of the Trash Rangers</div>
       </div>
       <div class="hero-text">
@@ -358,28 +370,13 @@
     </div>
   </section>
 
-  <!-- TODO: connect to photo submission backend when ready -->
+  <!-- Before & After gallery — managed via admin portal, only approved sets display -->
   <section style="padding:64px 40px;background:white;text-align:center;">
     <span class="section-tag"><span class="en">Community Impact</span><span class="es">Impacto Comunitario</span></span>
     <h2 style="font-size:32px;font-family:'Outfit',sans-serif;margin-bottom:12px;margin-top:16px;"><span class="en">See the Difference</span><span class="es">Mira la Diferencia</span></h2>
     <p style="font-size:17px;color:#666;max-width:620px;margin:0 auto 40px;line-height:1.7;"><span class="en">Community members are already making an impact. Submit your own before and after photos and inspire others to take action.</span><span class="es">Los miembros de la comunidad ya están marcando la diferencia. Envía tus fotos de antes y después e inspira a otros a tomar acción.</span></p>
-    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:800px;margin:0 auto 36px;">
-      <div style="position:relative;border-radius:12px;overflow:hidden;">
-        <img src="https://placehold.co/400x280/d1d5db/6b7280?text=Before" alt="Before — community area with litter" style="width:100%;display:block;" />
-        <span style="position:absolute;top:12px;left:12px;background:rgba(0,0,0,0.6);color:white;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;font-family:'Outfit',sans-serif;letter-spacing:0.5px;">BEFORE</span>
-      </div>
-      <div style="position:relative;border-radius:12px;overflow:hidden;">
-        <img src="https://placehold.co/400x280/d1fae5/065f46?text=After" alt="After — same area cleaned up" style="width:100%;display:block;" />
-        <span style="position:absolute;top:12px;left:12px;background:rgba(29,158,117,0.9);color:white;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;font-family:'Outfit',sans-serif;letter-spacing:0.5px;">AFTER</span>
-      </div>
-      <div style="position:relative;border-radius:12px;overflow:hidden;">
-        <img src="https://placehold.co/400x280/d1d5db/6b7280?text=Before" alt="Before — roadside litter" style="width:100%;display:block;" />
-        <span style="position:absolute;top:12px;left:12px;background:rgba(0,0,0,0.6);color:white;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;font-family:'Outfit',sans-serif;letter-spacing:0.5px;">BEFORE</span>
-      </div>
-      <div style="position:relative;border-radius:12px;overflow:hidden;">
-        <img src="https://placehold.co/400x280/d1fae5/065f46?text=After" alt="After — roadside cleared" style="width:100%;display:block;" />
-        <span style="position:absolute;top:12px;left:12px;background:rgba(29,158,117,0.9);color:white;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;font-family:'Outfit',sans-serif;letter-spacing:0.5px;">AFTER</span>
-      </div>
+    <div class="ba-grid" id="before-after-grid">
+      <div class="ba-placeholder-msg"><span class="en">Loading photos…</span><span class="es">Cargando fotos…</span></div>
     </div>
     <a href="contact.html" style="display:inline-block;background:#1D9E75;color:white;font-family:'Outfit',sans-serif;font-weight:700;font-size:15px;padding:13px 30px;border-radius:8px;text-decoration:none;"><span class="en">Submit Your Photos</span><span class="es">Envía Tus Fotos</span></a>
   </section>
@@ -582,7 +579,7 @@
       const { data } = await _sb.from('site_settings').select('key,value').in('key', [
         'hero_index_image','hero_index_position','hero_index_xposition','hero_index_zoom',
         'parallax_1_img','parallax_2_img','parallax_3_img',
-        'trash_rangers_photo'
+        'trash_rangers_photo','trash_rangers_alt'
       ]);
       if (data) {
         const s = Object.fromEntries(data.map(r => [r.key, r.value]));
@@ -600,10 +597,34 @@
         if (s.parallax_3_img) document.getElementById('parallax-3').style.backgroundImage = `url('${s.parallax_3_img}')`;
         if (s.trash_rangers_photo) {
           const trEl = document.getElementById('trash-rangers-photo');
-          if (trEl) { trEl.src = s.trash_rangers_photo; trEl.alt = 'Trash Rangers — Willis, Texas'; }
+          if (trEl) { trEl.src = s.trash_rangers_photo; trEl.alt = s.trash_rangers_alt || 'Willis Texas Home of the Trash Rangers'; }
         }
       }
     } catch(e) {}
+  })();
+
+  // Before & After gallery — fetch approved sets only
+  (async function loadBeforeAfterGallery() {
+    const grid = document.getElementById('before-after-grid');
+    const placeholderHtml = '<div class="ba-placeholder-msg"><span class="en">Photos coming soon — submit yours today!</span><span class="es">Fotos próximamente — ¡envía las tuyas hoy!</span></div>';
+    try {
+      const { data } = await _sb.from('before_after_sets').select('*').eq('approved', true).order('date_submitted', { ascending: false }).limit(6);
+      if (!data || !data.length) { grid.innerHTML = placeholderHtml; return; }
+      grid.innerHTML = data.map(set => {
+        const metaParts = [];
+        if (set.location_label) metaParts.push(`📍 ${set.location_label}`);
+        if (set.submitted_by) metaParts.push(`<span class="en">Submitted by</span><span class="es">Enviado por</span> ${set.submitted_by}`);
+        if (set.date_submitted) metaParts.push(new Date(set.date_submitted).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }));
+        return `<div class="ba-card">
+          <div class="ba-card-images">
+            <div><span class="ba-card-tag">BEFORE</span>${set.before_image_path ? `<img src="${set.before_image_path}" alt="Before" onerror="this.remove()" />` : ''}</div>
+            <div class="ba-card-divider"></div>
+            <div><span class="ba-card-tag after">AFTER</span>${set.after_image_path ? `<img src="${set.after_image_path}" alt="After" onerror="this.remove()" />` : ''}</div>
+          </div>
+          <div class="ba-card-meta">${metaParts.join(' &middot; ')}</div>
+        </div>`;
+      }).join('');
+    } catch(e) { grid.innerHTML = placeholderHtml; }
   })();
 
   // Suggestions box
