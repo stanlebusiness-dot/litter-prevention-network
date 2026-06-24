@@ -45,12 +45,13 @@
   </style>
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
   <div class="lang-bar">
     <button class="active" onclick="setLang('en')">English</button>
     <button onclick="setLang('es')">Español</button>
   </div>
 
-  <nav>
+  <nav aria-label="Main navigation">
     <a href="index.html" class="nav-logo">
       <img src="logo_500x500.svg" alt="Litter Prevention Network" />
       <span class="nav-logo-label">Litter Prevention Network</span>
@@ -93,14 +94,14 @@
       <a href="login.html" class="nav-signin-btn" id="desktop-nav-auth">Sign In</a>
     </div>
 
-    <button class="hamburger" onclick="openDrawer()"><span></span><span></span><span></span></button>
+    <button class="hamburger" onclick="openDrawer()" aria-label="Open navigation menu"><span></span><span></span><span></span></button>
   </nav>
 
   <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
   <div class="drawer" id="drawer">
     <div class="drawer-header">
       <div class="drawer-logo" style="font-family:'Outfit',sans-serif;">Litter Prevention Network</div>
-      <button class="drawer-close" onclick="closeDrawer()">&#x2715;</button>
+      <button class="drawer-close" onclick="closeDrawer()" aria-label="Close menu">&#x2715;</button>
     </div>
     <div class="drawer-nav">
       <a href="index.html"><span class="nav-icon">&#x1F3E0;</span><span class="en">Home</span><span class="es">Inicio</span></a>
@@ -127,7 +128,7 @@
     <div class="drawer-footer-note">&#xA9; 2026 Litter Prevention Network &middot; Willis, TX</div>
   </div>
 
-  <div class="cs-hero">
+  <div class="cs-hero" id="main-content">
     <div class="cs-badge">Our Roadmap</div>
     <h1>What's Coming Next</h1>
     <p>We are just getting started. The Litter Prevention Network is actively building the foundation that will power everything below. As we grow, these programs and features will come to life — one city at a time.</p>

@@ -93,12 +93,13 @@
   </style>
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
   <div class="lang-bar">
     <button class="active" onclick="setLang('en')">English</button>
     <button onclick="setLang('es')">Español</button>
   </div>
 
-  <nav>
+  <nav aria-label="Main navigation">
     <a href="index.html" class="nav-logo">
       <img src="logo_500x500.svg" alt="Litter Prevention Network" />
       <span class="nav-logo-label">Litter Prevention Network</span>
@@ -149,7 +150,7 @@
   <div class="drawer" id="drawer">
     <div class="drawer-header">
       <div class="drawer-logo" style="font-family:'Outfit',sans-serif;">Litter Prevention Network</div>
-      <button class="drawer-close" onclick="closeDrawer()">&#x2715;</button>
+      <button class="drawer-close" onclick="closeDrawer()" aria-label="Close menu">&#x2715;</button>
     </div>
     <div class="drawer-nav">
       <a href="index.html"><span class="nav-icon">&#x1F3E0;</span><span class="en">Home</span><span class="es">Inicio</span></a>
@@ -176,7 +177,7 @@
     <div class="drawer-footer-note">&#xA9; 2026 Litter Prevention Network &middot; Willis, TX</div>
   </div>
 
-  <section class="hero">
+  <section class="hero" id="main-content">
     <div class="hero-inner">
       <!-- REPLACE: swap placeholder with actual Trash Rangers photo when received -->
       <div class="hero-photo-wrap">
@@ -542,12 +543,22 @@
         <a href="contact.html"><span class="en">Contact Us</span><span class="es">Contáctanos</span></a>
       </div>
     </div>
+      <div class="footer-col">
+        <h4><span class="en">Legal</span><span class="es">Legal</span></h4>
+        <a href="privacy.html"><span class="en">Privacy Policy</span><span class="es">Política de Privacidad</span></a>
+        <a href="terms.html"><span class="en">Terms of Use</span><span class="es">Términos de Uso</span></a>
+        <a href="disclaimer.html">Disclaimer</a>
+        <a href="accessibility.html"><span class="en">Accessibility</span><span class="es">Accesibilidad</span></a>
+        <a href="nonprofit-disclosure.html"><span class="en">Nonprofit Disclosure</span><span class="es">Divulgación Sin Fines de Lucro</span></a>
+        <a href="cookies.html"><span class="en">Cookie Policy</span><span class="es">Política de Cookies</span></a>
+      </div>
     <div class="footer-bottom">
       <span>© 2026 Litter Prevention Network · Willis, TX</span>
-      <div style="display:flex;gap:20px;">
+      <div style="display:flex;gap:20px;flex-wrap:wrap;">
         <a href="faq.html">FAQ</a>
         <a href="about.html"><span class="en">About</span><span class="es">Acerca de</span></a>
         <a href="contact.html"><span class="en">Contact</span><span class="es">Contacto</span></a>
+        <a href="privacy.html"><span class="en">Privacy</span><span class="es">Privacidad</span></a>
       </div>
     </div>
   </footer>
