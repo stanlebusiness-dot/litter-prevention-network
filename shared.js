@@ -451,6 +451,55 @@ function renderPersonalizedNav(user, points) {
   }
 }
 
+// Cookie consent banner — set via localStorage
+(function () {
+  if (localStorage.getItem('lpn-cookie-consent') !== null) return;
+  document.addEventListener('DOMContentLoaded', function () {
+    var banner = document.createElement('div');
+    banner.id = 'lpn-cookie-banner';
+    banner.setAttribute('role', 'dialog');
+    banner.setAttribute('aria-label', 'Cookie consent');
+    banner.style.cssText = [
+      'position:fixed', 'bottom:0', 'left:0', 'right:0',
+      'background:#1A6B2F', 'color:white',
+      'padding:16px 24px',
+      'display:flex', 'align-items:center', 'justify-content:space-between',
+      'gap:16px', 'flex-wrap:wrap',
+      'z-index:9998',
+      'font-family:Outfit,Segoe UI,sans-serif', 'font-size:14px', 'line-height:1.6',
+      'box-shadow:0 -4px 20px rgba(0,0,0,0.25)'
+    ].join(';');
+    banner.innerHTML =
+      '<p style="margin:0;flex:1;min-width:200px;">' +
+        '<span class="en">This site uses cookies for basic analytics to help us improve your experience. ' +
+          'We do not sell or share your data. ' +
+          '<a href="cookies.html" style="color:#9FD3BB;text-decoration:underline;">Learn more</a>' +
+        '</span>' +
+        '<span class="es">Este sitio usa cookies para análisis básicos para ayudarnos a mejorar tu experiencia. ' +
+          'No vendemos ni compartimos tus datos. ' +
+          '<a href="cookies.html" style="color:#9FD3BB;text-decoration:underline;">Más información</a>' +
+        '</span>' +
+      '</p>' +
+      '<div style="display:flex;gap:10px;flex-shrink:0;">' +
+        '<button id="lpn-cookie-accept" style="background:white;color:#1A6B2F;border:none;padding:9px 22px;border-radius:6px;font-weight:700;font-size:14px;cursor:pointer;font-family:inherit;">' +
+          '<span class="en">Accept</span><span class="es">Aceptar</span>' +
+        '</button>' +
+        '<button id="lpn-cookie-decline" style="background:transparent;color:white;border:2px solid rgba(255,255,255,0.55);padding:9px 22px;border-radius:6px;font-weight:600;font-size:14px;cursor:pointer;font-family:inherit;">' +
+          '<span class="en">Decline</span><span class="es">Rechazar</span>' +
+        '</button>' +
+      '</div>';
+    document.body.appendChild(banner);
+    document.getElementById('lpn-cookie-accept').addEventListener('click', function () {
+      localStorage.setItem('lpn-cookie-consent', 'accepted');
+      banner.remove();
+    });
+    document.getElementById('lpn-cookie-decline').addEventListener('click', function () {
+      localStorage.setItem('lpn-cookie-consent', 'declined');
+      banner.remove();
+    });
+  });
+}());
+
 function renderPersonalizedHero(user, points) {
   const hero = document.querySelector('.hero, .page-hero');
   if (!hero) return;
