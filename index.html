@@ -403,34 +403,40 @@
     <h2><span class="en">Join Today</span><span class="es">Únete Hoy</span></h2>
     <p><span class="en">Free to join. Be part of the movement to prevent litter in Willis.</span><span class="es">Gratis para unirse. Sé parte del movimiento para prevenir la basura en Willis.</span></p>
 
-    <div class="age-notice">
-      <span class="en">⚠️ If you are under 18, a parent or guardian must complete this registration on your behalf.</span>
-      <span class="es">⚠️ Si eres menor de 18 años, un padre o tutor debe completar este registro en tu nombre.</span>
-    </div>
-
     <div class="form-row">
       <div class="form-group">
-        <label><span class="en">First Name</span><span class="es">Nombre</span></label>
+        <label for="first-name"><span class="en">First Name</span><span class="es">Nombre</span></label>
         <input type="text" id="first-name" placeholder="First name" />
       </div>
       <div class="form-group">
-        <label><span class="en">Last Name</span><span class="es">Apellido</span></label>
+        <label for="last-name"><span class="en">Last Name</span><span class="es">Apellido</span></label>
         <input type="text" id="last-name" placeholder="Last name" />
       </div>
     </div>
     <div class="form-group">
-      <label><span class="en">Email Address</span><span class="es">Correo Electrónico</span></label>
+      <label for="signup-email"><span class="en">Email Address</span><span class="es">Correo Electrónico</span></label>
       <input type="email" id="signup-email" placeholder="you@email.com" />
     </div>
     <div class="form-row">
       <div class="form-group">
-        <label><span class="en">Age</span><span class="es">Edad</span></label>
-        <input type="number" id="signup-age" placeholder="Your age" min="1" max="120" />
+        <label for="signup-age"><span class="en">Age</span><span class="es">Edad</span></label>
+        <input type="number" id="signup-age" placeholder="Your age" min="1" max="120" aria-describedby="age-msg" />
+        <div id="age-msg" role="alert" style="display:none;margin-top:6px;font-size:13px;font-weight:600;line-height:1.5;"></div>
       </div>
       <div class="form-group">
-        <label><span class="en">Zip Code</span><span class="es">Código Postal</span></label>
+        <label for="signup-zip"><span class="en">Zip Code</span><span class="es">Código Postal</span></label>
         <input type="text" id="signup-zip" placeholder="77378" />
       </div>
+    </div>
+    <!-- Age gate enforcement — parental consent required for under 18, mandatory for under 13 -->
+    <div id="consent-group" style="display:none;margin-bottom:20px;background:#FFF8E1;border:1px solid #FFD54F;border-radius:8px;padding:14px 16px;">
+      <label style="display:flex;gap:12px;align-items:flex-start;cursor:pointer;font-size:14px;line-height:1.6;color:#555;">
+        <input type="checkbox" id="parental-consent" style="margin-top:3px;width:16px;height:16px;flex-shrink:0;cursor:pointer;" />
+        <span>
+          <span class="en">I am the parent or guardian of the person being registered and I consent to this registration on their behalf.</span>
+          <span class="es">Soy el padre, madre o tutor de la persona que se registra y doy mi consentimiento para este registro en su nombre.</span>
+        </span>
+      </label>
     </div>
     <div class="form-group">
       <label><span class="en">Phone Number (optional)</span><span class="es">Teléfono (opcional)</span></label>
@@ -614,6 +620,43 @@
     document.getElementById('idea-message').value = '';
   });
 
+  // Age gate enforcement — inline validation
+  function updateAgeGate() {
+    const ageVal = parseInt(document.getElementById('signup-age').value);
+    const msgEl = document.getElementById('age-msg');
+    const consentGroup = document.getElementById('consent-group');
+    const submitBtn = document.getElementById('signup-btn');
+    const consentBox = document.getElementById('parental-consent');
+
+    if (!document.getElementById('signup-age').value || isNaN(ageVal)) {
+      msgEl.style.display = 'none';
+      consentGroup.style.display = 'none';
+      submitBtn.disabled = false;
+      submitBtn.style.opacity = '1';
+      return;
+    }
+    if (ageVal < 13) {
+      msgEl.innerHTML = '<span class="en">Users under 13 cannot register directly. A parent or guardian must complete this form on their behalf.</span><span class="es">Los usuarios menores de 13 años no pueden registrarse directamente. Un padre o tutor debe completar este formulario en su nombre.</span>';
+      msgEl.style.cssText = 'display:block;margin-top:6px;font-size:13px;font-weight:600;line-height:1.5;color:#c62828;';
+      consentGroup.style.display = 'block';
+    } else if (ageVal < 18) {
+      msgEl.innerHTML = '<span class="en">Users under 18 require a parent or guardian to complete this registration.</span><span class="es">Los usuarios menores de 18 años requieren que un padre o tutor complete este registro.</span>';
+      msgEl.style.cssText = 'display:block;margin-top:6px;font-size:13px;font-weight:600;line-height:1.5;color:#7B5E00;';
+      consentGroup.style.display = 'block';
+    } else {
+      msgEl.style.display = 'none';
+      consentGroup.style.display = 'none';
+      submitBtn.disabled = false;
+      submitBtn.style.opacity = '1';
+      return;
+    }
+    const canSubmit = consentBox.checked;
+    submitBtn.disabled = !canSubmit;
+    submitBtn.style.opacity = canSubmit ? '1' : '0.5';
+  }
+  document.getElementById('signup-age').addEventListener('input', updateAgeGate);
+  document.getElementById('parental-consent').addEventListener('change', updateAgeGate);
+
   // Show referral name field if friend selected
   document.getElementById('signup-referral-type').addEventListener('change', function() {
     document.getElementById('referral-name-group').style.display =
@@ -633,9 +676,14 @@
     const full_name = `${first_name} ${last_name}`.trim();
 
     if (!first_name || !email) { alert('Please enter your name and email.'); return; }
-    if (age && parseInt(age) < 18) {
-      alert('If you are under 18, a parent or guardian must complete this registration.');
-      return;
+
+    // Enforce parental consent for minors
+    const ageNum = parseInt(age);
+    if (age && !isNaN(ageNum) && ageNum < 18) {
+      if (!document.getElementById('parental-consent').checked) {
+        alert('A parent or guardian must check the consent box before registering a minor.');
+        return;
+      }
     }
 
     const { error } = await _sb.from('signups').insert([{
