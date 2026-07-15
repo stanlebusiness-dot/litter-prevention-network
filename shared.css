@@ -581,6 +581,28 @@ nav {
   box-shadow: 0 4px 12px rgba(26,107,47,0.3);
 }
 
+/* JOIN US pill — Bright Green, pops against Dark Green Sign Up */
+.nav-join-pill {
+  background: #6BBF2A;
+  color: #0F2318 !important;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  padding: 9px 20px;
+  border-radius: 50px;
+  text-decoration: none !important;
+  white-space: nowrap;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.15s;
+  display: inline-block;
+}
+.nav-join-pill:hover {
+  background: #5aab1f;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(107,191,42,0.4);
+}
+
 /* ── MOBILE SLIDE-DOWN NAV PANEL ──
    flex-basis:100% makes this wrap to its own row inside the sticky <nav>
    so it sticks with the header as the user scrolls */
@@ -646,6 +668,28 @@ nav {
   padding: 12px 20px;
 }
 .mobile-nav-signup:hover { background: #0F5224 !important; color: white !important; }
+.mobile-nav-join { background: #6BBF2A !important; color: #0F2318 !important; border-radius: 50px; border-left: none !important; text-transform: uppercase; font-size: 14px; font-weight: 800; letter-spacing: 0.3px; padding: 12px 20px; }
+.mobile-nav-join:hover { background: #5aab1f !important; color: #0F2318 !important; }
+
+/* ── LEADERSHIP CARDS ── */
+.leadership-section { padding: 64px 40px; max-width: 920px; margin: 0 auto; }
+.leadership-section > h2 { font-size: 30px; font-weight: 800; font-family: 'Outfit', sans-serif; color: #0F2318; margin-bottom: 8px; }
+.leadership-intro { color: #666; font-size: 16px; margin-bottom: 40px; line-height: 1.7; }
+.leadership-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 32px; }
+.leader-card { background: white; border-radius: 20px; padding: 36px 28px; text-align: center; border: 1px solid #e4ede8; box-shadow: 0 4px 24px rgba(15,110,86,0.08); }
+.leader-photo-wrap { width: 120px; height: 120px; border-radius: 50%; overflow: hidden; margin: 0 auto 20px; border: 4px solid #1D9E75; background: linear-gradient(135deg, #E1F5EE 0%, #B2DFDB 100%); display: flex; align-items: center; justify-content: center; }
+.leader-photo-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.leader-photo-placeholder { font-size: 48px; line-height: 1; }
+.leader-name { font-size: 20px; font-weight: 800; font-family: 'Outfit', sans-serif; color: #0D2B4E; margin-bottom: 4px; }
+.leader-title { font-size: 13px; font-weight: 700; color: #1D9E75; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 14px; }
+.leader-bio { font-size: 14px; color: #666; line-height: 1.75; }
+@media (max-width: 640px) {
+  .leadership-section { padding: 40px 20px; }
+  .leadership-grid { grid-template-columns: 1fr; }
+}
+
+/* ── FOOTER LOGO ── */
+.footer-logo-img { width: 56px; height: 56px; display: block; margin-bottom: 12px; }
 
 /* ── LANGUAGE ── */
 .en { display: inline; }

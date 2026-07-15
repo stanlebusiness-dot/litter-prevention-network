@@ -357,9 +357,20 @@ function buildNav() {
     }
   });
 
-  // ── Build right section: SIGN UP pill + hamburger ──
+  // ── Build right section: JOIN US + SIGN UP pill + hamburger ──
   const rightEl = document.createElement('div');
   rightEl.className = 'nav-right';
+
+  // Read cached homepage config for Join Us settings
+  const _juCfg = (() => {
+    try { const c = JSON.parse(localStorage.getItem('lpn-hpc')); return (c && Date.now() - c.t < 86400000) ? (c.c?.joinUs || {}) : {}; } catch(e) { return {}; }
+  })();
+  const joinPill = document.createElement('a');
+  joinPill.href    = _juCfg.url || 'volunteer.html';
+  joinPill.className = 'nav-join-pill';
+  joinPill.id      = 'nav-join-us';
+  joinPill.innerHTML = '<span class="en">' + (_juCfg.en || 'Join Us') + '</span><span class="es">' + (_juCfg.es || 'Únete') + '</span>';
+  if (_juCfg.visible === false) joinPill.style.display = 'none';
 
   const pill = document.createElement('a');
   pill.href = 'login.html';
@@ -375,6 +386,7 @@ function buildNav() {
   ham.innerHTML = '<span></span><span></span><span></span>';
   ham.addEventListener('click', toggleMobileNav);
 
+  rightEl.appendChild(joinPill);
   rightEl.appendChild(pill);
   rightEl.appendChild(ham);
 
@@ -411,6 +423,14 @@ function buildNav() {
   const div = document.createElement('div');
   div.className = 'mobile-nav-divider';
   mobileInner.appendChild(div);
+
+  const mobileJoin = document.createElement('a');
+  mobileJoin.href = _juCfg.url || 'volunteer.html';
+  mobileJoin.className = 'mobile-nav-link mobile-nav-join';
+  mobileJoin.id = 'mobile-nav-join';
+  mobileJoin.innerHTML = '<span class="en">' + (_juCfg.en || 'Join Us') + '</span><span class="es">' + (_juCfg.es || 'Únete') + '</span>';
+  if (_juCfg.visible === false) mobileJoin.style.display = 'none';
+  mobileInner.appendChild(mobileJoin);
 
   const mobileSignup = document.createElement('a');
   mobileSignup.href = 'login.html';

@@ -6,9 +6,14 @@
   <meta name="theme-color" content="#1D9E75" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>About – Litter Prevention Network</title>
-  <link rel="stylesheet" href="shared.css?v=20260604d" />
+  <meta property="og:title" content="About Us – Litter Prevention Network" />
+  <meta property="og:description" content="Who we are, why we started, and what we're building in Willis, TX." />
+  <meta property="og:image" content="https://elgzfppmlsrrmskgloeo.supabase.co/storage/v1/object/public/site-images/lpn-og-image.png" />
+  <meta property="og:url" content="https://litterpreventionnetwork.org/about.html" />
+  <meta property="og:type" content="website" />
+  <link rel="stylesheet" href="shared.css?v=20260715" />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
-  <script src="shared.js?v=20260604d"></script>
+  <script src="shared.js?v=20260715"></script>
   <style>
     .about-section { max-width: 860px; margin: 0 auto; padding: 56px 40px; }
     .about-block { margin-bottom: 64px; }
@@ -150,9 +155,67 @@
 
   </section>
 
+  <!-- ══ LEADERSHIP ══ -->
+  <section id="leadership" style="background:#f9fdf7;border-top:1px solid #e4ede8;">
+    <div class="leadership-section">
+      <h2><span class="en">Our Leadership</span><span class="es">Nuestra Directiva</span></h2>
+      <p class="leadership-intro">
+        <span class="en">The Litter Prevention Network is led by people who live and work in Willis, TX and are personally committed to building a cleaner, healthier community for everyone.</span>
+        <span class="es">La Red de Prevención de Basura está dirigida por personas que viven y trabajan en Willis, TX y están comprometidas personalmente con construir una comunidad más limpia y saludable para todos.</span>
+      </p>
+      <div class="leadership-grid" id="about-leadership-grid">
+        <!-- Placeholder cards — replaced by Supabase data below -->
+        <div class="leader-card">
+          <div class="leader-photo-wrap"><span class="leader-photo-placeholder">👤</span></div>
+          <div class="leader-name">Vanessa Manners</div>
+          <div class="leader-title"><span class="en">President</span><span class="es">Presidenta</span></div>
+          <p class="leader-bio"><span class="en">Vanessa co-founded the Litter Prevention Network to turn her passion for a cleaner community into lasting change. She leads LPN's programs and community outreach in Willis, TX.</span><span class="es">Vanessa cofundó la Red de Prevención de Basura para convertir su pasión por una comunidad más limpia en un cambio duradero. Lidera los programas y esfuerzos de divulgación comunitaria de LPN en Willis, TX.</span></p>
+        </div>
+        <div class="leader-card">
+          <div class="leader-photo-wrap"><span class="leader-photo-placeholder">👤</span></div>
+          <div class="leader-name">Adán Juárez</div>
+          <div class="leader-title"><span class="en">Vice President</span><span class="es">Vicepresidente</span></div>
+          <p class="leader-bio"><span class="en">Adán brings operational expertise and community relationships that help LPN grow its reach and impact. He champions bilingual outreach so every neighbor can participate in building a litter-free Willis.</span><span class="es">Adán aporta experiencia operativa y relaciones comunitarias que ayudan a LPN a ampliar su alcance. Defiende la divulgación bilingüe para que cada vecino pueda participar en la construcción de un Willis libre de basura.</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+  (async function() {
+    try {
+      const sb = window.supabase.createClient(
+        'https://elgzfppmlsrrmskgloeo.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
+      );
+      const { data } = await sb.from('leadership').select('*').order('sort_order', { ascending: true });
+      if (!data || !data.length) return;
+      const grid = document.getElementById('about-leadership-grid');
+      if (!grid) return;
+      grid.innerHTML = data.map(m => `
+        <div class="leader-card">
+          <div class="leader-photo-wrap">
+            ${m.photo_url
+              ? `<img src="${m.photo_url}" alt="${m.name}" loading="lazy" />`
+              : `<span class="leader-photo-placeholder">👤</span>`}
+          </div>
+          <div class="leader-name">${m.name}</div>
+          <div class="leader-title">
+            <span class="en">${m.title_en}</span><span class="es">${m.title_es}</span>
+          </div>
+          <p class="leader-bio">
+            <span class="en">${m.bio_en}</span><span class="es">${m.bio_es}</span>
+          </p>
+        </div>`).join('');
+    } catch(e) { /* fallback placeholders remain */ }
+  })();
+  </script>
+
   <footer class="site-footer">
     <div class="footer-grid">
       <div class="footer-brand">
+        <img src="logo_500x500.svg" alt="Litter Prevention Network" class="footer-logo-img" />
         <h3 style="font-family:'Outfit',sans-serif;">Litter Prevention Network</h3>
         <p class="en">Building a litter-free Willis, TX — through prevention, education, and community.</p>
         <p class="es">Construyendo un Willis, TX libre de basura — a través de la prevención, la educación y la comunidad.</p>

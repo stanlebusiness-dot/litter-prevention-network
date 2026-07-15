@@ -6,9 +6,14 @@
   <meta name="theme-color" content="#1D9E75" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Litter Prevention Network – Willis, TX</title>
-  <link rel="stylesheet" href="shared.css?v=20260714" />
+  <meta property="og:title" content="Litter Prevention Network – Willis, TX" />
+  <meta property="og:description" content="Empowering communities to prevent litter through education, accountability, and action." />
+  <meta property="og:image" content="https://elgzfppmlsrrmskgloeo.supabase.co/storage/v1/object/public/site-images/lpn-og-image.png" />
+  <meta property="og:url" content="https://litterpreventionnetwork.org" />
+  <meta property="og:type" content="website" />
+  <link rel="stylesheet" href="shared.css?v=20260715" />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
-  <script src="shared.js?v=20260604d"></script>
+  <script src="shared.js?v=20260715"></script>
   <style>
     /* ── HOMEPAGE HERO ── */
     .hero {
@@ -115,6 +120,15 @@
       box-shadow: 0 0 22px rgba(255,255,255,0.7), 0 0 45px rgba(255,255,255,0.45);
     }
     .hero-btn-signup:hover { background: #0F5224; transform: translateY(-2px); box-shadow: 0 4px 14px rgba(26,107,47,0.35), 0 0 22px rgba(255,255,255,0.5); }
+    .hero-join-btn {
+      display: inline-block; margin-top: 28px; align-self: flex-start;
+      background: #6BBF2A; color: #0F2318; font-family: 'Outfit', sans-serif;
+      font-size: 17px; font-weight: 800; padding: 15px 40px; border-radius: 999px;
+      text-decoration: none; letter-spacing: 0.3px;
+      box-shadow: 0 0 22px rgba(107,191,42,0.55), 0 4px 18px rgba(0,0,0,0.15);
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    }
+    .hero-join-btn:hover { background: #5aab1f; transform: translateY(-2px); box-shadow: 0 0 32px rgba(107,191,42,0.7), 0 6px 22px rgba(0,0,0,0.18); }
     @media (max-width: 960px) {
       .hero-text-col { flex: none; width: 100%; padding: 48px 32px 40px; }
       .hl-see { font-size: 38px; } .hl-report { font-size: 48px; }
@@ -359,6 +373,10 @@
             <a href="#signup" class="hero-btn-signup"><span class="en">Sign Up Today!</span><span class="es">¡Regístrate Hoy!</span></a>
           </div>
         </div>
+        <a id="hero-join-btn" class="hero-join-btn" href="volunteer.html">
+          <span class="en">Join Us</span>
+          <span class="es">Únete</span>
+        </a>
       </div>
     </div>
     <!-- Sand-dune swoop (swoop-cascade-A flipped horizontally) -->
@@ -420,6 +438,22 @@
     <div style="color:rgba(255,255,255,0.7);font-size:12px;margin-top:8px;"><span class="en">100% goes to local outreach &amp; education</span><span class="es">El 100% va a la divulgación y educación local</span></div>
   </div>
 
+  <!--
+    TODO — BRANDED ART NEEDED (Task 2 — replace stock backgrounds / add Trash Rangers):
+    1. Hero background: upload a branded LPN community photo or Trash Rangers group shot
+       via admin → Pages → Homepage to replace the default gradient.
+    2. #parallax-1: upload a Trash Rangers scene or LPN action photo (community cleanup)
+       via admin → Site Settings → parallax_1_img.
+    3. #parallax-2: upload a neighborhood/nature/prevention-themed LPN-branded photo
+       via admin → Site Settings → parallax_2_img.
+    4. #parallax-3: upload Trash Rangers mascot art or LPN event photo
+       via admin → Site Settings → parallax_3_img.
+    5. Feature strip icons: consider swapping emoji icons for Trash Rangers mascot stickers.
+    6. #leadership-teaser: professional photos for Vanessa and Adán — upload via admin → Leadership tab.
+    7. Trash Rangers section corners / decorative art: place mascot SVGs at the bottom-right
+       of .how, .stats, and .mission sections once art is delivered.
+    8. og:image (social share): upload branded lockup to site-images/lpn-og-image.png.
+  -->
   <!-- Parallax 1: directly below hero -->
   <div class="parallax-section" id="parallax-1">
     <svg class="grass-svg grass-top" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
@@ -471,6 +505,37 @@
       <span class="es">Educamos, conectamos y empoderamos a los vecinos de Willis para prevenir la basura desde la fuente — construyendo hábitos comunitarios que mantienen nuestras calles limpias.</span>
     </p>
     <p class="sub-tag"><span class="en">Prevention over cleanup. Always.</span><span class="es">Prevención sobre limpieza. Siempre.</span></p>
+  </section>
+
+  <!-- ══ LEADERSHIP TEASER ══ -->
+  <section id="leadership-teaser" style="background:#f9fdf7;border-top:1px solid #e4ede8;">
+    <div class="leadership-section" style="padding-top:56px;padding-bottom:56px;">
+      <h2><span class="en">Our Leadership</span><span class="es">Nuestra Directiva</span></h2>
+      <p class="leadership-intro">
+        <span class="en">Meet the people driving LPN's mission in Willis, TX.</span>
+        <span class="es">Conoce a las personas que impulsan la misión de LPN en Willis, TX.</span>
+      </p>
+      <div class="leadership-grid" id="hp-leadership-grid">
+        <!-- Loaded from Supabase -->
+        <div class="leader-card">
+          <div class="leader-photo-wrap"><span class="leader-photo-placeholder">👤</span></div>
+          <div class="leader-name">Vanessa Manners</div>
+          <div class="leader-title"><span class="en">President</span><span class="es">Presidenta</span></div>
+          <p class="leader-bio"><span class="en">Vanessa co-founded the Litter Prevention Network to turn her passion for a cleaner community into lasting change. She leads LPN's programs and community outreach in Willis, TX.</span><span class="es">Vanessa cofundó la Red de Prevención de Basura para convertir su pasión por una comunidad más limpia en un cambio duradero. Lidera los programas y esfuerzos de divulgación comunitaria de LPN en Willis, TX.</span></p>
+        </div>
+        <div class="leader-card">
+          <div class="leader-photo-wrap"><span class="leader-photo-placeholder">👤</span></div>
+          <div class="leader-name">Adán Juárez</div>
+          <div class="leader-title"><span class="en">Vice President</span><span class="es">Vicepresidente</span></div>
+          <p class="leader-bio"><span class="en">Adán brings operational expertise and community relationships that help LPN grow its reach and impact. He champions bilingual outreach so every neighbor can participate.</span><span class="es">Adán aporta experiencia operativa y relaciones comunitarias que ayudan a LPN a ampliar su alcance. Defiende la divulgación bilingüe para que cada vecino pueda participar.</span></p>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:32px;">
+        <a href="about.html#leadership" style="display:inline-block;background:#0D2B4E;color:white;padding:12px 28px;border-radius:50px;font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;text-decoration:none;transition:background 0.2s;">
+          <span class="en">Meet the Full Team</span><span class="es">Conoce al Equipo Completo</span>
+        </a>
+      </div>
+    </div>
   </section>
 
   <section class="how" id="how">
@@ -713,6 +778,7 @@
   <footer class="site-footer">
     <div class="footer-grid">
       <div class="footer-brand">
+        <img src="logo_500x500.svg" alt="Litter Prevention Network" class="footer-logo-img" />
         <h3 style="font-family:'Outfit',sans-serif;">Litter Prevention Network</h3>
         <p class="en">Building a litter-free Willis, TX — through prevention, education, and community.</p>
         <p class="es">Construyendo un Willis, TX libre de basura — a través de la prevención, la educación y la comunidad.</p>
@@ -1111,6 +1177,29 @@
       btnsEl.style.flexWrap      = 'wrap';
       btnsEl.style.gap           = layout === 'row' ? '12px' : '10px';
     }
+    // ── Join Us button config ─────────────────────────────
+    if (cfg.joinUs) {
+      const ju = cfg.joinUs;
+      const heroJoin = document.getElementById('hero-join-btn');
+      if (heroJoin) {
+        const eEl = heroJoin.querySelector('.en'), sEl = heroJoin.querySelector('.es');
+        if (eEl && ju.en) eEl.textContent = ju.en;
+        if (sEl && ju.es) sEl.textContent = ju.es;
+        if (ju.url) heroJoin.href = ju.url;
+        heroJoin.style.display = ju.heroVisible === false ? 'none' : '';
+      }
+      // Also sync nav pill (built by shared.js buildNav)
+      const navJoin = document.getElementById('nav-join-us');
+      const mNavJoin = document.getElementById('mobile-nav-join');
+      [navJoin, mNavJoin].forEach(el => {
+        if (!el) return;
+        const eEl = el.querySelector('.en'), sEl = el.querySelector('.es');
+        if (eEl && ju.en) eEl.textContent = ju.en;
+        if (sEl && ju.es) sEl.textContent = ju.es;
+        if (ju.url) el.href = ju.url;
+        el.style.display = ju.visible === false ? 'none' : '';
+      });
+    }
     // ── Text overrides ────────────────────────────────────
     _applyTextConfig(cfg.text);
 
@@ -1269,6 +1358,32 @@
       _drag = null;
     });
   }
+
+  // ── Load leadership from Supabase ────────────────────────
+  (async function loadLeadership() {
+    try {
+      const { data } = await _sb.from('leadership').select('*').order('sort_order', { ascending: true });
+      if (!data || !data.length) return;
+      const grid = document.getElementById('hp-leadership-grid');
+      if (!grid) return;
+      const lang = document.body.classList.contains('spanish') ? 'es' : 'en';
+      grid.innerHTML = data.map(m => `
+        <div class="leader-card">
+          <div class="leader-photo-wrap">
+            ${m.photo_url
+              ? `<img src="${m.photo_url}" alt="${m.name}" loading="lazy" />`
+              : `<span class="leader-photo-placeholder">👤</span>`}
+          </div>
+          <div class="leader-name">${m.name}</div>
+          <div class="leader-title">
+            <span class="en">${m.title_en}</span><span class="es">${m.title_es}</span>
+          </div>
+          <p class="leader-bio">
+            <span class="en">${m.bio_en}</span><span class="es">${m.bio_es}</span>
+          </p>
+        </div>`).join('');
+    } catch(e) { /* fallback placeholders remain */ }
+  })();
 
   </script>
   <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js');</script>
