@@ -89,10 +89,13 @@
       height: 7px;
       margin-top: 8px;
       background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 10'%3E%3Cpath d='M0,5 C37.5,0 75,10 112.5,5 C150,0 187.5,10 225,5 C262.5,0 281.25,10 300,5' stroke='%231A6B2F' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x left center / auto 7px;
+      /* white glow around the green line — intensity follows --hero-glow-r / --hero-glow-a */
+      filter: drop-shadow(0 0 var(--hero-glow-r, 10px) rgba(255,255,255,var(--hero-glow-a, 0.75)));
     }
     .hero-sub {
       font-size: 17px; color: #1a1a1a; line-height: 1.65;
       margin: 0 0 28px; max-width: 380px; font-weight: 500;
+      text-shadow: 0 0 25px rgba(255,255,255,0.9), 0 0 50px rgba(255,255,255,0.7);
     }
     .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
     .hero-btn-learn {
@@ -775,6 +778,7 @@
         'parallax_1_img','parallax_2_img','parallax_3_img',
         'trash_rangers_photo','trash_rangers_alt',
         'hero_text_shadow_blur','hero_text_shadow_opacity',
+        'hero_subtitle_en','hero_subtitle_es',
         'hero_btn1_text','hero_btn1_url','hero_btn2_text','hero_btn2_url'
       ]);
       if (data) {
@@ -795,14 +799,24 @@
           const trEl = document.getElementById('trash-rangers-photo');
           if (trEl) { trEl.src = s.trash_rangers_photo; trEl.alt = s.trash_rangers_alt || 'Willis Texas Home of the Trash Rangers'; }
         }
-        // Text shadow
+        // Text shadow — headline, subtitle, and wavy line all share the same intensity
         const blur    = parseInt(s.hero_text_shadow_blur    || '30');
         const opacity = parseFloat(s.hero_text_shadow_opacity || '75') / 100;
         if (opacity > 0) {
           const shadow = `0 0 ${blur}px rgba(255,255,255,${opacity}), 0 2px ${Math.round(blur * 0.65)}px rgba(255,255,255,${Math.min(1, opacity + 0.15)})`;
           document.querySelectorAll('.hero-hl > span').forEach(el => el.style.textShadow = shadow);
+          document.querySelectorAll('.hero-sub').forEach(el => el.style.textShadow = `0 0 ${Math.round(blur*0.85)}px rgba(255,255,255,${Math.min(1,opacity+0.15)}), 0 0 ${blur*2}px rgba(255,255,255,${opacity*0.8})`);
         } else {
-          document.querySelectorAll('.hero-hl > span').forEach(el => el.style.textShadow = 'none');
+          document.querySelectorAll('.hero-hl > span, .hero-sub').forEach(el => el.style.textShadow = 'none');
+        }
+        // Wavy underline glow — driven via CSS custom properties
+        document.documentElement.style.setProperty('--hero-glow-r', Math.round(blur * 0.35) + 'px');
+        document.documentElement.style.setProperty('--hero-glow-a', String(opacity));
+        // Subtitle text (admin-editable)
+        const sub = document.querySelector('.hero-sub');
+        if (sub) {
+          if (s.hero_subtitle_en) { const el = sub.querySelector('.en'); if (el) el.textContent = s.hero_subtitle_en; }
+          if (s.hero_subtitle_es) { const el = sub.querySelector('.es'); if (el) el.textContent = s.hero_subtitle_es; }
         }
         // Buttons
         const btn1 = document.querySelector('.hero-btn-learn');

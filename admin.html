@@ -653,6 +653,16 @@
                oninput="document.getElementById('hero-shadow-opacity-val').textContent=this.value" />
       </div>
 
+      <p style="font-size:13px;font-weight:700;color:#333;margin:0 0 12px;">Subtitle Text</p>
+      <div class="pe-field">
+        <label>English</label>
+        <textarea id="hero-subtitle-en" rows="2" placeholder="Working together to keep our streets, waterways, and wildlife clean and safe for everyone."></textarea>
+      </div>
+      <div class="pe-field" style="margin-bottom:20px;">
+        <label>Español</label>
+        <textarea id="hero-subtitle-es" rows="2" placeholder="Trabajando juntos para mantener nuestras calles, vías fluviales y vida silvestre limpias y seguras para todos."></textarea>
+      </div>
+
       <p style="font-size:13px;font-weight:700;color:#333;margin:0 0 12px;">CTA Buttons</p>
       <div class="pe-2col">
         <div class="pe-field">
@@ -1711,6 +1721,8 @@ async function loadSettingsTab() {
   document.getElementById('hero-shadow-blur-val').textContent = shadowBlur;
   document.getElementById('hero-shadow-opacity').value = shadowOpacity;
   document.getElementById('hero-shadow-opacity-val').textContent = shadowOpacity;
+  document.getElementById('hero-subtitle-en').value = s.hero_subtitle_en || '';
+  document.getElementById('hero-subtitle-es').value = s.hero_subtitle_es || '';
   document.getElementById('hero-btn1-text').value = s.hero_btn1_text || '';
   document.getElementById('hero-btn1-url').value  = s.hero_btn1_url  || '';
   document.getElementById('hero-btn2-text').value = s.hero_btn2_text || '';
@@ -1795,6 +1807,8 @@ async function saveSettings() {
     { key: 'parallax_3_img', value: document.getElementById('parallax-3-img').value.trim() },
     { key: 'hero_text_shadow_blur',    value: document.getElementById('hero-shadow-blur').value },
     { key: 'hero_text_shadow_opacity', value: document.getElementById('hero-shadow-opacity').value },
+    { key: 'hero_subtitle_en', value: document.getElementById('hero-subtitle-en').value.trim() },
+    { key: 'hero_subtitle_es', value: document.getElementById('hero-subtitle-es').value.trim() },
     { key: 'hero_btn1_text', value: document.getElementById('hero-btn1-text').value.trim() },
     { key: 'hero_btn1_url',  value: document.getElementById('hero-btn1-url').value.trim() },
     { key: 'hero_btn2_text', value: document.getElementById('hero-btn2-text').value.trim() },
