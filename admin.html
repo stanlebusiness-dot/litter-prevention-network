@@ -117,6 +117,28 @@
     .settings-msg { margin-left: 16px; font-size: 13px; color: #0F6E56; font-weight: 600; }
     .announcement-preview { background: #1D9E75; color: white; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; text-align: center; margin-top: 12px; display: none; }
 
+    /* ── HOMEPAGE EDITOR ── */
+    .hp-editor-wrap { display:grid;grid-template-columns:1.4fr 1fr;gap:24px;align-items:start; }
+    @media(max-width:1100px) { .hp-editor-wrap { grid-template-columns:1fr; } }
+    .hp-preview-box { position:relative;border-radius:12px;overflow:hidden;border:2px solid #e5e5e3;background:#f0f0ee; }
+    .hp-preview-box iframe { width:100%;height:560px;border:none;display:block; }
+    .hp-preview-overlay { position:absolute;inset:0;background:rgba(255,255,255,0.88);display:flex;align-items:center;justify-content:center;font-size:14px;color:#888;transition:opacity 0.3s; }
+    .hp-controls { max-height:620px;overflow-y:auto;padding-right:4px; }
+    .hp-align-btn { padding:7px 14px;border:1px solid #ddd;background:white;border-radius:6px;font-size:12px;font-weight:600;color:#555;cursor:pointer;transition:all 0.15s; }
+    .hp-align-btn:hover { border-color:#1D9E75;color:#1D9E75; }
+    .hp-align-btn.hp-active { background:#1D9E75;color:white;border-color:#1D9E75; }
+    .hp-overlay-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px;margin-bottom:12px; }
+    .hp-thumb { position:relative;border:2px solid #eee;border-radius:6px;overflow:hidden;cursor:pointer;transition:border-color 0.15s;background:#f9f9f7;text-align:center; }
+    .hp-thumb:hover { border-color:#1D9E75; }
+    .hp-thumb img,.hp-thumb object { width:100%;aspect-ratio:1;object-fit:contain;display:block;pointer-events:none; }
+    .hp-thumb-name { font-size:10px;color:#888;padding:2px 4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+    .hp-thumb-del { position:absolute;top:2px;right:2px;background:rgba(231,76,60,0.9);color:white;border:none;border-radius:4px;font-size:10px;padding:2px 5px;cursor:pointer;display:none;z-index:2; }
+    .hp-thumb:hover .hp-thumb-del { display:block; }
+    .hp-active-ov { background:white;border:1px solid #e0e0e0;border-radius:8px;padding:12px;margin-bottom:10px; }
+    .hp-active-ov summary { font-size:13px;font-weight:700;color:#0F2318;cursor:pointer;display:flex;align-items:center;gap:8px; }
+    .hp-drop-zone { border:2px dashed #ddd;border-radius:8px;padding:20px;text-align:center;cursor:pointer;margin-bottom:14px;transition:border-color 0.2s; }
+    .hp-drop-zone:hover,.hp-drop-zone.drag-over { border-color:#1D9E75; }
+
     /* ── PAGE EDITOR ── */
     .page-pill { padding:7px 15px;border-radius:20px;border:1px solid #ddd;background:white;font-size:13px;font-weight:600;color:#555;cursor:pointer;transition:all 0.15s;white-space:nowrap; }
     .page-pill:hover { border-color:#1D9E75;color:#1D9E75; }
@@ -180,6 +202,7 @@
     <button class="tab" onclick="showTab('pages', this)">🖼️ Pages</button>
     <button class="tab" onclick="showTab('photos', this)">📷 Photos</button>
     <button class="tab" onclick="showTab('settings', this)">⚙️ Site Settings</button>
+    <button class="tab" onclick="showTab('homepage', this); initHomepageTab()">🏠 Homepage</button>
     <button class="tab" onclick="showTab('referrals', this)">🎁 Referrals</button>
   </div>
 
@@ -689,6 +712,124 @@
       <button class="btn-save-settings" onclick="saveSettings()">💾 Save All Settings</button>
       <span class="settings-msg" id="settings-msg"></span>
     </div>
+  </div>
+
+  <!-- 🏠 Homepage Editor -->
+  <div class="tab-content" id="tab-homepage">
+    <div class="section-title">Homepage Editor</div>
+    <p style="font-size:13px;color:#888;margin-bottom:20px;">Every control change updates the preview instantly. Press <strong>Save Config</strong> to publish to the live site.</p>
+
+    <div class="hp-editor-wrap">
+
+      <!-- Left: iframe preview -->
+      <div>
+        <div class="pe-preview-label">Live Preview</div>
+        <div class="hp-preview-box">
+          <iframe id="hp-iframe" src="about:blank"></iframe>
+          <div class="hp-preview-overlay" id="hp-preview-overlay">Click the Homepage tab to load preview</div>
+        </div>
+        <div style="font-size:12px;color:#aaa;margin-top:6px;text-align:center;">Preview of index.html — changes appear before saving</div>
+      </div>
+
+      <!-- Right: controls -->
+      <div class="hp-controls" id="hp-controls">
+
+        <!-- CTA Buttons -->
+        <div class="settings-card">
+          <h3>🖱️ CTA Buttons</h3>
+          <p class="card-desc">Edit labels, links, colors, and hero position for both call-to-action buttons.</p>
+
+          <p class="pe-fg-label">Button 1</p>
+          <div class="pe-2col">
+            <div class="pe-field"><label>Text (EN)</label>
+              <input type="text" id="hp-b1-en" placeholder="Learn More" oninput="hpPreview()" /></div>
+            <div class="pe-field"><label>Text (ES)</label>
+              <input type="text" id="hp-b1-es" placeholder="Aprender Más" oninput="hpPreview()" /></div>
+          </div>
+          <div class="pe-field"><label>URL</label>
+            <input type="text" id="hp-b1-url" placeholder="about.html" oninput="hpPreview()" /></div>
+          <div class="pe-field"><label>Button Color</label>
+            <input type="color" id="hp-b1-color" value="#0D2B4E" oninput="hpPreview()"
+              style="height:36px;padding:3px 6px;border:1px solid #ddd;border-radius:6px;cursor:pointer;width:72px;" /></div>
+
+          <p class="pe-fg-label" style="margin-top:16px;">Button 2</p>
+          <div class="pe-2col">
+            <div class="pe-field"><label>Text (EN)</label>
+              <input type="text" id="hp-b2-en" placeholder="Sign Up Today!" oninput="hpPreview()" /></div>
+            <div class="pe-field"><label>Text (ES)</label>
+              <input type="text" id="hp-b2-es" placeholder="¡Regístrate Hoy!" oninput="hpPreview()" /></div>
+          </div>
+          <div class="pe-field"><label>URL</label>
+            <input type="text" id="hp-b2-url" placeholder="#signup" oninput="hpPreview()" /></div>
+          <div class="pe-field"><label>Button Color</label>
+            <input type="color" id="hp-b2-color" value="#1A6B2F" oninput="hpPreview()"
+              style="height:36px;padding:3px 6px;border:1px solid #ddd;border-radius:6px;cursor:pointer;width:72px;" /></div>
+
+          <p class="pe-fg-label" style="margin-top:16px;">Button Group Position</p>
+          <div class="pe-field">
+            <label>Alignment</label>
+            <div style="display:flex;gap:8px;">
+              <button class="hp-align-btn hp-active" data-align="left"   onclick="setHpAlign('left',this)">← Left</button>
+              <button class="hp-align-btn" data-align="center" onclick="setHpAlign('center',this)">Center</button>
+              <button class="hp-align-btn" data-align="right"  onclick="setHpAlign('right',this)">Right →</button>
+            </div>
+          </div>
+          <div class="pe-slider-row">
+            <label>Vertical offset — <span class="pe-sv" id="hp-voff-val">0</span>px</label>
+            <input type="range" id="hp-voff" min="-60" max="60" value="0"
+              oninput="document.getElementById('hp-voff-val').textContent=this.value;hpPreview()" />
+          </div>
+        </div>
+
+        <!-- Overlay Library -->
+        <div class="settings-card">
+          <h3>🌊 Overlay Library</h3>
+          <p class="card-desc">Upload PNG/SVG swoops and decorations. SVGs are sanitized and their fill rewritten to follow the theme. Click a thumbnail to add it as an active overlay.</p>
+
+          <div class="hp-drop-zone" id="hp-drop-zone"
+            onclick="document.getElementById('hp-file-in').click()"
+            ondragover="event.preventDefault();this.classList.add('drag-over')"
+            ondragleave="this.classList.remove('drag-over')"
+            ondrop="event.preventDefault();this.classList.remove('drag-over');uploadOverlayFiles(event.dataTransfer.files)">
+            <div style="font-size:26px;margin-bottom:6px;">📁</div>
+            <div style="font-size:14px;font-weight:600;color:#555;">Click or drop PNG / SVG here</div>
+            <div style="font-size:12px;color:#aaa;margin-top:4px;">Recommended: &lt; 2 MB</div>
+          </div>
+          <input type="file" id="hp-file-in" accept=".png,.svg,image/png,image/svg+xml" style="display:none"
+            onchange="uploadOverlayFiles(this.files)" />
+          <div id="hp-upload-msg" style="font-size:13px;font-weight:600;color:#0F6E56;min-height:18px;margin-bottom:10px;"></div>
+
+          <div class="hp-overlay-grid" id="hp-ov-grid">
+            <div style="color:#aaa;font-size:13px;grid-column:1/-1;padding:12px 0;text-align:center;">Loading…</div>
+          </div>
+
+          <!-- Active overlays list -->
+          <div id="hp-active-ovs"></div>
+        </div>
+
+        <!-- Section Visibility -->
+        <div class="settings-card">
+          <h3>👁️ Section Visibility</h3>
+          <p class="card-desc">Toggle homepage sections on or off. Changes are reflected in the preview instantly.</p>
+          <div id="hp-sec-toggles"></div>
+        </div>
+
+        <!-- Actions -->
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
+          <button onclick="saveHpConfig()" style="flex:1;padding:13px 20px;background:#1D9E75;color:white;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;">💾 Save Config</button>
+          <button onclick="revertHpConfig()" style="padding:13px 20px;background:#f0f0ee;color:#555;border:1px solid #ddd;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">↩ Revert to Default</button>
+        </div>
+        <div id="hp-save-msg" style="font-size:13px;font-weight:600;color:#0F6E56;min-height:18px;margin-bottom:16px;"></div>
+
+        <!-- History -->
+        <div class="settings-card">
+          <h3>📜 Save History</h3>
+          <p class="card-desc">Last 5 saved configs — click Restore to roll back.</p>
+          <div id="hp-history"></div>
+        </div>
+
+      </div><!-- /controls -->
+    </div><!-- /hp-editor-wrap -->
   </div>
 
   <!-- 🎁 Referrals -->
@@ -1870,6 +2011,401 @@ async function rejectReferral(id) {
   await _sb.from('referrals').update({ status: 'rejected' }).eq('id', id);
   alert('❌ Referral rejected.');
   loadReferrals();
+}
+
+// ════════════════════════════════════════════════════════════
+// 🏠 HOMEPAGE EDITOR
+// ════════════════════════════════════════════════════════════
+const HP_OV_BUCKET  = 'site-images';
+const HP_OV_FOLDER  = 'overlays/';
+const HP_SECTIONS = [
+  { key: 'feature_strip', label: 'Feature Strip (See It / Report It…)' },
+  { key: 'donate_bar',    label: 'Donate Bar' },
+  { key: 'parallax_1',   label: 'Scrolling Section 1 — Prevention Starts Here' },
+  { key: 'stats',        label: 'Stats Bar' },
+  { key: 'news_cta',     label: 'News CTA Banner' },
+  { key: 'mission',      label: 'Mission Block' },
+  { key: 'how_it_works', label: 'How It Works' },
+  { key: 'help_section', label: 'Help Tips Grid' },
+  { key: 'gallery',      label: 'Before & After Gallery' },
+  { key: 'parallax_2',   label: 'Scrolling Section 2 — Stronger Together' },
+  { key: 'parallax_3',   label: 'Scrolling Section 3' },
+];
+const HP_OV_SECTIONS = [
+  { value: 'hero-bottom',    label: 'Hero — Bottom edge'    },
+  { value: 'feature-top',    label: 'Feature Strip — Top'   },
+  { value: 'feature-bottom', label: 'Feature Strip — Bottom'},
+  { value: 'parallax-1',     label: 'Scrolling Section 1'   },
+  { value: 'parallax-2',     label: 'Scrolling Section 2'   },
+  { value: 'parallax-3',     label: 'Scrolling Section 3'   },
+];
+
+let _hpConfig    = null;
+let _hpLibrary   = [];
+let _hpAlign     = 'left';
+let _hpTabReady  = false;
+let _hpIfReady   = false;
+
+function initHomepageTab() {
+  if (_hpTabReady) return;
+  _hpTabReady = true;
+  _buildSectionToggles();
+  loadHpConfig();
+  loadHpLibrary();
+  loadHpHistory();
+  // Load iframe
+  const iframe = document.getElementById('hp-iframe');
+  iframe.onload = () => {
+    _hpIfReady = true;
+    document.getElementById('hp-preview-overlay').style.display = 'none';
+    hpPreview();
+  };
+  iframe.src = 'index.html?admin-preview=1';
+}
+
+function _buildSectionToggles() {
+  document.getElementById('hp-sec-toggles').innerHTML = HP_SECTIONS.map(s => `
+    <div class="toggle-wrap" style="margin-bottom:12px;">
+      <label class="toggle">
+        <input type="checkbox" id="hp-sec-${s.key}" checked onchange="hpPreview()" />
+        <span class="toggle-slider"></span>
+      </label>
+      <span class="toggle-label">${s.label}</span>
+    </div>`).join('');
+}
+
+async function loadHpConfig() {
+  const { data } = await _sb.from('homepage_config').select('*').order('updated_at', { ascending: false }).limit(1);
+  _hpConfig = data?.[0]?.config || _defaultHpConfig();
+  _populateHpControls(_hpConfig);
+}
+
+function _defaultHpConfig() {
+  return {
+    buttons: {
+      btn1: { en: 'Learn More',    es: 'Aprender Más',    url: 'about.html', color: '#0D2B4E', align: 'left', vOffset: 0 },
+      btn2: { en: 'Sign Up Today!', es: '¡Regístrate Hoy!', url: '#signup',   color: '#1A6B2F', align: 'left', vOffset: 0 }
+    },
+    overlays: [],
+    sections: Object.fromEntries(HP_SECTIONS.map(s => [s.key, true]))
+  };
+}
+
+function _populateHpControls(cfg) {
+  const b1 = cfg.buttons?.btn1 || {};
+  const b2 = cfg.buttons?.btn2 || {};
+  document.getElementById('hp-b1-en').value    = b1.en    || 'Learn More';
+  document.getElementById('hp-b1-es').value    = b1.es    || 'Aprender Más';
+  document.getElementById('hp-b1-url').value   = b1.url   || 'about.html';
+  document.getElementById('hp-b1-color').value = b1.color || '#0D2B4E';
+  document.getElementById('hp-b2-en').value    = b2.en    || 'Sign Up Today!';
+  document.getElementById('hp-b2-es').value    = b2.es    || '¡Regístrate Hoy!';
+  document.getElementById('hp-b2-url').value   = b2.url   || '#signup';
+  document.getElementById('hp-b2-color').value = b2.color || '#1A6B2F';
+
+  _hpAlign = b1.align || 'left';
+  document.querySelectorAll('.hp-align-btn').forEach(b => b.classList.toggle('hp-active', b.dataset.align === _hpAlign));
+
+  const vOff = b1.vOffset || 0;
+  document.getElementById('hp-voff').value = vOff;
+  document.getElementById('hp-voff-val').textContent = vOff;
+
+  HP_SECTIONS.forEach(s => {
+    const el = document.getElementById('hp-sec-' + s.key);
+    if (el) el.checked = cfg.sections?.[s.key] !== false;
+  });
+
+  _renderActiveOverlays(cfg.overlays || []);
+}
+
+function setHpAlign(align, el) {
+  _hpAlign = align;
+  document.querySelectorAll('.hp-align-btn').forEach(b => b.classList.remove('hp-active'));
+  el.classList.add('hp-active');
+  hpPreview();
+}
+
+function _buildHpConfig() {
+  const secs = {};
+  HP_SECTIONS.forEach(s => {
+    const el = document.getElementById('hp-sec-' + s.key);
+    secs[s.key] = el ? el.checked : true;
+  });
+  const vOffset = parseInt(document.getElementById('hp-voff').value) || 0;
+  return {
+    buttons: {
+      btn1: { en: document.getElementById('hp-b1-en').value.trim() || 'Learn More',
+              es: document.getElementById('hp-b1-es').value.trim() || 'Aprender Más',
+              url: document.getElementById('hp-b1-url').value.trim() || 'about.html',
+              color: document.getElementById('hp-b1-color').value, align: _hpAlign, vOffset },
+      btn2: { en: document.getElementById('hp-b2-en').value.trim() || 'Sign Up Today!',
+              es: document.getElementById('hp-b2-es').value.trim() || '¡Regístrate Hoy!',
+              url: document.getElementById('hp-b2-url').value.trim() || '#signup',
+              color: document.getElementById('hp-b2-color').value, align: _hpAlign, vOffset }
+    },
+    overlays: _hpConfig?.overlays || [],
+    sections: secs
+  };
+}
+
+function hpPreview() {
+  if (!_hpIfReady) return;
+  const iframe = document.getElementById('hp-iframe');
+  if (iframe?.contentWindow) {
+    iframe.contentWindow.postMessage({ type: 'lpn-preview', config: _buildHpConfig() }, '*');
+  }
+}
+
+async function saveHpConfig() {
+  const cfg = _buildHpConfig();
+  const msgEl = document.getElementById('hp-save-msg');
+  msgEl.style.color = '#555'; msgEl.textContent = 'Saving…';
+  try {
+    // Archive current to history
+    if (_hpConfig) {
+      await _sb.from('homepage_config_history').insert({ config: _hpConfig, saved_by: 'admin', saved_at: new Date().toISOString() });
+      const { data: hist } = await _sb.from('homepage_config_history').select('id,saved_at').order('saved_at', { ascending: false });
+      if (hist && hist.length > 5) {
+        await _sb.from('homepage_config_history').delete().in('id', hist.slice(5).map(r => r.id));
+      }
+    }
+    // Upsert single live row
+    const { data: existing } = await _sb.from('homepage_config').select('id').limit(1);
+    if (existing?.[0]) {
+      await _sb.from('homepage_config').update({ config: cfg, updated_at: new Date().toISOString(), updated_by: 'admin' }).eq('id', existing[0].id);
+    } else {
+      await _sb.from('homepage_config').insert({ config: cfg, updated_by: 'admin' });
+    }
+    _hpConfig = cfg;
+    msgEl.style.color = '#0F6E56';
+    msgEl.textContent = '✅ Config saved! Live site will update within seconds.';
+    loadHpHistory();
+  } catch(e) {
+    msgEl.style.color = '#e74c3c';
+    msgEl.textContent = '❌ ' + (e.message || 'Save failed.');
+  }
+  setTimeout(() => msgEl.textContent = '', 5000);
+}
+
+function revertHpConfig() {
+  if (!confirm('Revert to default homepage config? Custom overlays and button settings will be cleared.')) return;
+  const dflt = _defaultHpConfig();
+  _hpConfig = dflt;
+  _populateHpControls(dflt);
+  hpPreview();
+  const msgEl = document.getElementById('hp-save-msg');
+  msgEl.style.color = '#f59e0b';
+  msgEl.textContent = '⚠️ Reverted to defaults — click Save Config to publish.';
+  setTimeout(() => msgEl.textContent = '', 5000);
+}
+
+async function loadHpHistory() {
+  const { data } = await _sb.from('homepage_config_history').select('*').order('saved_at', { ascending: false }).limit(5);
+  const el = document.getElementById('hp-history');
+  if (!data?.length) {
+    el.innerHTML = '<div style="color:#aaa;font-size:13px;padding:8px 0;">No history yet — save config to create a checkpoint.</div>';
+    return;
+  }
+  el.innerHTML = data.map((row, i) => {
+    const d = new Date(row.saved_at);
+    const label = d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f0f0ee;">
+      <span style="font-size:13px;color:#555;">${i===0?'Previous — ':''}${label}</span>
+      <button onclick="restoreHpHistory('${row.id}')" style="padding:5px 12px;background:#f0f0ee;color:#555;border:1px solid #ddd;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">Restore</button>
+    </div>`;
+  }).join('');
+}
+
+async function restoreHpHistory(id) {
+  if (!confirm('Restore this config? Current settings will be replaced (not yet saved — press Save Config to publish).')) return;
+  const { data } = await _sb.from('homepage_config_history').select('config').eq('id', id).single();
+  if (!data) return;
+  _hpConfig = data.config;
+  _populateHpControls(data.config);
+  hpPreview();
+  const msgEl = document.getElementById('hp-save-msg');
+  msgEl.style.color = '#f59e0b';
+  msgEl.textContent = '⚠️ Config restored — click Save Config to publish.';
+  setTimeout(() => msgEl.textContent = '', 5000);
+}
+
+// ── Overlay Library ─────────────────────────────────────────
+
+async function loadHpLibrary() {
+  const { data } = await _sb.storage.from(HP_OV_BUCKET).list(HP_OV_FOLDER, { limit: 100 });
+  _hpLibrary = (data || []).filter(f => f.name && f.name !== '.emptyFolderPlaceholder');
+  _renderOvGrid();
+}
+
+function _renderOvGrid() {
+  const grid = document.getElementById('hp-ov-grid');
+  if (!_hpLibrary.length) {
+    grid.innerHTML = '<div style="color:#aaa;font-size:13px;grid-column:1/-1;text-align:center;padding:16px 0;">No overlays uploaded yet.</div>';
+    return;
+  }
+  grid.innerHTML = _hpLibrary.map(file => {
+    const { data } = _sb.storage.from(HP_OV_BUCKET).getPublicUrl(HP_OV_FOLDER + file.name);
+    const url  = data.publicUrl;
+    const isSvg = file.name.toLowerCase().endsWith('.svg');
+    const thumb = isSvg
+      ? `<object data="${url}" type="image/svg+xml"></object>`
+      : `<img src="${url}" alt="${file.name}" />`;
+    return `<div class="hp-thumb" title="${file.name}" onclick="_addOvToActive('${_esc(file.name)}','${_esc(url)}','${isSvg?'svg':'png'}')">
+      ${thumb}
+      <div class="hp-thumb-name">${_esc(file.name)}</div>
+      <button class="hp-thumb-del" onclick="event.stopPropagation();deleteHpOverlay('${_esc(file.name)}')">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function _esc(s) { return String(s).replace(/'/g,"&#39;").replace(/"/g,'&quot;'); }
+
+async function uploadOverlayFiles(files) {
+  if (!files?.length) return;
+  const file = files[0];
+  const msgEl = document.getElementById('hp-upload-msg');
+
+  if (file.size > 2 * 1024 * 1024) {
+    msgEl.style.color = '#f59e0b';
+    msgEl.textContent = '⚠️ File is over 2 MB — this may slow page load. Uploading anyway…';
+  } else { msgEl.textContent = ''; }
+
+  let content = file;
+  const isSvg = file.name.toLowerCase().endsWith('.svg');
+
+  if (isSvg) {
+    const raw = await file.text();
+    const clean = _sanitizeSvg(raw);
+    content = new Blob([clean], { type: 'image/svg+xml' });
+  }
+
+  const safeName = file.name.replace(/[^a-z0-9.\-_]/gi, '_').toLowerCase();
+  const { error } = await _sb.storage.from(HP_OV_BUCKET).upload(HP_OV_FOLDER + safeName, content, {
+    contentType: isSvg ? 'image/svg+xml' : (file.type || 'image/png'),
+    upsert: true
+  });
+
+  if (error) {
+    msgEl.style.color = '#e74c3c';
+    msgEl.textContent = '❌ Upload failed: ' + error.message;
+  } else {
+    msgEl.style.color = '#0F6E56';
+    msgEl.textContent = '✅ Uploaded — click the thumbnail to add as an active overlay.';
+    await loadHpLibrary();
+  }
+  document.getElementById('hp-file-in').value = '';
+  setTimeout(() => msgEl.textContent = '', 6000);
+}
+
+function _sanitizeSvg(svgText) {
+  svgText = svgText.replace(/<script[\s\S]*?<\/script>/gi, '');
+  svgText = svgText.replace(/\s+on\w+\s*=\s*"[^"]*"/gi, '');
+  svgText = svgText.replace(/\s+on\w+\s*=\s*'[^']*'/gi, '');
+  svgText = svgText.replace(/href\s*=\s*["']javascript:[^"']*["']/gi, '');
+  svgText = svgText.replace(/xlink:href\s*=\s*["']javascript:[^"']*["']/gi, '');
+  return svgText;
+}
+
+async function deleteHpOverlay(name) {
+  if (!confirm(`Delete overlay "${name}"? This cannot be undone.`)) return;
+  const { error } = await _sb.storage.from(HP_OV_BUCKET).remove([HP_OV_FOLDER + name]);
+  if (error) { alert('Delete failed: ' + error.message); return; }
+  await loadHpLibrary();
+  if (_hpConfig?.overlays) {
+    _hpConfig.overlays = _hpConfig.overlays.filter(o => o.name !== name);
+    _renderActiveOverlays(_hpConfig.overlays);
+    hpPreview();
+  }
+}
+
+function _addOvToActive(name, url, type) {
+  if (!_hpConfig) _hpConfig = _defaultHpConfig();
+  if (!_hpConfig.overlays) _hpConfig.overlays = [];
+  if (_hpConfig.overlays.find(o => o.name === name)) {
+    alert('This overlay is already active. Edit it in the list below.'); return;
+  }
+  _hpConfig.overlays.push({
+    id: Date.now().toString(36), name, url, type,
+    section: 'hero-bottom', width: '100%', height: 'auto',
+    vOffset: -1, flipH: false, flipV: false,
+    zIndex: 2, opacity: 1, fillColor: '#F5F0E6', active: true
+  });
+  _renderActiveOverlays(_hpConfig.overlays);
+  hpPreview();
+}
+
+function _renderActiveOverlays(overlays) {
+  const wrap = document.getElementById('hp-active-ovs');
+  if (!overlays?.length) {
+    wrap.innerHTML = '<div style="color:#aaa;font-size:13px;padding:8px 0;">No active overlays — click a thumbnail above to add one.</div>';
+    return;
+  }
+
+  const secOpts = HP_OV_SECTIONS.map(o => `<option value="${o.value}">${o.label}</option>`).join('');
+
+  wrap.innerHTML = overlays.map((ov, idx) => `
+    <details class="hp-active-ov">
+      <summary>
+        <label class="toggle" onclick="event.stopPropagation();event.preventDefault()">
+          <input type="checkbox" ${ov.active?'checked':''} onchange="_hpConfig.overlays[${idx}].active=this.checked;hpPreview()" />
+          <span class="toggle-slider"></span>
+        </label>
+        <span>${ov.name}</span>
+        <button onclick="event.preventDefault();event.stopPropagation();removeHpOv(${idx})"
+          style="padding:2px 8px;background:#fee;color:#c0392b;border:1px solid #fcc;border-radius:4px;font-size:11px;cursor:pointer;margin-left:auto;">Remove</button>
+      </summary>
+      <div style="padding:12px 0 4px;">
+        <div class="pe-field"><label>Attach to section</label>
+          <select style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;font-size:13px;"
+            onchange="_hpConfig.overlays[${idx}].section=this.value;hpPreview()">
+            ${HP_OV_SECTIONS.map(o => `<option value="${o.value}"${ov.section===o.value?' selected':''}>${o.label}</option>`).join('')}
+          </select>
+        </div>
+        <div class="pe-2col">
+          <div class="pe-field"><label>Width</label>
+            <input type="text" value="${ov.width||'100%'}" placeholder="100%"
+              style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;font-size:13px;"
+              onchange="_hpConfig.overlays[${idx}].width=this.value;hpPreview()" /></div>
+          <div class="pe-field"><label>Height</label>
+            <input type="text" value="${ov.height||'auto'}" placeholder="auto"
+              style="width:100%;padding:8px;border:1px solid #ddd;border-radius:6px;font-size:13px;"
+              onchange="_hpConfig.overlays[${idx}].height=this.value;hpPreview()" /></div>
+        </div>
+        <div class="pe-slider-row">
+          <label>Vertical offset — <span id="hp-ov-voff-${idx}">${ov.vOffset??0}</span>px</label>
+          <input type="range" min="-100" max="100" value="${ov.vOffset??0}"
+            oninput="document.getElementById('hp-ov-voff-${idx}').textContent=this.value;_hpConfig.overlays[${idx}].vOffset=+this.value;hpPreview()" /></div>
+        <div class="pe-slider-row">
+          <label>Opacity — <span id="hp-ov-op-${idx}">${Math.round((ov.opacity??1)*100)}</span>%</label>
+          <input type="range" min="0" max="100" value="${Math.round((ov.opacity??1)*100)}"
+            oninput="document.getElementById('hp-ov-op-${idx}').textContent=this.value;_hpConfig.overlays[${idx}].opacity=this.value/100;hpPreview()" /></div>
+        <div class="pe-slider-row">
+          <label>Z-index — <span id="hp-ov-z-${idx}">${ov.zIndex??2}</span></label>
+          <input type="range" min="0" max="10" value="${ov.zIndex??2}"
+            oninput="document.getElementById('hp-ov-z-${idx}').textContent=this.value;_hpConfig.overlays[${idx}].zIndex=+this.value;hpPreview()" /></div>
+        <div class="toggle-wrap" style="margin-bottom:8px;">
+          <label class="toggle"><input type="checkbox" ${ov.flipH?'checked':''} onchange="_hpConfig.overlays[${idx}].flipH=this.checked;hpPreview()"/><span class="toggle-slider"></span></label>
+          <span class="toggle-label" style="font-size:13px;">Flip Horizontal</span></div>
+        <div class="toggle-wrap" style="margin-bottom:10px;">
+          <label class="toggle"><input type="checkbox" ${ov.flipV?'checked':''} onchange="_hpConfig.overlays[${idx}].flipV=this.checked;hpPreview()"/><span class="toggle-slider"></span></label>
+          <span class="toggle-label" style="font-size:13px;">Flip Vertical</span></div>
+        ${ov.type==='svg'?`
+        <div class="pe-field"><label>SVG Fill Color</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="color" value="${ov.fillColor&&ov.fillColor!=='var(--cream)'?ov.fillColor:'#F5F0E6'}"
+              style="height:34px;padding:3px 6px;border:1px solid #ddd;border-radius:6px;cursor:pointer;width:60px;"
+              onchange="_hpConfig.overlays[${idx}].fillColor=this.value;hpPreview()" />
+            <button onclick="_hpConfig.overlays[${idx}].fillColor='var(--cream)';hpPreview()"
+              style="padding:6px 12px;background:#F5F0E6;border:1px solid #ddd;border-radius:6px;font-size:12px;cursor:pointer;">Use --cream (theme)</button>
+          </div></div>`:''}
+      </div>
+    </details>`).join('');
+}
+
+function removeHpOv(idx) {
+  _hpConfig.overlays.splice(idx, 1);
+  _renderActiveOverlays(_hpConfig.overlays);
+  hpPreview();
 }
 </script>
 

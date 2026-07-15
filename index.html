@@ -415,7 +415,7 @@
   </section>
 
   <!-- Donate bar -->
-  <div style="background:linear-gradient(135deg,#0a4a35 0%,#1D9E75 60%,#0F6E56 100%);padding:22px 40px;text-align:center;">
+  <div id="donate-bar" style="background:linear-gradient(135deg,#0a4a35 0%,#1D9E75 60%,#0F6E56 100%);padding:22px 40px;text-align:center;">
     <a href="donate.html" style="display:inline-block;background:white;color:#0F6E56;font-family:'Outfit',sans-serif;font-weight:800;font-size:15px;padding:11px 28px;border-radius:8px;text-decoration:none;transition:transform 0.15s,box-shadow 0.15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 16px rgba(0,0,0,0.18)'" onmouseout="this.style.transform='';this.style.boxShadow=''"><span class="en">Support LPN Willis →</span><span class="es">Apoya LPN Willis →</span></a>
     <div style="color:rgba(255,255,255,0.7);font-size:12px;margin-top:8px;"><span class="en">100% goes to local outreach &amp; education</span><span class="es">El 100% va a la divulgación y educación local</span></div>
   </div>
@@ -573,7 +573,7 @@
   </section>
 
   <!-- Before & After gallery — managed via admin portal, only approved sets display -->
-  <section style="padding:64px 40px;background:white;text-align:center;">
+  <section id="gallery-section" style="padding:64px 40px;background:white;text-align:center;">
     <span class="section-tag"><span class="en">Community Impact</span><span class="es">Impacto Comunitario</span></span>
     <h2 style="font-size:32px;font-family:'Outfit',sans-serif;margin-bottom:12px;margin-top:16px;"><span class="en">See the Difference</span><span class="es">Mira la Diferencia</span></h2>
     <p style="font-size:17px;color:#666;max-width:620px;margin:0 auto 40px;line-height:1.7;"><span class="en">Community members are already making an impact. Submit your own before and after photos and inspire others to take action.</span><span class="es">Los miembros de la comunidad ya están marcando la diferencia. Envía tus fotos de antes y después e inspira a otros a tomar acción.</span></p>
@@ -961,6 +961,189 @@
         </div>`;
     }
   });
+
+  // ── HOMEPAGE CONFIG ENGINE ───────────────────────────────────
+  // Applies a config object (from Supabase homepage_config table,
+  // localStorage cache, or admin postMessage) to the live DOM.
+
+  const _HP_SECTION_MAP = {
+    feature_strip: '.feature-strip',
+    donate_bar:    '#donate-bar',
+    parallax_1:    '#parallax-1',
+    stats:         '.stats',
+    news_cta:      '.news-cta',
+    mission:       '.mission',
+    how_it_works:  '#how',
+    help_section:  '#help',
+    gallery:       '#gallery-section',
+    parallax_2:    '#parallax-2',
+    parallax_3:    '#parallax-3',
+  };
+
+  const _HP_OVERLAY_SECTIONS = {
+    'hero-bottom':    { sel: '.hero',            edge: 'bottom' },
+    'feature-top':    { sel: '.feature-strip',   edge: 'top'    },
+    'feature-bottom': { sel: '.feature-strip',   edge: 'bottom' },
+    'parallax-1':     { sel: '#parallax-1',      edge: 'top'    },
+    'parallax-2':     { sel: '#parallax-2',      edge: 'top'    },
+    'parallax-3':     { sel: '#parallax-3',      edge: 'top'    },
+  };
+
+  function applyHomepageConfig(cfg) {
+    if (!cfg) return;
+
+    // ── Buttons ────────────────────────────────────────────
+    const b1 = cfg.buttons?.btn1;
+    const b2 = cfg.buttons?.btn2;
+    const btn1El = document.querySelector('.hero-btn-learn');
+    const btn2El = document.querySelector('.hero-btn-signup');
+
+    if (b1 && btn1El) {
+      const enEl = btn1El.querySelector('.en');
+      const esEl = btn1El.querySelector('.es');
+      if (enEl && b1.en) enEl.textContent = b1.en;
+      if (esEl && b1.es) esEl.textContent = b1.es;
+      if (b1.url) btn1El.href = b1.url;
+      if (b1.color) btn1El.style.background = b1.color;
+    }
+    if (b2 && btn2El) {
+      const enEl = btn2El.querySelector('.en');
+      const esEl = btn2El.querySelector('.es');
+      if (enEl && b2.en) enEl.textContent = b2.en;
+      if (esEl && b2.es) esEl.textContent = b2.es;
+      if (b2.url) btn2El.href = b2.url;
+      if (b2.color) btn2El.style.background = b2.color;
+    }
+
+    // ── Button group position ──────────────────────────────
+    const btnsEl  = document.querySelector('.hero-btns');
+    const subRow  = document.querySelector('.hero-sub-row');
+    if (b1 && btnsEl) {
+      const align = b1.align || 'left';
+      btnsEl.style.alignSelf = align === 'right' ? 'flex-end' : align === 'center' ? 'center' : 'flex-start';
+    }
+    if (b1 && subRow) {
+      const vOff = parseInt(b1.vOffset) || 0;
+      subRow.style.marginTop = vOff ? `clamp(0px, ${Math.abs(vOff) * 0.05}vw, ${Math.abs(vOff)}px)` : '';
+    }
+
+    // ── Section visibility ─────────────────────────────────
+    const secs = cfg.sections || {};
+    Object.entries(_HP_SECTION_MAP).forEach(([key, sel]) => {
+      document.querySelectorAll(sel).forEach(el => {
+        el.style.display = secs[key] === false ? 'none' : '';
+      });
+    });
+
+    // ── Overlays ───────────────────────────────────────────
+    _injectOverlays(cfg.overlays || []);
+  }
+
+  function _injectOverlays(overlays) {
+    document.querySelectorAll('[data-hp-overlay]').forEach(el => el.remove());
+
+    overlays.filter(ov => ov.active).forEach(ov => {
+      const target = _HP_OVERLAY_SECTIONS[ov.section];
+      if (!target) return;
+      const section = document.querySelector(target.sel);
+      if (!section) return;
+
+      if (getComputedStyle(section).position === 'static') section.style.position = 'relative';
+
+      const div = document.createElement('div');
+      div.setAttribute('data-hp-overlay', ov.id || ov.name);
+      const scaleX = ov.flipH ? -1 : 1;
+      const scaleY = ov.flipV ? -1 : 1;
+      const transform = (scaleX === -1 || scaleY === -1) ? `scale(${scaleX},${scaleY})` : 'none';
+      div.style.cssText = [
+        'position:absolute',
+        target.edge === 'bottom' ? 'bottom:-1px;left:0;right:0' : 'top:-1px;left:0;right:0',
+        `width:${ov.width || '100%'}`,
+        ov.height && ov.height !== 'auto' ? `height:${ov.height}` : '',
+        `z-index:${ov.zIndex ?? 2}`,
+        `opacity:${ov.opacity ?? 1}`,
+        'pointer-events:none',
+        'line-height:0',
+        `transform:${transform}`,
+        ov.vOffset ? `margin-${target.edge === 'bottom' ? 'bottom' : 'top'}:${ov.vOffset}px` : '',
+      ].filter(Boolean).join(';');
+
+      if (ov.type === 'svg') {
+        fetch(ov.url)
+          .then(r => r.text())
+          .then(raw => {
+            raw = raw.replace(/<script[\s\S]*?<\/script>/gi, '');
+            raw = raw.replace(/\s+on\w+\s*=\s*["'][^"']*["']/gi, '');
+            const fillColor = ov.fillColor && ov.fillColor !== 'var(--cream)'
+              ? ov.fillColor
+              : 'var(--cream, #F5F0E6)';
+            raw = raw.replace(/fill\s*=\s*["'][^"']*["']/g, `fill="${fillColor}"`);
+            raw = raw.replace(/style\s*=\s*["']([^"']*)["']/g, (m, s) =>
+              `style="${s.replace(/fill\s*:[^;}"]+/g, `fill:${fillColor}`)}"`);
+            div.innerHTML = raw;
+            const svg = div.querySelector('svg');
+            if (svg) {
+              svg.style.display = 'block';
+              svg.style.width   = '100%';
+              svg.style.height  = 'clamp(70px,12.5vw,180px)';
+              svg.setAttribute('preserveAspectRatio', 'none');
+            }
+          })
+          .catch(() => { div.innerHTML = `<img src="${ov.url}" style="display:block;width:100%;" />`; });
+      } else {
+        div.innerHTML = `<img src="${ov.url}" style="display:block;width:100%;height:${ov.height || 'auto'};" />`;
+      }
+      section.appendChild(div);
+    });
+  }
+
+  // ── Fetch + Realtime ────────────────────────────────────────
+  const _isAdminPreview = new URLSearchParams(location.search).has('admin-preview');
+
+  (async function _loadHpConfig() {
+    // Instant render from cache
+    try {
+      const cached = localStorage.getItem('lpn-hpc');
+      if (cached) {
+        const { c, t } = JSON.parse(cached);
+        if (Date.now() - t < 86400000) applyHomepageConfig(c);
+      }
+    } catch(e) {}
+
+    // Fetch live config with 2-second fallback
+    try {
+      const { data } = await new Promise((resolve) => {
+        const timer = setTimeout(() => resolve({ data: null }), 2000);
+        _sb.from('homepage_config').select('config').order('updated_at', { ascending: false }).limit(1)
+          .then(res => { clearTimeout(timer); resolve(res); })
+          .catch(() => { clearTimeout(timer); resolve({ data: null }); });
+      });
+      const cfg = data?.[0]?.config;
+      if (cfg) {
+        applyHomepageConfig(cfg);
+        localStorage.setItem('lpn-hpc', JSON.stringify({ c: cfg, t: Date.now() }));
+      }
+    } catch(e) {}
+
+    // Realtime — skip in admin preview (admin pushes via postMessage instead)
+    if (!_isAdminPreview) {
+      _sb.channel('lpn-hpc-live')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'homepage_config' }, payload => {
+          const cfg = payload.new?.config;
+          if (cfg) {
+            applyHomepageConfig(cfg);
+            try { localStorage.setItem('lpn-hpc', JSON.stringify({ c: cfg, t: Date.now() })); } catch(e) {}
+          }
+        })
+        .subscribe();
+    }
+  })();
+
+  // Admin preview updates via postMessage
+  window.addEventListener('message', (e) => {
+    if (e.data?.type === 'lpn-preview') applyHomepageConfig(e.data.config);
+  });
+
   </script>
   <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js');</script>
 </body>
