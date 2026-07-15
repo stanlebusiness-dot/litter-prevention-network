@@ -23,36 +23,35 @@
       overflow: hidden;
     }
     @media (max-width: 768px) { .hero { background-attachment: scroll !important; } }
+    /* Full-cover hero image — src set by admin portal */
+    #trash-rangers-photo {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      z-index: 0;
+      display: block;
+    }
     .hero-inner {
       display: flex;
       align-items: stretch;
       width: 100%;
       margin: 0;
       padding: 0;
+      position: relative;
+      z-index: 1;
     }
-    /* Left column: text */
+    /* Text overlaid on the full-bleed image */
     .hero-text-col {
-      flex: 0 0 46%;
+      flex: 0 0 50%;
       padding: 64px 40px 72px 56px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       position: relative;
       z-index: 3;
-    }
-    /* Right column: illustration */
-    .hero-illus-col {
-      flex: 1 1 54%;
-      position: relative;
-      overflow: hidden;
-      min-height: 480px;
-    }
-    .hero-illus-col img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: top center;
-      display: block;
     }
     /* Stacked headline */
     .hero-hl {
@@ -97,9 +96,7 @@
     }
     .hero-btn-signup:hover { background: #0F5224; transform: translateY(-2px); box-shadow: 0 4px 14px rgba(26,107,47,0.35); }
     @media (max-width: 960px) {
-      .hero-inner { flex-direction: column; }
-      .hero-text-col { flex: none; width: 100%; padding: 48px 32px 40px; order: 2; }
-      .hero-illus-col { flex: none; width: 100%; min-height: 300px; order: 1; }
+      .hero-text-col { flex: none; width: 100%; padding: 48px 32px 40px; }
       .hl-see { font-size: 38px; } .hl-report { font-size: 48px; }
       .hl-clean { font-size: 58px; } .hl-prevent { font-size: 68px; }
     }
@@ -322,8 +319,9 @@
 
   <!-- ══ HERO ══ -->
   <section class="hero" id="main-content">
+    <!-- Full-bleed background image — uploaded via admin portal -->
+    <img id="trash-rangers-photo" src="data:," alt="" aria-hidden="true" />
     <div class="hero-inner">
-      <!-- Left: stacked headline + CTA -->
       <div class="hero-text-col">
         <h1 class="hero-hl">
           <span class="hl-see"><span class="en">See It.</span><span class="es">Véalo.</span></span>
@@ -339,13 +337,6 @@
           <a href="about.html" class="hero-btn-learn"><span class="en">Learn More</span><span class="es">Aprender Más</span></a>
           <a href="#signup" class="hero-btn-signup"><span class="en">Sign Up Today!</span><span class="es">¡Regístrate Hoy!</span></a>
         </div>
-      </div>
-      <!-- Right: Trash Rangers illustration (set via admin portal) -->
-      <div class="hero-illus-col">
-        <img id="trash-rangers-photo"
-             src="https://placehold.co/720x560/c5e8c0/1a6b2f?text=Trash+Rangers+Illustration"
-             alt="Trash Rangers students in Willis, Texas"
-             onerror="this.onerror=null;this.src='https://placehold.co/720x560/c5e8c0/1a6b2f?text=Trash+Rangers';" />
       </div>
     </div>
     <!-- River swoop — absolutely pinned to hero bottom, fill matches feature strip -->
