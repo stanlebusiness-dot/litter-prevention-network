@@ -63,7 +63,21 @@
       line-height: 1.02;
       letter-spacing: -1px;
     }
-    .hero-hl > span { display: block; -webkit-text-stroke: 3px white; paint-order: stroke fill; }
+    /* Higher specificity than .hero in the injected theme CSS — keeps our layout intact */
+    section.hero {
+      padding: 0 !important;
+      align-items: stretch !important;
+      flex-direction: row !important;
+      justify-content: flex-start !important;
+      min-height: 540px !important;
+    }
+    .hero-hl > span {
+      display: block;
+      -webkit-text-stroke: 3px white;
+      paint-order: stroke fill;
+      /* default white glow — overridden by admin portal via JS */
+      text-shadow: 0 0 30px rgba(255,255,255,0.75), 0 2px 20px rgba(255,255,255,0.9);
+    }
     .hl-see     { font-size: 52px;  color: #1A6B2F; }
     .hl-report  { font-size: 66px;  color: #0D2B4E; }
     .hl-clean   { font-size: 80px;  color: #1A6B2F; }
@@ -759,7 +773,9 @@
       const { data } = await _sb.from('site_settings').select('key,value').in('key', [
         'hero_index_image','hero_index_position','hero_index_xposition','hero_index_zoom',
         'parallax_1_img','parallax_2_img','parallax_3_img',
-        'trash_rangers_photo','trash_rangers_alt'
+        'trash_rangers_photo','trash_rangers_alt',
+        'hero_text_shadow_blur','hero_text_shadow_opacity',
+        'hero_btn1_text','hero_btn1_url','hero_btn2_text','hero_btn2_url'
       ]);
       if (data) {
         const s = Object.fromEntries(data.map(r => [r.key, r.value]));
@@ -778,6 +794,26 @@
         if (s.trash_rangers_photo) {
           const trEl = document.getElementById('trash-rangers-photo');
           if (trEl) { trEl.src = s.trash_rangers_photo; trEl.alt = s.trash_rangers_alt || 'Willis Texas Home of the Trash Rangers'; }
+        }
+        // Text shadow
+        const blur    = parseInt(s.hero_text_shadow_blur    || '30');
+        const opacity = parseFloat(s.hero_text_shadow_opacity || '75') / 100;
+        if (opacity > 0) {
+          const shadow = `0 0 ${blur}px rgba(255,255,255,${opacity}), 0 2px ${Math.round(blur * 0.65)}px rgba(255,255,255,${Math.min(1, opacity + 0.15)})`;
+          document.querySelectorAll('.hero-hl > span').forEach(el => el.style.textShadow = shadow);
+        } else {
+          document.querySelectorAll('.hero-hl > span').forEach(el => el.style.textShadow = 'none');
+        }
+        // Buttons
+        const btn1 = document.querySelector('.hero-btn-learn');
+        const btn2 = document.querySelector('.hero-btn-signup');
+        if (btn1) {
+          if (s.hero_btn1_text) { const en = btn1.querySelector('.en'); if (en) en.textContent = s.hero_btn1_text; }
+          if (s.hero_btn1_url)  btn1.href = s.hero_btn1_url;
+        }
+        if (btn2) {
+          if (s.hero_btn2_text) { const en = btn2.querySelector('.en'); if (en) en.textContent = s.hero_btn2_text; }
+          if (s.hero_btn2_url)  btn2.href = s.hero_btn2_url;
         }
       }
     } catch(e) {}

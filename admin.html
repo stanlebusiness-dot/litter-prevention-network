@@ -636,6 +636,44 @@
       </div>
     </div>
 
+    <!-- Homepage Hero Controls -->
+    <div class="settings-card">
+      <h3>🏠 Homepage Hero</h3>
+      <p class="card-desc">Controls the text glow, CTA button labels, and links on the home page hero. Upload the hero image via the Photos tab.</p>
+
+      <p style="font-size:13px;font-weight:700;color:#333;margin:0 0 12px;">Text Shadow (white glow behind headline)</p>
+      <div class="pe-slider-row">
+        <label>Blur radius — <span class="pe-sv" id="hero-shadow-blur-val">30</span>px</label>
+        <input type="range" id="hero-shadow-blur" min="0" max="80" value="30"
+               oninput="document.getElementById('hero-shadow-blur-val').textContent=this.value" />
+      </div>
+      <div class="pe-slider-row" style="margin-bottom:20px;">
+        <label>Opacity — <span class="pe-sv" id="hero-shadow-opacity-val">75</span>%</label>
+        <input type="range" id="hero-shadow-opacity" min="0" max="100" value="75"
+               oninput="document.getElementById('hero-shadow-opacity-val').textContent=this.value" />
+      </div>
+
+      <p style="font-size:13px;font-weight:700;color:#333;margin:0 0 12px;">CTA Buttons</p>
+      <div class="pe-2col">
+        <div class="pe-field">
+          <label>Button 1 Text</label>
+          <input type="text" id="hero-btn1-text" placeholder="Learn More" />
+        </div>
+        <div class="pe-field">
+          <label>Button 1 URL</label>
+          <input type="text" id="hero-btn1-url" placeholder="about.html" />
+        </div>
+        <div class="pe-field">
+          <label>Button 2 Text</label>
+          <input type="text" id="hero-btn2-text" placeholder="Sign Up Today!" />
+        </div>
+        <div class="pe-field">
+          <label>Button 2 URL</label>
+          <input type="text" id="hero-btn2-url" placeholder="#signup" />
+        </div>
+      </div>
+    </div>
+
     <!-- Save Button -->
     <div style="display:flex;align-items:center;gap:16px;">
       <button class="btn-save-settings" onclick="saveSettings()">💾 Save All Settings</button>
@@ -1666,6 +1704,18 @@ async function loadSettingsTab() {
   showParallaxPreview('parallax-2-preview', p2);
   showParallaxPreview('parallax-3-preview', p3);
 
+  // Homepage hero controls
+  const shadowBlur    = s.hero_text_shadow_blur    || '30';
+  const shadowOpacity = s.hero_text_shadow_opacity || '75';
+  document.getElementById('hero-shadow-blur').value = shadowBlur;
+  document.getElementById('hero-shadow-blur-val').textContent = shadowBlur;
+  document.getElementById('hero-shadow-opacity').value = shadowOpacity;
+  document.getElementById('hero-shadow-opacity-val').textContent = shadowOpacity;
+  document.getElementById('hero-btn1-text').value = s.hero_btn1_text || '';
+  document.getElementById('hero-btn1-url').value  = s.hero_btn1_url  || '';
+  document.getElementById('hero-btn2-text').value = s.hero_btn2_text || '';
+  document.getElementById('hero-btn2-url').value  = s.hero_btn2_url  || '';
+
   updateAnnouncementPreview();
 }
 
@@ -1743,6 +1793,12 @@ async function saveSettings() {
     { key: 'parallax_1_img', value: document.getElementById('parallax-1-img').value.trim() },
     { key: 'parallax_2_img', value: document.getElementById('parallax-2-img').value.trim() },
     { key: 'parallax_3_img', value: document.getElementById('parallax-3-img').value.trim() },
+    { key: 'hero_text_shadow_blur',    value: document.getElementById('hero-shadow-blur').value },
+    { key: 'hero_text_shadow_opacity', value: document.getElementById('hero-shadow-opacity').value },
+    { key: 'hero_btn1_text', value: document.getElementById('hero-btn1-text').value.trim() },
+    { key: 'hero_btn1_url',  value: document.getElementById('hero-btn1-url').value.trim() },
+    { key: 'hero_btn2_text', value: document.getElementById('hero-btn2-text').value.trim() },
+    { key: 'hero_btn2_url',  value: document.getElementById('hero-btn2-url').value.trim() },
   ];
 
   for (const u of updates) {
