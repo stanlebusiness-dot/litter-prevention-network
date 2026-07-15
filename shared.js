@@ -1,13 +1,21 @@
-// Drawer functions
-function openDrawer() {
-  document.getElementById('drawer').classList.add('open');
-  document.getElementById('drawer-overlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
+// Mobile slide-down nav panel toggle
+function toggleMobileNav() {
+  const nav = document.querySelector('nav');
+  const panel = nav && nav.querySelector('.mobile-nav-panel');
+  const ham = nav && nav.querySelector('.hamburger');
+  if (!panel) return;
+  const isOpen = panel.classList.toggle('open');
+  if (ham) { ham.classList.toggle('open', isOpen); ham.setAttribute('aria-expanded', String(isOpen)); }
 }
+
+// Legacy drawer functions — redirect to slide-down panel
+function openDrawer() { toggleMobileNav(); }
 function closeDrawer() {
-  document.getElementById('drawer').classList.remove('open');
-  document.getElementById('drawer-overlay').classList.remove('open');
-  document.body.style.overflow = '';
+  const nav = document.querySelector('nav');
+  const panel = nav && nav.querySelector('.mobile-nav-panel');
+  const ham = nav && nav.querySelector('.hamburger');
+  if (panel) { panel.classList.remove('open'); }
+  if (ham) { ham.classList.remove('open'); ham.setAttribute('aria-expanded', 'false'); }
 }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrawer(); });
 
@@ -267,93 +275,166 @@ function injectNewsNavLink() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  buildDesktopNav();
-  injectNewsNavLink();
+  buildNav();
   initializePersonalization();
 });
 
-function buildDesktopNav() {
+function buildNav() {
   const nav = document.querySelector('nav');
   if (!nav) return;
+  const logo = nav.querySelector('.nav-logo');
+  if (!logo) return;
 
-  if (!document.getElementById('lpn-dropdown-style')) {
-    const s = document.createElement('style');
-    s.id = 'lpn-dropdown-style';
-    s.textContent = '@media(min-width:769px){.nav-dropdown:hover .nav-drop-menu{display:block!important}}';
-    document.head.appendChild(s);
+  // Determine active page key
+  const page = (window.location.pathname.split('/').pop().replace('.html', '').toLowerCase()) || 'index';
+
+  // Nav structure matching the design mockup
+  const NAV_ITEMS = [
+    { label: 'Home',          href: 'index.html',        pages: ['index', ''] },
+    { label: 'About Us',      href: 'about.html',        pages: ['about'] },
+    { label: 'Trash Rangers', href: 'our-work.html',     pages: ['our-work'] },
+    { label: 'Schools',       href: 'coming-soon.html',  pages: ['coming-soon'] },
+    {
+      label: 'Resources',
+      pages: ['our-impact', 'faq', 'map', 'news', 'emergencies'],
+      dropdown: [
+        { label: 'Our Impact',  href: 'our-impact.html' },
+        { label: 'News & Blog', href: 'news.html' },
+        { label: 'FAQ',         href: 'faq.html' },
+        { label: 'Map',         href: 'map.html' },
+        { label: 'Emergencies', href: 'emergencies.html' },
+      ]
+    },
+    {
+      label: 'Get Involved',
+      pages: ['donate', 'volunteer', 'sponsors', 'events'],
+      dropdown: [
+        { label: 'How You Can Help', href: 'index.html#help' },
+        { label: 'Donate',           href: 'donate.html' },
+        { label: 'Volunteer',        href: 'volunteer.html' },
+        { label: 'Become a Sponsor', href: 'sponsors.html' },
+        { label: 'Events',           href: 'events.html' },
+      ]
+    },
+    { label: 'Contact', href: 'contact.html', pages: ['contact'] },
+  ];
+
+  function active(pages) {
+    return pages.some(p => (p.replace('.html','').toLowerCase().split('#')[0] || 'index') === page);
   }
 
-  let el = nav.querySelector('.nav-links-desktop');
+  // ── Build desktop nav links ──
+  const desktopEl = document.createElement('div');
+  desktopEl.className = 'nav-links-desktop';
 
-  if (!el) {
-    el = document.createElement('div');
-    el.className = 'nav-links-desktop';
-    el.innerHTML = `
-    <div class="nav-dropdown">
-      <button class="nav-drop-btn">What We Do <span class="nav-drop-arrow">▾</span></button>
-      <div class="nav-drop-menu">
-        <a href="our-work.html">Our Work</a>
-        <a href="our-impact.html">Our Impact</a>
-        <a href="emergencies.html">Emergencies</a>
-      </div>
-    </div>
-    <div class="nav-dropdown">
-      <button class="nav-drop-btn">About Us <span class="nav-drop-arrow">▾</span></button>
-      <div class="nav-drop-menu">
-        <a href="about.html">Our Mission</a>
-        <a href="news.html">Blog &amp; News</a>
-        <a href="faq.html">FAQ</a>
-      </div>
-    </div>
-    <div class="nav-dropdown">
-      <button class="nav-drop-btn">Get Involved <span class="nav-drop-arrow">▾</span></button>
-      <div class="nav-drop-menu">
-        <a href="index.html#help">How You Can Help</a>
-        <a href="sponsors.html">Become a Sponsor</a>
-        <a href="contact.html">Contact Us</a>
-        <a href="coming-soon.html">Future Phases</a>
-      </div>
-    </div>
-    <div class="nav-dropdown">
-      <button class="nav-drop-btn">Education <span class="nav-drop-arrow">▾</span></button>
-      <div class="nav-drop-menu">
-        <div class="nav-drop-section">Schools</div>
-        <a href="contact.html">School Partnerships</a>
-        <a href="contact.html">Bring LPN to Your School</a>
-        <div class="nav-drop-divider"></div>
-        <div class="nav-drop-section">Prevention</div>
-        <a href="faq.html">Litter Facts &amp; FAQ</a>
-      </div>
-    </div>
-    <div class="nav-dropdown">
-      <button class="nav-drop-btn">Contact <span class="nav-drop-arrow">▾</span></button>
-      <div class="nav-drop-menu">
-        <a href="contact.html">Contact Us</a>
-        <a href="sponsors.html">Become a Sponsor</a>
-        <a href="faq.html">FAQ</a>
-      </div>
-    </div>
-    <a href="login.html" class="nav-signin-btn" id="desktop-nav-auth">Sign In</a>
-  `;
-    const hamburger = nav.querySelector('.hamburger');
-    if (hamburger) nav.insertBefore(el, hamburger);
-    else nav.appendChild(el);
-  }
-
-  if (el.dataset.listenersAttached) return;
-  el.dataset.listenersAttached = 'true';
-
-  el.querySelectorAll('.nav-dropdown').forEach(dd => {
-    dd.querySelector('.nav-drop-btn')?.addEventListener('click', e => {
-      e.stopPropagation();
-      const wasOpen = dd.classList.contains('open');
-      el.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
-      if (!wasOpen) dd.classList.add('open');
-    });
+  NAV_ITEMS.forEach(item => {
+    const isAct = active(item.pages);
+    if (item.dropdown) {
+      const dd = document.createElement('div');
+      dd.className = 'nav-dropdown';
+      const btn = document.createElement('button');
+      btn.className = 'nav-link' + (isAct ? ' active' : '');
+      btn.type = 'button';
+      btn.innerHTML = item.label + ' <span class="nav-drop-arrow">&#9662;</span>';
+      const menu = document.createElement('div');
+      menu.className = 'nav-drop-menu';
+      menu.innerHTML = item.dropdown.map(d => `<a href="${d.href}">${d.label}</a>`).join('');
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        const wasOpen = dd.classList.contains('open');
+        desktopEl.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+        if (!wasOpen) dd.classList.add('open');
+      });
+      dd.appendChild(btn);
+      dd.appendChild(menu);
+      desktopEl.appendChild(dd);
+    } else {
+      const a = document.createElement('a');
+      a.href = item.href;
+      a.className = 'nav-link' + (isAct ? ' active' : '');
+      a.textContent = item.label;
+      desktopEl.appendChild(a);
+    }
   });
 
+  // ── Build right section: SIGN UP pill + hamburger ──
+  const rightEl = document.createElement('div');
+  rightEl.className = 'nav-right';
+
+  const pill = document.createElement('a');
+  pill.href = 'login.html';
+  pill.className = 'nav-signup-pill';
+  pill.id = 'desktop-nav-auth';
+  pill.innerHTML = '<span class="en">Sign Up</span><span class="es">Regístrate</span>';
+
+  const ham = document.createElement('button');
+  ham.className = 'hamburger';
+  ham.type = 'button';
+  ham.setAttribute('aria-label', 'Open navigation menu');
+  ham.setAttribute('aria-expanded', 'false');
+  ham.innerHTML = '<span></span><span></span><span></span>';
+  ham.addEventListener('click', toggleMobileNav);
+
+  rightEl.appendChild(pill);
+  rightEl.appendChild(ham);
+
+  // ── Build mobile slide-down panel ──
+  const mobilePanel = document.createElement('div');
+  mobilePanel.className = 'mobile-nav-panel';
+  mobilePanel.id = 'mobile-nav-panel';
+  const mobileInner = document.createElement('div');
+  mobileInner.className = 'mobile-nav-inner';
+
+  NAV_ITEMS.forEach(item => {
+    const isAct = active(item.pages);
+    if (item.dropdown) {
+      const sec = document.createElement('div');
+      sec.className = 'mobile-nav-section';
+      sec.textContent = item.label;
+      mobileInner.appendChild(sec);
+      item.dropdown.forEach(d => {
+        const a = document.createElement('a');
+        a.href = d.href;
+        a.className = 'mobile-nav-link mobile-nav-sub' + (isAct ? ' active' : '');
+        a.textContent = d.label;
+        mobileInner.appendChild(a);
+      });
+    } else {
+      const a = document.createElement('a');
+      a.href = item.href;
+      a.className = 'mobile-nav-link' + (isAct ? ' active' : '');
+      a.textContent = item.label;
+      mobileInner.appendChild(a);
+    }
+  });
+
+  const div = document.createElement('div');
+  div.className = 'mobile-nav-divider';
+  mobileInner.appendChild(div);
+
+  const mobileSignup = document.createElement('a');
+  mobileSignup.href = 'login.html';
+  mobileSignup.className = 'mobile-nav-link mobile-nav-signup';
+  mobileSignup.id = 'mobile-nav-auth';
+  mobileSignup.innerHTML = '<span class="en">Sign Up</span><span class="es">Regístrate</span>';
+  mobileInner.appendChild(mobileSignup);
+
+  mobilePanel.appendChild(mobileInner);
+
+  // ── Rebuild nav: logo | desktop links | nav-right | mobile panel ──
+  nav.innerHTML = '';
+  nav.appendChild(logo);
+  nav.appendChild(desktopEl);
+  nav.appendChild(rightEl);
+  nav.appendChild(mobilePanel);
+
+  // Stack logo label to 3 lines matching mockup
+  const logoLabel = logo.querySelector('.nav-logo-label');
+  if (logoLabel) logoLabel.innerHTML = 'Litter<br>Prevention<br>Network';
+
+  // Close dropdowns on outside click
   document.addEventListener('click', () => {
-    el.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+    desktopEl.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
   });
 }
 
@@ -419,35 +500,37 @@ async function initializePersonalization() {
 }
 
 function renderPersonalizedNav(user, points) {
-  const drawer = document.querySelector('.drawer');
-  if (drawer) {
-    const header = drawer.querySelector('.drawer-header');
-    if (header && !header.querySelector('.drawer-user-card')) {
-      const card = document.createElement('div');
-      card.className = 'drawer-user-card';
-      card.innerHTML = `
-        <div class="drawer-user-welcome"><span class="en">Welcome back, ${user.user_metadata?.full_name || user.email.split('@')[0]}</span><span class="es">Bienvenido de nuevo, ${user.user_metadata?.full_name || user.email.split('@')[0]}</span></div>
-        <div class="drawer-user-points">${points} <span class="en">points</span><span class="es">puntos</span></div>
-      `;
-      header.appendChild(card);
-    }
-    const loginLink = drawer.querySelector('a[href="login.html"]');
-    if (loginLink) {
-      loginLink.href = 'javascript:void(0)';
-      loginLink.onclick = async () => {
-        const sb = await getLpnSupabase();
-        if (sb) await sb.auth.signOut();
-        window.location.href = 'login.html';
-      };
-      loginLink.innerHTML = '<span class="nav-icon">🚪</span><span class="en">Sign Out</span><span class="es">Cerrar Sesión</span>';
-    }
-  }
+  const name = user.user_metadata?.full_name || user.email.split('@')[0];
+  const signOut = async () => {
+    const sb = await getLpnSupabase();
+    if (sb) await sb.auth.signOut();
+    window.location.href = 'login.html';
+  };
+
+  // Desktop SIGN UP pill → becomes user name + pts
   const desktopAuthBtn = document.getElementById('desktop-nav-auth');
   if (desktopAuthBtn) {
-    const name = user.user_metadata?.full_name || user.email.split('@')[0];
     desktopAuthBtn.textContent = `${name} (${points} pts)`;
     desktopAuthBtn.href = 'dashboard.html';
-    desktopAuthBtn.style.background = '#0F6E56';
+    desktopAuthBtn.style.cssText = 'background:#0F6E56;color:white;font-size:12px;';
+  }
+
+  // Mobile auth link → sign out
+  const mobileAuthBtn = document.getElementById('mobile-nav-auth');
+  if (mobileAuthBtn) {
+    mobileAuthBtn.textContent = `${name} · ${points} pts`;
+    mobileAuthBtn.href = 'javascript:void(0)';
+    mobileAuthBtn.onclick = signOut;
+  }
+
+  // Inject welcome card into mobile panel
+  const mobileInner = document.querySelector('.mobile-nav-inner');
+  if (mobileInner && !mobileInner.querySelector('.drawer-user-card')) {
+    const card = document.createElement('div');
+    card.className = 'drawer-user-card';
+    card.style.cssText = 'margin:12px 24px;padding:14px 16px;background:#f0fdf8;border-radius:10px;border-left:3px solid #1A6B2F;';
+    card.innerHTML = `<div style="font-weight:700;font-size:14px;color:#0F2318;"><span class="en">Welcome back, ${name}</span><span class="es">Bienvenido, ${name}</span></div><div style="font-size:13px;color:#1A6B2F;font-weight:700;margin-top:4px;">${points} <span class="en">points</span><span class="es">puntos</span></div>`;
+    mobileInner.insertBefore(card, mobileInner.firstChild);
   }
 }
 
