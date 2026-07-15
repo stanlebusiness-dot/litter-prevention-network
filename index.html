@@ -10,22 +10,147 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
   <script src="shared.js?v=20260604d"></script>
   <style>
-    .hero { background-color: #1D9E75; background-size: cover; background-position: center; background-attachment: fixed; color: white; padding: 80px 40px; text-align: center; position: relative; overflow: hidden; }
-    .hero::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(29,158,117,0.85) 0%, rgba(15,110,86,0.9) 100%); z-index: 0; }
-    .hero h1, .hero p, .hero .hero-buttons { position: relative; z-index: 1; }
-    @media (max-width: 768px) { .hero { background-attachment: scroll; } }
-    .hero h1 { font-size: 48px; font-weight: 800; margin-bottom: 16px; line-height: 1.2; font-family: 'Outfit', sans-serif; }
-    .hero p { font-size: 20px; opacity: 0.9; max-width: 600px; margin: 0 auto 32px; line-height: 1.6; }
-    .hero-inner { display: flex; align-items: center; justify-content: center; gap: 56px; max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; flex-wrap: wrap; }
-    .hero-photo-wrap { flex-shrink: 0; text-align: center; }
-    .hero-photo { width: 340px; max-width: 100%; border-radius: 16px; display: block; box-shadow: 0 8px 32px rgba(0,0,0,0.35); object-fit: cover; aspect-ratio: 4/3; background: rgba(255,255,255,0.1); }
-    .hero-photo-caption { color: rgba(255,255,255,0.8); font-size: 13px; margin-top: 10px; font-style: italic; }
-    .hero-text { text-align: center; max-width: 520px; }
-    .hero-text h1 { font-size: 48px; font-weight: 800; margin-bottom: 16px; line-height: 1.2; font-family: 'Outfit', sans-serif; }
-    .hero-text p { font-size: 20px; opacity: 0.9; margin: 0 auto 32px; line-height: 1.6; }
-    @media (max-width: 900px) { .hero-inner { flex-direction: column; gap: 36px; } .hero-photo { width: 260px; } }
-    @media (max-width: 600px) { .hero { padding: 56px 24px; } .hero-text h1 { font-size: 34px; } }
-    .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    /* ── HOMEPAGE HERO ── */
+    .hero {
+      background: linear-gradient(170deg, #7EC8E3 0%, #A8D8F0 20%, #C5E8C0 60%, #9CD68A 100%);
+      background-size: cover;
+      background-position: center top;
+      min-height: 540px;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: stretch;
+    }
+    @media (max-width: 768px) { .hero { background-attachment: scroll !important; } }
+    .hero-inner {
+      display: flex;
+      align-items: stretch;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    /* Left column: text */
+    .hero-text-col {
+      flex: 0 0 46%;
+      padding: 64px 40px 72px 56px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+    }
+    /* Right column: illustration */
+    .hero-illus-col {
+      flex: 1 1 54%;
+      position: relative;
+      overflow: hidden;
+      min-height: 480px;
+    }
+    .hero-illus-col img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+    }
+    /* Stacked headline */
+    .hero-hl {
+      display: flex;
+      flex-direction: column;
+      margin: 0 0 22px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      line-height: 1.02;
+      letter-spacing: -1px;
+    }
+    .hero-hl > span { display: block; -webkit-text-stroke: 3px white; paint-order: stroke fill; }
+    .hl-see     { font-size: 52px;  color: #1A6B2F; }
+    .hl-report  { font-size: 66px;  color: #0D2B4E; }
+    .hl-clean   { font-size: 80px;  color: #1A6B2F; }
+    .hl-prevent { font-size: 94px;  color: #0D2B4E; position: relative; }
+    .hl-prevent::after {
+      content: '';
+      display: block;
+      width: 88%;
+      height: 7px;
+      margin-top: 8px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 10'%3E%3Cpath d='M0,5 C37.5,0 75,10 112.5,5 C150,0 187.5,10 225,5 C262.5,0 281.25,10 300,5' stroke='%231A6B2F' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x left center / auto 7px;
+    }
+    .hero-sub {
+      font-size: 17px; color: #1a1a1a; line-height: 1.65;
+      margin: 0 0 28px; max-width: 380px; font-weight: 500;
+    }
+    .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+    .hero-btn-learn {
+      background: #0D2B4E; color: white; padding: 13px 28px; border-radius: 50px;
+      font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700;
+      text-decoration: none; letter-spacing: 0.3px; display: inline-block;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.15s;
+    }
+    .hero-btn-learn:hover  { background: #142040; transform: translateY(-2px); box-shadow: 0 4px 14px rgba(13,43,78,0.35); }
+    .hero-btn-signup {
+      background: #1A6B2F; color: white; padding: 13px 28px; border-radius: 50px;
+      font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700;
+      text-decoration: none; letter-spacing: 0.3px; display: inline-block;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.15s;
+    }
+    .hero-btn-signup:hover { background: #0F5224; transform: translateY(-2px); box-shadow: 0 4px 14px rgba(26,107,47,0.35); }
+    @media (max-width: 960px) {
+      .hero-inner { flex-direction: column; }
+      .hero-text-col { flex: none; width: 100%; padding: 48px 32px 40px; order: 2; }
+      .hero-illus-col { flex: none; width: 100%; min-height: 300px; order: 1; }
+      .hl-see { font-size: 38px; } .hl-report { font-size: 48px; }
+      .hl-clean { font-size: 58px; } .hl-prevent { font-size: 68px; }
+    }
+    @media (max-width: 480px) {
+      .hero-text-col { padding: 36px 20px 32px; }
+      .hl-see { font-size: 30px; -webkit-text-stroke: 2px white; }
+      .hl-report { font-size: 38px; -webkit-text-stroke: 2px white; }
+      .hl-clean  { font-size: 46px; -webkit-text-stroke: 2px white; }
+      .hl-prevent { font-size: 56px; -webkit-text-stroke: 2px white; }
+      .hero-sub { font-size: 15px; max-width: 100%; }
+    }
+
+    /* ── FEATURE STRIP (SVG wave + 4-item row) ── */
+    .feature-wave-wrap {
+      position: relative;
+      z-index: 5;
+      margin-top: -58px; /* overlaps bottom of hero */
+    }
+    .feature-wave-svg { display: block; width: 100%; height: 60px; }
+    .feature-strip {
+      background: #F8F4ED;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 16px 32px 44px;
+    }
+    .feature-item { display: flex; align-items: flex-start; gap: 16px; padding: 16px 18px; }
+    .fi-circle {
+      width: 54px; height: 54px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .fi-green { background: #1A6B2F; }
+    .fi-navy  { background: #0D2B4E; }
+    .fi-circle svg { width: 26px; height: 26px; }
+    .fi-title {
+      font-family: 'Outfit', sans-serif; font-size: 17px; font-weight: 800;
+      margin: 0 0 5px; line-height: 1.2;
+    }
+    .fi-title-green { color: #1A6B2F; }
+    .fi-title-navy  { color: #0D2B4E; }
+    .fi-desc { font-size: 13px; color: #555; line-height: 1.6; margin: 0; }
+    @media (max-width: 860px) {
+      .feature-strip { grid-template-columns: repeat(2, 1fr); }
+      .feature-wave-wrap { margin-top: -40px; }
+      .feature-wave-svg { height: 42px; }
+    }
+    @media (max-width: 480px) {
+      .feature-strip { grid-template-columns: 1fr; padding: 12px 16px 28px; }
+      .feature-wave-wrap { margin-top: -28px; }
+      .feature-wave-svg { height: 30px; }
+    }
+
+    /* kept for rest-of-page uses */
     .btn-primary { background: white; color: #1D9E75; padding: 14px 32px; border-radius: 8px; font-weight: 700; font-size: 16px; text-decoration: none; transition: transform 0.15s, box-shadow 0.15s; display: inline-block; }
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
     .btn-secondary { background: transparent; color: white; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 16px; text-decoration: none; border: 2px solid rgba(255,255,255,0.7); transition: border-color 0.2s, background 0.2s; display: inline-block; }
@@ -188,31 +313,82 @@
     <div class="drawer-footer-note">&#xA9; 2026 Litter Prevention Network &middot; Willis, TX</div>
   </div>
 
+  <!-- ══ HERO ══ -->
   <section class="hero" id="main-content">
     <div class="hero-inner">
-      <!-- Trash Rangers photo — managed via admin portal -->
-      <div class="hero-photo-wrap">
-        <img id="trash-rangers-photo"
-             src="https://placehold.co/680x510/1a6b2f/ffffff?text=Trash+Rangers+Photo"
-             alt="Trash Rangers students in Willis, Texas"
-             class="hero-photo"
-             onerror="this.onerror=null;this.src='https://placehold.co/680x510/1a6b2f/ffffff?text=Trash+Rangers+Photo';" />
-        <div class="hero-photo-caption">Willis, Texas — Home of the Trash Rangers</div>
-      </div>
-      <div class="hero-text">
-        <h1><span class="en">Lead the Change</span><span class="es">Lidera el Cambio</span></h1>
-        <p>
-          <span class="en">Empowering one city at a time to prevent litter.</span>
-          <span class="es">Empoderando una ciudad a la vez para prevenir la basura.</span>
+      <!-- Left: stacked headline + CTA -->
+      <div class="hero-text-col">
+        <h1 class="hero-hl">
+          <span class="hl-see"><span class="en">See It.</span><span class="es">Véalo.</span></span>
+          <span class="hl-report"><span class="en">Report It.</span><span class="es">Repórtelo.</span></span>
+          <span class="hl-clean"><span class="en">Clean It.</span><span class="es">Límpielo.</span></span>
+          <span class="hl-prevent"><span class="en">Prevent It.</span><span class="es">Prevénganlo.</span></span>
+        </h1>
+        <p class="hero-sub">
+          <span class="en">Working together to keep our streets, waterways, and wildlife clean and safe for everyone.</span>
+          <span class="es">Trabajando juntos para mantener nuestras calles, vías fluviales y vida silvestre limpias y seguras para todos.</span>
         </p>
-        <div class="hero-buttons">
-          <a href="#signup" class="btn-primary"><span class="en">Join Our Community</span><span class="es">Únete a Nuestra Comunidad</span></a>
-          <a href="#how" class="btn-secondary"><span class="en">See how it works</span><span class="es">Ver cómo funciona</span></a>
+        <div class="hero-btns">
+          <a href="about.html" class="hero-btn-learn"><span class="en">Learn More</span><span class="es">Aprender Más</span></a>
+          <a href="#signup" class="hero-btn-signup"><span class="en">Sign Up Today!</span><span class="es">¡Regístrate Hoy!</span></a>
         </div>
+      </div>
+      <!-- Right: Trash Rangers illustration (set via admin portal) -->
+      <div class="hero-illus-col">
+        <img id="trash-rangers-photo"
+             src="https://placehold.co/720x560/c5e8c0/1a6b2f?text=Trash+Rangers+Illustration"
+             alt="Trash Rangers students in Willis, Texas"
+             onerror="this.onerror=null;this.src='https://placehold.co/720x560/c5e8c0/1a6b2f?text=Trash+Rangers';" />
       </div>
     </div>
   </section>
 
+  <!-- ══ SVG WAVE + FEATURE STRIP ══ -->
+  <div class="feature-wave-wrap">
+    <svg class="feature-wave-svg" viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path fill="#F8F4ED" d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z"/>
+    </svg>
+    <section class="feature-strip" aria-label="What we do">
+      <div class="feature-item">
+        <div class="fi-circle fi-green" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
+        </div>
+        <div>
+          <p class="fi-title fi-title-green"><span class="en">See It</span><span class="es">Véalo</span></p>
+          <p class="fi-desc"><span class="en">Spot litter and problems.</span><span class="es">Detecta basura y problemas.</span></p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="fi-circle fi-navy" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 13"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+        </div>
+        <div>
+          <p class="fi-title fi-title-navy"><span class="en">Report It</span><span class="es">Repórtelo</span></p>
+          <p class="fi-desc"><span class="en">Let us know so we can take action.</span><span class="es">Avísanos para que podamos actuar.</span></p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="fi-circle fi-green" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-4 0v1"/><path d="M14 7V4a2 2 0 0 0-4 0v3"/><path d="M10 7.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/></svg>
+        </div>
+        <div>
+          <p class="fi-title fi-title-green"><span class="en">Clean It</span><span class="es">Límpielo</span></p>
+          <p class="fi-desc"><span class="en">Join cleanups and make a difference.</span><span class="es">Únete a limpiezas y marca la diferencia.</span></p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="fi-circle fi-navy" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <div>
+          <p class="fi-title fi-title-navy"><span class="en">Prevent It</span><span class="es">Prevénganlo</span></p>
+          <p class="fi-desc"><span class="en">Help stop litter before it starts.</span><span class="es">Ayuda a detener la basura antes de que comience.</span></p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Donate bar -->
   <div style="background:linear-gradient(135deg,#0a4a35 0%,#1D9E75 60%,#0F6E56 100%);padding:22px 40px;text-align:center;">
     <a href="donate.html" style="display:inline-block;background:white;color:#0F6E56;font-family:'Outfit',sans-serif;font-weight:800;font-size:15px;padding:11px 28px;border-radius:8px;text-decoration:none;transition:transform 0.15s,box-shadow 0.15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 16px rgba(0,0,0,0.18)'" onmouseout="this.style.transform='';this.style.boxShadow=''"><span class="en">Support LPN Willis →</span><span class="es">Apoya LPN Willis →</span></a>
     <div style="color:rgba(255,255,255,0.7);font-size:12px;margin-top:8px;"><span class="en">100% goes to local outreach &amp; education</span><span class="es">El 100% va a la divulgación y educación local</span></div>
