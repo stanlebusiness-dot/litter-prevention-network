@@ -1016,15 +1016,21 @@
     }
 
     // ── Button group position ──────────────────────────────
-    const btnsEl  = document.querySelector('.hero-btns');
-    const subRow  = document.querySelector('.hero-sub-row');
-    if (b1 && btnsEl) {
-      const align = b1.align || 'left';
-      btnsEl.style.alignSelf = align === 'right' ? 'flex-end' : align === 'center' ? 'center' : 'flex-start';
-    }
+    const btnsEl = document.querySelector('.hero-btns');
+    const subRow = document.querySelector('.hero-sub-row');
     if (b1 && subRow) {
+      // align-self on the flex-column child moves it left/center/right
+      const align = b1.align || 'left';
+      subRow.style.alignSelf = align === 'right' ? 'flex-end' : align === 'center' ? 'center' : 'flex-start';
       const vOff = parseInt(b1.vOffset) || 0;
       subRow.style.marginTop = vOff ? `clamp(0px, ${Math.abs(vOff) * 0.05}vw, ${Math.abs(vOff)}px)` : '';
+    }
+    // ── Button layout (stacked vs side-by-side) ────────────
+    if (btnsEl && cfg.buttons) {
+      const layout = cfg.buttons.btnLayout || 'column';
+      btnsEl.style.flexDirection = layout === 'row' ? 'row' : 'column';
+      btnsEl.style.flexWrap     = 'wrap';
+      btnsEl.style.gap          = layout === 'row' ? '12px' : '10px';
     }
 
     // ── Section visibility ─────────────────────────────────

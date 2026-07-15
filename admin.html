@@ -774,6 +774,13 @@
               <button class="hp-align-btn" data-align="right"  onclick="setHpAlign('right',this)">Right →</button>
             </div>
           </div>
+          <div class="pe-field">
+            <label>Button Layout</label>
+            <div style="display:flex;gap:8px;">
+              <button class="hp-align-btn hp-layout-btn hp-active" data-layout="column" onclick="setHpBtnLayout('column',this)">⬇ Stacked</button>
+              <button class="hp-align-btn hp-layout-btn" data-layout="row" onclick="setHpBtnLayout('row',this)">➡ Side by Side</button>
+            </div>
+          </div>
           <div class="pe-slider-row">
             <label>Vertical offset — <span class="pe-sv" id="hp-voff-val">0</span>px</label>
             <input type="range" id="hp-voff" min="-60" max="60" value="0"
@@ -2043,6 +2050,7 @@ const HP_OV_SECTIONS = [
 let _hpConfig    = null;
 let _hpLibrary   = [];
 let _hpAlign     = 'left';
+let _hpBtnLayout = 'column';
 let _hpTabReady  = false;
 let _hpIfReady   = false;
 
@@ -2104,7 +2112,10 @@ function _populateHpControls(cfg) {
   document.getElementById('hp-b2-color').value = b2.color || '#1A6B2F';
 
   _hpAlign = b1.align || 'left';
-  document.querySelectorAll('.hp-align-btn').forEach(b => b.classList.toggle('hp-active', b.dataset.align === _hpAlign));
+  document.querySelectorAll('.hp-align-btn:not(.hp-layout-btn)').forEach(b => b.classList.toggle('hp-active', b.dataset.align === _hpAlign));
+
+  _hpBtnLayout = cfg.buttons?.btnLayout || 'column';
+  document.querySelectorAll('.hp-layout-btn').forEach(b => b.classList.toggle('hp-active', b.dataset.layout === _hpBtnLayout));
 
   const vOff = b1.vOffset || 0;
   document.getElementById('hp-voff').value = vOff;
@@ -2120,7 +2131,14 @@ function _populateHpControls(cfg) {
 
 function setHpAlign(align, el) {
   _hpAlign = align;
-  document.querySelectorAll('.hp-align-btn').forEach(b => b.classList.remove('hp-active'));
+  document.querySelectorAll('.hp-align-btn:not(.hp-layout-btn)').forEach(b => b.classList.remove('hp-active'));
+  el.classList.add('hp-active');
+  hpPreview();
+}
+
+function setHpBtnLayout(layout, el) {
+  _hpBtnLayout = layout;
+  document.querySelectorAll('.hp-layout-btn').forEach(b => b.classList.remove('hp-active'));
   el.classList.add('hp-active');
   hpPreview();
 }
@@ -2137,11 +2155,11 @@ function _buildHpConfig() {
       btn1: { en: document.getElementById('hp-b1-en').value.trim() || 'Learn More',
               es: document.getElementById('hp-b1-es').value.trim() || 'Aprender Más',
               url: document.getElementById('hp-b1-url').value.trim() || 'about.html',
-              color: document.getElementById('hp-b1-color').value, align: _hpAlign, vOffset },
+              color: document.getElementById('hp-b1-color').value, align: _hpAlign, vOffset, btnLayout: _hpBtnLayout },
       btn2: { en: document.getElementById('hp-b2-en').value.trim() || 'Sign Up Today!',
               es: document.getElementById('hp-b2-es').value.trim() || '¡Regístrate Hoy!',
               url: document.getElementById('hp-b2-url').value.trim() || '#signup',
-              color: document.getElementById('hp-b2-color').value, align: _hpAlign, vOffset }
+              color: document.getElementById('hp-b2-color').value, align: _hpAlign, vOffset, btnLayout: _hpBtnLayout }
     },
     overlays: _hpConfig?.overlays || [],
     sections: secs
