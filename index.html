@@ -20,6 +20,7 @@
       z-index: 1;
       display: flex;
       align-items: stretch;
+      overflow: hidden;
     }
     @media (max-width: 768px) { .hero { background-attachment: scroll !important; } }
     .hero-inner {
@@ -37,7 +38,7 @@
       flex-direction: column;
       justify-content: center;
       position: relative;
-      z-index: 2;
+      z-index: 3;
     }
     /* Right column: illustration */
     .hero-illus-col {
@@ -111,15 +112,25 @@
       .hero-sub { font-size: 15px; max-width: 100%; }
     }
 
-    /* ── FEATURE STRIP (SVG wave + 4-item row) ── */
-    .feature-wave-wrap {
-      position: relative;
-      z-index: 5;
-      margin-top: -58px; /* overlaps bottom of hero */
+    /* ── HERO SWOOP (river-curve SVG inside .hero, absolutely pinned to bottom) ── */
+    .hero-swoop {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      line-height: 0;
+      pointer-events: none;
+      z-index: 2;
     }
-    .feature-wave-svg { display: block; width: 100%; height: 60px; }
+    .hero-swoop svg {
+      display: block;
+      width: 100%;
+      height: clamp(70px, 12.5vw, 180px);
+    }
+
+    /* ── FEATURE STRIP (4-item row, sits directly below hero swoop) ── */
     .feature-strip {
-      background: #F8F4ED;
+      background: var(--cream);
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       padding: 16px 32px 44px;
@@ -141,13 +152,9 @@
     .fi-desc { font-size: 13px; color: #555; line-height: 1.6; margin: 0; }
     @media (max-width: 860px) {
       .feature-strip { grid-template-columns: repeat(2, 1fr); }
-      .feature-wave-wrap { margin-top: -40px; }
-      .feature-wave-svg { height: 42px; }
     }
     @media (max-width: 480px) {
       .feature-strip { grid-template-columns: 1fr; padding: 12px 16px 28px; }
-      .feature-wave-wrap { margin-top: -28px; }
-      .feature-wave-svg { height: 30px; }
     }
 
     /* kept for rest-of-page uses */
@@ -341,14 +348,21 @@
              onerror="this.onerror=null;this.src='https://placehold.co/720x560/c5e8c0/1a6b2f?text=Trash+Rangers';" />
       </div>
     </div>
+    <!-- River swoop — absolutely pinned to hero bottom, fill matches feature strip -->
+    <div class="hero-swoop">
+      <svg viewBox="0 0 1440 180" preserveAspectRatio="none" aria-hidden="true">
+        <path fill="var(--cream)" d="M0,96
+          C 160,34 330,26 500,74
+          C 660,120 790,150 960,122
+          C 1110,98 1210,48 1290,62
+          C 1360,74 1410,128 1440,168
+          L 1440,180 L 0,180 Z"/>
+      </svg>
+    </div>
   </section>
 
-  <!-- ══ SVG WAVE + FEATURE STRIP ══ -->
-  <div class="feature-wave-wrap">
-    <svg class="feature-wave-svg" viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path fill="#F8F4ED" d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z"/>
-    </svg>
-    <section class="feature-strip" aria-label="What we do">
+  <!-- ══ FEATURE STRIP ══ -->
+  <section class="feature-strip" aria-label="What we do">
       <div class="feature-item">
         <div class="fi-circle fi-green" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/></svg>
@@ -385,8 +399,7 @@
           <p class="fi-desc"><span class="en">Help stop litter before it starts.</span><span class="es">Ayuda a detener la basura antes de que comience.</span></p>
         </div>
       </div>
-    </section>
-  </div>
+  </section>
 
   <!-- Donate bar -->
   <div style="background:linear-gradient(135deg,#0a4a35 0%,#1D9E75 60%,#0F6E56 100%);padding:22px 40px;text-align:center;">
