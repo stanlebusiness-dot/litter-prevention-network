@@ -989,6 +989,72 @@
     'parallax-3':     { sel: '#parallax-3',      edge: 'top'    },
   };
 
+  // Text selector map — keys match admin HP_TEXT_DEF keys
+  const _HP_TEXT_MAP = [
+    { key:'hero_see_en',    sel:'.hl-see .en' },
+    { key:'hero_see_es',    sel:'.hl-see .es' },
+    { key:'hero_report_en', sel:'.hl-report .en' },
+    { key:'hero_report_es', sel:'.hl-report .es' },
+    { key:'hero_clean_en',  sel:'.hl-clean .en' },
+    { key:'hero_clean_es',  sel:'.hl-clean .es' },
+    { key:'hero_prevent_en',sel:'.hl-prevent .en' },
+    { key:'hero_prevent_es',sel:'.hl-prevent .es' },
+    { key:'hero_sub_en',    sel:'.hero-sub .en' },
+    { key:'hero_sub_es',    sel:'.hero-sub .es' },
+    { key:'fi1_title_en', sel:'.feature-strip .feature-item:nth-child(1) .fi-title .en' },
+    { key:'fi1_title_es', sel:'.feature-strip .feature-item:nth-child(1) .fi-title .es' },
+    { key:'fi1_desc_en',  sel:'.feature-strip .feature-item:nth-child(1) .fi-desc .en' },
+    { key:'fi1_desc_es',  sel:'.feature-strip .feature-item:nth-child(1) .fi-desc .es' },
+    { key:'fi2_title_en', sel:'.feature-strip .feature-item:nth-child(2) .fi-title .en' },
+    { key:'fi2_title_es', sel:'.feature-strip .feature-item:nth-child(2) .fi-title .es' },
+    { key:'fi2_desc_en',  sel:'.feature-strip .feature-item:nth-child(2) .fi-desc .en' },
+    { key:'fi2_desc_es',  sel:'.feature-strip .feature-item:nth-child(2) .fi-desc .es' },
+    { key:'fi3_title_en', sel:'.feature-strip .feature-item:nth-child(3) .fi-title .en' },
+    { key:'fi3_title_es', sel:'.feature-strip .feature-item:nth-child(3) .fi-title .es' },
+    { key:'fi3_desc_en',  sel:'.feature-strip .feature-item:nth-child(3) .fi-desc .en' },
+    { key:'fi3_desc_es',  sel:'.feature-strip .feature-item:nth-child(3) .fi-desc .es' },
+    { key:'fi4_title_en', sel:'.feature-strip .feature-item:nth-child(4) .fi-title .en' },
+    { key:'fi4_title_es', sel:'.feature-strip .feature-item:nth-child(4) .fi-title .es' },
+    { key:'fi4_desc_en',  sel:'.feature-strip .feature-item:nth-child(4) .fi-desc .en' },
+    { key:'fi4_desc_es',  sel:'.feature-strip .feature-item:nth-child(4) .fi-desc .es' },
+    { key:'donate_btn_en', sel:'#donate-bar a .en' },
+    { key:'donate_btn_es', sel:'#donate-bar a .es' },
+    { key:'donate_sub_en', sel:'#donate-bar > div .en' },
+    { key:'donate_sub_es', sel:'#donate-bar > div .es' },
+    { key:'p1_h_en', sel:'#parallax-1 .parallax-content h2 .en' },
+    { key:'p1_h_es', sel:'#parallax-1 .parallax-content h2 .es' },
+    { key:'p1_p_en', sel:'#parallax-1 .parallax-content p .en' },
+    { key:'p1_p_es', sel:'#parallax-1 .parallax-content p .es' },
+    { key:'p1_a_en', sel:'#parallax-1 .parallax-content a .en' },
+    { key:'p1_a_es', sel:'#parallax-1 .parallax-content a .es' },
+    { key:'stat1_num',  sel:'.stats .stat:nth-child(1) .stat-number' },
+    { key:'stat1_l_en', sel:'.stats .stat:nth-child(1) .stat-label .en' },
+    { key:'stat1_l_es', sel:'.stats .stat:nth-child(1) .stat-label .es' },
+    { key:'stat2_num',  sel:'.stats .stat:nth-child(2) .stat-number' },
+    { key:'stat2_l_en', sel:'.stats .stat:nth-child(2) .stat-label .en' },
+    { key:'stat2_l_es', sel:'.stats .stat:nth-child(2) .stat-label .es' },
+    { key:'stat3_num',  sel:'.stats .stat:nth-child(3) .stat-number' },
+    { key:'stat3_l_en', sel:'.stats .stat:nth-child(3) .stat-label .en' },
+    { key:'stat3_l_es', sel:'.stats .stat:nth-child(3) .stat-label .es' },
+    { key:'p2_h_en', sel:'#parallax-2 .parallax-content h2 .en' },
+    { key:'p2_h_es', sel:'#parallax-2 .parallax-content h2 .es' },
+    { key:'p2_p_en', sel:'#parallax-2 .parallax-content p .en' },
+    { key:'p2_p_es', sel:'#parallax-2 .parallax-content p .es' },
+    { key:'mission_h_en', sel:'.mission h2 .en' },
+    { key:'mission_h_es', sel:'.mission h2 .es' },
+    { key:'mission_p_en', sel:'.mission p:first-of-type .en' },
+    { key:'mission_p_es', sel:'.mission p:first-of-type .es' },
+  ];
+
+  function _applyTextConfig(text) {
+    if (!text) return;
+    _HP_TEXT_MAP.forEach(({ key, sel }) => {
+      if (!text[key]) return;
+      const el = document.querySelector(sel);
+      if (el) el.textContent = text[key];
+    });
+  }
+
   function applyHomepageConfig(cfg) {
     if (!cfg) return;
 
@@ -1018,20 +1084,35 @@
     // ── Button group position ──────────────────────────────
     const btnsEl = document.querySelector('.hero-btns');
     const subRow = document.querySelector('.hero-sub-row');
-    if (b1 && subRow) {
-      // align-self on the flex-column child moves it left/center/right
-      const align = b1.align || 'left';
-      subRow.style.alignSelf = align === 'right' ? 'flex-end' : align === 'center' ? 'center' : 'flex-start';
-      const vOff = parseInt(b1.vOffset) || 0;
-      subRow.style.marginTop = vOff ? `clamp(0px, ${Math.abs(vOff) * 0.05}vw, ${Math.abs(vOff)}px)` : '';
+    if (subRow && cfg.buttons) {
+      const posMode = cfg.buttons.posMode || 'flow';
+      if (posMode === 'free') {
+        subRow.style.position  = 'absolute';
+        subRow.style.left      = (cfg.buttons.xPos ?? 5) + '%';
+        subRow.style.top       = (cfg.buttons.yPos ?? 55) + '%';
+        subRow.style.zIndex    = '10';
+        subRow.style.alignSelf = '';
+        subRow.style.marginTop = '';
+      } else {
+        subRow.style.position  = '';
+        subRow.style.left      = '';
+        subRow.style.top       = '';
+        subRow.style.zIndex    = '';
+        const align = b1?.align || 'left';
+        subRow.style.alignSelf = align === 'right' ? 'flex-end' : align === 'center' ? 'center' : 'flex-start';
+        const vOff = parseInt(b1?.vOffset) || 0;
+        subRow.style.marginTop = vOff ? `clamp(0px,${Math.abs(vOff)*.05}vw,${Math.abs(vOff)}px)` : '';
+      }
     }
     // ── Button layout (stacked vs side-by-side) ────────────
     if (btnsEl && cfg.buttons) {
-      const layout = cfg.buttons.btnLayout || 'column';
+      const layout = cfg.buttons.btn1?.btnLayout || cfg.buttons.btnLayout || 'column';
       btnsEl.style.flexDirection = layout === 'row' ? 'row' : 'column';
-      btnsEl.style.flexWrap     = 'wrap';
-      btnsEl.style.gap          = layout === 'row' ? '12px' : '10px';
+      btnsEl.style.flexWrap      = 'wrap';
+      btnsEl.style.gap           = layout === 'row' ? '12px' : '10px';
     }
+    // ── Text overrides ────────────────────────────────────
+    _applyTextConfig(cfg.text);
 
     // ── Section visibility ─────────────────────────────────
     const secs = cfg.sections || {};
@@ -1149,6 +1230,45 @@
   window.addEventListener('message', (e) => {
     if (e.data?.type === 'lpn-preview') applyHomepageConfig(e.data.config);
   });
+
+  // Drag-to-position in admin preview mode
+  if (new URLSearchParams(location.search).get('admin-preview') === '1') {
+    let _drag = null;
+    document.addEventListener('mousedown', (e) => {
+      const el = e.target.closest('.hero-sub-row');
+      if (!el) return;
+      e.preventDefault();
+      const hero = el.closest('.hero');
+      const hr = hero.getBoundingClientRect();
+      const er = el.getBoundingClientRect();
+      _drag = { el, hero, offX: e.clientX - er.left, offY: e.clientY - er.top };
+      el.style.cursor = 'grabbing';
+      el.style.userSelect = 'none';
+    });
+    document.addEventListener('mousemove', (e) => {
+      if (!_drag) return;
+      const { el, hero, offX, offY } = _drag;
+      const hr = hero.getBoundingClientRect();
+      const x = Math.max(0, Math.min(90, ((e.clientX - offX - hr.left) / hr.width) * 100));
+      const y = Math.max(0, Math.min(90, ((e.clientY - offY - hr.top)  / hr.height) * 100));
+      el.style.position = 'absolute';
+      el.style.left     = x + '%';
+      el.style.top      = y + '%';
+      el.style.zIndex   = '10';
+    });
+    document.addEventListener('mouseup', (e) => {
+      if (!_drag) return;
+      const { el, hero } = _drag;
+      el.style.cursor = '';
+      el.style.userSelect = '';
+      const hr = hero.getBoundingClientRect();
+      const er = el.getBoundingClientRect();
+      const x = Math.max(0, Math.min(90, ((er.left - hr.left) / hr.width) * 100));
+      const y = Math.max(0, Math.min(90, ((er.top  - hr.top)  / hr.height) * 100));
+      window.parent.postMessage({ type: 'lpn-pos-update', x: +x.toFixed(1), y: +y.toFixed(1) }, '*');
+      _drag = null;
+    });
+  }
 
   </script>
   <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js');</script>
