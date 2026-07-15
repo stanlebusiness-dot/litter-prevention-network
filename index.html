@@ -94,24 +94,27 @@
     }
     .hero-sub {
       font-size: 17px; color: #1a1a1a; line-height: 1.65;
-      margin: 0 0 28px; max-width: 380px; font-weight: 500;
+      margin: 0; max-width: 220px; font-weight: 500;
       text-shadow: 0 0 25px rgba(255,255,255,0.9), 0 0 50px rgba(255,255,255,0.7);
     }
-    .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+    .hero-sub-row { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .hero-btns { display: flex; flex-direction: column; gap: 10px; }
     .hero-btn-learn {
       background: #0D2B4E; color: white; padding: 13px 28px; border-radius: 50px;
       font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700;
       text-decoration: none; letter-spacing: 0.3px; display: inline-block;
       transition: background 0.2s, transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 0 22px rgba(255,255,255,0.7), 0 0 45px rgba(255,255,255,0.45);
     }
-    .hero-btn-learn:hover  { background: #142040; transform: translateY(-2px); box-shadow: 0 4px 14px rgba(13,43,78,0.35); }
+    .hero-btn-learn:hover  { background: #142040; transform: translateY(-2px); box-shadow: 0 4px 14px rgba(13,43,78,0.35), 0 0 22px rgba(255,255,255,0.5); }
     .hero-btn-signup {
       background: #1A6B2F; color: white; padding: 13px 28px; border-radius: 50px;
       font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700;
       text-decoration: none; letter-spacing: 0.3px; display: inline-block;
       transition: background 0.2s, transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 0 22px rgba(255,255,255,0.7), 0 0 45px rgba(255,255,255,0.45);
     }
-    .hero-btn-signup:hover { background: #0F5224; transform: translateY(-2px); box-shadow: 0 4px 14px rgba(26,107,47,0.35); }
+    .hero-btn-signup:hover { background: #0F5224; transform: translateY(-2px); box-shadow: 0 4px 14px rgba(26,107,47,0.35), 0 0 22px rgba(255,255,255,0.5); }
     @media (max-width: 960px) {
       .hero-text-col { flex: none; width: 100%; padding: 48px 32px 40px; }
       .hl-see { font-size: 38px; } .hl-report { font-size: 48px; }
@@ -346,13 +349,15 @@
           <span class="hl-clean"><span class="en">Clean It.</span><span class="es">Límpielo.</span></span>
           <span class="hl-prevent"><span class="en">Prevent It.</span><span class="es">Prevénganlo.</span></span>
         </h1>
-        <p class="hero-sub">
-          <span class="en">Working together to keep our streets, waterways, and wildlife clean and safe for everyone.</span>
-          <span class="es">Trabajando juntos para mantener nuestras calles, vías fluviales y vida silvestre limpias y seguras para todos.</span>
-        </p>
-        <div class="hero-btns">
-          <a href="about.html" class="hero-btn-learn"><span class="en">Learn More</span><span class="es">Aprender Más</span></a>
-          <a href="#signup" class="hero-btn-signup"><span class="en">Sign Up Today!</span><span class="es">¡Regístrate Hoy!</span></a>
+        <div class="hero-sub-row">
+          <p class="hero-sub">
+            <span class="en">Working together to keep our streets, waterways, and wildlife clean and safe for everyone.</span>
+            <span class="es">Trabajando juntos para mantener nuestras calles, vías fluviales y vida silvestre limpias y seguras para todos.</span>
+          </p>
+          <div class="hero-btns">
+            <a href="about.html" class="hero-btn-learn"><span class="en">Learn More</span><span class="es">Aprender Más</span></a>
+            <a href="#signup" class="hero-btn-signup"><span class="en">Sign Up Today!</span><span class="es">¡Regístrate Hoy!</span></a>
+          </div>
         </div>
       </div>
     </div>
@@ -806,8 +811,11 @@
           const shadow = `0 0 ${blur}px rgba(255,255,255,${opacity}), 0 2px ${Math.round(blur * 0.65)}px rgba(255,255,255,${Math.min(1, opacity + 0.15)})`;
           document.querySelectorAll('.hero-hl > span').forEach(el => el.style.textShadow = shadow);
           document.querySelectorAll('.hero-sub').forEach(el => el.style.textShadow = `0 0 ${Math.round(blur*0.85)}px rgba(255,255,255,${Math.min(1,opacity+0.15)}), 0 0 ${blur*2}px rgba(255,255,255,${opacity*0.8})`);
+          const btnGlow = `0 0 ${Math.round(blur*0.7)}px rgba(255,255,255,${Math.min(1,opacity*0.9)}), 0 0 ${blur*1.5}px rgba(255,255,255,${opacity*0.6})`;
+          document.querySelectorAll('.hero-btn-learn, .hero-btn-signup').forEach(el => el.style.boxShadow = btnGlow);
         } else {
           document.querySelectorAll('.hero-hl > span, .hero-sub').forEach(el => el.style.textShadow = 'none');
+          document.querySelectorAll('.hero-btn-learn, .hero-btn-signup').forEach(el => el.style.boxShadow = 'none');
         }
         // Wavy underline glow — driven via CSS custom properties
         document.documentElement.style.setProperty('--hero-glow-r', Math.round(blur * 0.35) + 'px');
