@@ -508,6 +508,11 @@
 
   <section class="stats">
     <div class="stat">
+      <div style="font-size:28px;margin-bottom:6px;">🧑‍🤝‍🧑</div>
+      <div class="stat-number" id="member-count" style="min-width:60px;">—</div>
+      <div class="stat-label"><span class="en">Members &amp; Growing</span><span class="es">Miembros y Creciendo</span></div>
+    </div>
+    <div class="stat">
       <div style="font-size:28px;margin-bottom:6px;">📍</div>
       <div class="stat-number">Willis, TX</div>
       <div class="stat-label"><span class="en">Local Impact</span><span class="es">Impacto Local</span></div>
@@ -701,7 +706,11 @@
 
   <section class="signup" id="signup">
     <h2><span class="en">Join Today</span><span class="es">Únete Hoy</span></h2>
-    <p><span class="en">Free to join. Be part of the movement to prevent litter in Willis.</span><span class="es">Gratis para unirse. Sé parte del movimiento para prevenir la basura en Willis.</span></p>
+    <p>
+      <span class="en">Free to join. Be part of the movement to prevent litter in Willis.</span>
+      <span class="es">Gratis para unirse. Sé parte del movimiento para prevenir la basura en Willis.</span>
+    </p>
+    <p id="signup-social-proof" style="font-size:14px;font-weight:700;color:#1A6B2F;text-align:center;margin:-8px 0 20px;min-height:20px;"></p>
 
     <div class="form-row">
       <div class="form-group">
@@ -745,13 +754,13 @@
     <div class="form-group">
       <label><span class="en">How did you hear about us?</span><span class="es">¿Cómo nos conociste?</span></label>
       <select id="signup-referral-type">
-        <option value="">Select one...</option>
-        <option value="friend"><span class="en">A friend referred me</span></option>
-        <option value="social">Social media</option>
-        <option value="event">Community event</option>
-        <option value="school">School</option>
-        <option value="flyer">Flyer or brochure</option>
-        <option value="other">Other</option>
+        <option value=""       data-en="Select one..."      data-es="Selecciona una...">Select one...</option>
+        <option value="friend" data-en="A friend referred me" data-es="Un amigo me recomendó">A friend referred me</option>
+        <option value="social" data-en="Social media"       data-es="Redes sociales">Social media</option>
+        <option value="event"  data-en="Community event"   data-es="Evento comunitario">Community event</option>
+        <option value="school" data-en="School"            data-es="Escuela">School</option>
+        <option value="flyer"  data-en="Flyer or brochure" data-es="Volante o folleto">Flyer or brochure</option>
+        <option value="other"  data-en="Other"             data-es="Otro">Other</option>
       </select>
     </div>
     <div class="form-group" id="referral-name-group" style="display:none">
@@ -876,6 +885,34 @@
     'https://elgzfppmlsrrmskgloeo.supabase.co',
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
   );
+
+  // Live member counter
+  (async function() {
+    const el = document.getElementById('member-count');
+    const proof = document.getElementById('signup-social-proof');
+    try {
+      const { count } = await _sb.from('signups').select('*', { count: 'exact', head: true });
+      if (count == null) return;
+      // Animate counter
+      const target = count;
+      const dur = 1200;
+      const start = performance.now();
+      function tick(now) {
+        const pct = Math.min(1, (now - start) / dur);
+        const val = Math.round(pct * pct * target); // ease-in-quad
+        if (el) el.textContent = val.toLocaleString();
+        if (pct < 1) requestAnimationFrame(tick);
+        else if (el) el.textContent = target.toLocaleString();
+      }
+      requestAnimationFrame(tick);
+      // Social proof text below sign-up form
+      if (proof && target > 0) {
+        proof.innerHTML =
+          `<span class="en">Join ${target.toLocaleString()} neighbors already signed up!</span>` +
+          `<span class="es">¡Únete a ${target.toLocaleString()} vecinos que ya se registraron!</span>`;
+      }
+    } catch(e) { /* non-critical — leave placeholder */ }
+  })();
 
   // Load parallax background images from site settings
   (async function() {
@@ -1024,42 +1061,111 @@
       this.value === 'friend' ? 'block' : 'none';
   });
 
+  // Bilingual helper — reads body class at call time (not captured at load)
+  function _t(en, es) { return document.body.classList.contains('spanish') ? es : en; }
+
+  // Update referral dropdown text when language changes
+  function _syncReferralLang() {
+    const isEs = document.body.classList.contains('spanish');
+    document.querySelectorAll('#signup-referral-type option').forEach(opt => {
+      const txt = isEs ? opt.dataset.es : opt.dataset.en;
+      if (txt) opt.textContent = txt;
+    });
+  }
+  // Sync on load and whenever buildNav() switches language
+  _syncReferralLang();
+  document.addEventListener('lpn-lang-change', _syncReferralLang);
+
+  // Update input placeholders for active language
+  function _syncPlaceholders() {
+    const isEs = document.body.classList.contains('spanish');
+    const ph = {
+      'first-name':         isEs ? 'Nombre'        : 'First name',
+      'last-name':          isEs ? 'Apellido'       : 'Last name',
+      'signup-email':       isEs ? 'tu@correo.com'  : 'you@email.com',
+      'signup-age':         isEs ? 'Tu edad'        : 'Your age',
+      'signup-zip':         'ZIP / Código Postal',
+      'signup-phone':       isEs ? 'xxx-xxx-xxxx'   : 'xxx-xxx-xxxx',
+      'signup-referral-name': isEs ? 'Nombre o # de miembro' : 'Name or member #',
+    };
+    Object.entries(ph).forEach(([id, text]) => {
+      const el = document.getElementById(id);
+      if (el) el.placeholder = text;
+    });
+  }
+  _syncPlaceholders();
+  document.addEventListener('lpn-lang-change', _syncPlaceholders);
+
   document.getElementById('signup-btn').addEventListener('click', async () => {
-    const first_name = document.getElementById('first-name').value.trim();
-    const last_name = document.getElementById('last-name').value.trim();
-    const email = document.getElementById('signup-email').value.trim();
-    const age = document.getElementById('signup-age').value.trim();
-    const zip_code = document.getElementById('signup-zip').value.trim();
-    const phone = document.getElementById('signup-phone').value.trim();
+    const first_name    = document.getElementById('first-name').value.trim();
+    const last_name     = document.getElementById('last-name').value.trim();
+    const email         = document.getElementById('signup-email').value.trim();
+    const age           = document.getElementById('signup-age').value.trim();
+    const zip_code      = document.getElementById('signup-zip').value.trim();
+    const phone         = document.getElementById('signup-phone').value.trim();
     const referral_type = document.getElementById('signup-referral-type').value;
     const referral_name = document.getElementById('signup-referral-name').value.trim();
-    const language = document.getElementById('signup-language').value;
-    const full_name = `${first_name} ${last_name}`.trim();
+    const langRaw       = document.getElementById('signup-language').value;
+    // Normalize language to 'en' or 'es' for clean DB storage
+    const language      = langRaw === 'Español' ? 'es' : 'en';
+    const full_name     = `${first_name} ${last_name}`.trim();
 
-    if (!first_name || !email) { alert('Please enter your name and email.'); return; }
+    if (!first_name || !email) {
+      alert(_t(
+        'Please enter your first name and email address.',
+        'Por favor ingresa tu nombre y correo electrónico.'
+      ));
+      return;
+    }
 
     // Enforce parental consent for minors
     const ageNum = parseInt(age);
     if (age && !isNaN(ageNum) && ageNum < 18) {
       if (!document.getElementById('parental-consent').checked) {
-        alert('A parent or guardian must check the consent box before registering a minor.');
+        alert(_t(
+          'A parent or guardian must check the consent box before registering a minor.',
+          'Un padre o tutor debe marcar la casilla de consentimiento antes de registrar a un menor.'
+        ));
         return;
       }
     }
 
+    const btn = document.getElementById('signup-btn');
+    btn.disabled = true;
+    btn.textContent = _t('Submitting…', 'Enviando…');
+
     const { error } = await _sb.from('signups').insert([{
       full_name, email, zip_code, language, phone,
       age: age ? parseInt(age) : null,
-      referral_type, referral_name
+      referral_type, referral_name,
     }]);
 
-    if (error) { alert('Something went wrong. Please try again.'); console.error(error); }
-    else {
+    if (error) {
+      console.error('Signup error:', error);
+      btn.disabled = false;
+      btn.innerHTML = `<span class="en">Create My Account</span><span class="es">Crear Mi Cuenta</span>`;
+      // Duplicate email is the most common non-bug error
+      const isDupe = error.message?.toLowerCase().includes('duplicate') ||
+                     error.message?.toLowerCase().includes('unique') ||
+                     error.code === '23505';
+      alert(isDupe
+        ? _t('That email is already registered. Try signing in instead.',
+             'Ese correo ya está registrado. Intenta iniciar sesión.')
+        : _t('Something went wrong — please try again in a moment.',
+             'Algo salió mal — por favor intenta de nuevo en un momento.')
+      );
+    } else {
       document.querySelector('.signup').innerHTML = `
         <div style="text-align:center;padding:40px 20px">
-          <div style="font-size:60px;margin-bottom:16px">🎉</div>
-          <h2 style="font-size:28px;margin-bottom:12px;color:#1D9E75;font-family:'Outfit',sans-serif;">You're in!</h2>
-          <p style="color:#555;font-size:16px;line-height:1.7">Welcome to the Litter Prevention Network.<br>We'll be in touch soon with ways to get involved.</p>
+          <div style="font-size:64px;margin-bottom:16px">🎉</div>
+          <h2 style="font-size:28px;margin-bottom:12px;color:#1D9E75;font-family:'Outfit',sans-serif;">
+            <span class="en">You're in!</span>
+            <span class="es">¡Ya eres parte!</span>
+          </h2>
+          <p style="color:#555;font-size:16px;line-height:1.7">
+            <span class="en">Welcome to the Litter Prevention Network.<br>We'll be in touch soon with ways to get involved.</span>
+            <span class="es">Bienvenido a la Red de Prevención de Basura.<br>Pronto nos pondremos en contacto contigo con formas de participar.</span>
+          </p>
         </div>`;
     }
   });

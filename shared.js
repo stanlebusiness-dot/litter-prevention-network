@@ -29,6 +29,7 @@ function setLang(lang) {
     document.body.classList.remove('spanish');
     document.querySelectorAll('.lang-bar button')[0].classList.add('active');
   }
+  document.dispatchEvent(new CustomEvent('lpn-lang-change', { detail: { lang } }));
 }
 (function() { const saved = localStorage.getItem('lpn-lang'); if (saved) setLang(saved); })();
 
