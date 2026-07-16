@@ -1068,6 +1068,10 @@
   // Applies a config object (from Supabase homepage_config table,
   // localStorage cache, or admin postMessage) to the live DOM.
 
+  // True when running inside the admin iframe preview — drag system
+  // owns hero positioning here, applyHomepageConfig must not touch it.
+  const _LPN_ADMIN_PREVIEW = new URLSearchParams(location.search).get('admin-preview') === '1';
+
   const _HP_SECTION_MAP = {
     feature_strip: '.feature-strip-wrap',
     donate_bar:    '#donate-bar',
@@ -1193,41 +1197,41 @@
     }
 
     // ── Per-element hero layout (free drag positioning) ────
-    // Only applied when heroLayoutEnabled:true — prevents stale positions from a
-    // previous config version from breaking the default flow layout.
-    const _heroLayout    = (cfg.heroLayoutEnabled && cfg.heroLayout) ? cfg.heroLayout : {};
-    const _heroInner     = document.querySelector('.hero-inner');
-    const _heroCol       = document.querySelector('.hero-text-col');
-    const _dragKeys      = ['headline','subtitle','btns','joinUs'];
-    const _anyPositioned = _dragKeys.some(k => _heroLayout[k]?.x != null);
+    // Admin-preview: _initDragLayout() owns ALL hero positioning — skip here
+    // entirely so a partial heroLayout (only one element moved) never breaks flow.
+    // Live site: only activate if EVERY draggable element has a saved position,
+    // so a partial save can never cause elements to pile up in an unstyled container.
+    if (!_LPN_ADMIN_PREVIEW) {
+      const _heroLayout    = (cfg.heroLayoutEnabled && cfg.heroLayout) ? cfg.heroLayout : {};
+      const _heroInner     = document.querySelector('.hero-inner');
+      const _heroCol       = document.querySelector('.hero-text-col');
+      const _dragKeys      = ['headline','subtitle','btns','joinUs'];
+      const _allPositioned = _dragKeys.every(k => _heroLayout[k]?.x != null);
 
-    if (_heroInner) _heroInner.style.cssText = _anyPositioned
-      ? 'position:absolute;inset:0;width:auto;height:auto;display:block;pointer-events:none;'
-      : '';
-    if (_heroCol) _heroCol.style.cssText = _anyPositioned
-      ? 'position:absolute;inset:0;width:auto;height:auto;padding:0;pointer-events:none;'
-      : '';
+      if (_heroInner) _heroInner.style.cssText = _allPositioned
+        ? 'position:absolute;inset:0;width:auto;height:auto;display:block;pointer-events:none;'
+        : '';
+      if (_heroCol) _heroCol.style.cssText = _allPositioned
+        ? 'position:absolute;inset:0;width:auto;height:auto;padding:0;pointer-events:none;'
+        : '';
 
-    _dragKeys.forEach(key => {
-      const el  = document.querySelector('[data-hp-drag="'+key+'"]');
-      if (!el) return;
-      const pos = _heroLayout[key];
-      if (pos && pos.x != null) {
-        el.style.position     = 'absolute';
-        el.style.left         = pos.x + '%';
-        el.style.top          = pos.y + '%';
-        el.style.zIndex       = '10';
-        el.style.margin       = '0';
-        el.style.pointerEvents= 'all';
-      } else {
-        el.style.position      = '';
-        el.style.left          = '';
-        el.style.top           = '';
-        el.style.zIndex        = '';
-        el.style.margin        = '';
-        el.style.pointerEvents = '';
-      }
-    });
+      _dragKeys.forEach(key => {
+        const el = document.querySelector('[data-hp-drag="'+key+'"]');
+        if (!el) return;
+        const pos = _allPositioned ? _heroLayout[key] : null;
+        if (pos) {
+          el.style.position      = 'absolute';
+          el.style.left          = pos.x + '%';
+          el.style.top           = pos.y + '%';
+          el.style.zIndex        = '10';
+          el.style.margin        = '0';
+          el.style.pointerEvents = 'all';
+        } else {
+          el.style.position = el.style.left = el.style.top = '';
+          el.style.zIndex   = el.style.margin = el.style.pointerEvents = '';
+        }
+      });
+    }
 
     // ── Per-element text style ─────────────────────────────
     const _textStyle = cfg.heroTextStyle || {};
@@ -1396,22 +1400,42 @@
   });
 
   // ── Admin preview drag system ───────────────────────────────
-  if (new URLSearchParams(location.search).get('admin-preview') === '1') {
+  if (_LPN_ADMIN_PREVIEW) {
     document.body.classList.add('admin-preview');
 
-    const _DRAG_KEYS = ['headline', 'subtitle', 'btns', 'joinUs'];
-    let _activeDrag  = null;
+    const _DRAG_KEYS  = ['headline', 'subtitle', 'btns', 'joinUs'];
+    let   _activeDrag = null;
+    // Tracks whatever positions the admin has saved so far for this session.
+    // Updated whenever a new config arrives via postMessage.
+    let   _savedLayout = {};
 
-    // Called after every applyHomepageConfig in admin-preview mode.
-    // Locks ALL draggable elements to position:absolute so document flow
-    // never reflows when one element is moved.
+    // _initDragLayout — the single source of truth for admin-preview positioning.
+    // Steps: (1) measure all elements in their CURRENT rendered state,
+    //        (2) set containers to absolute full-coverage,
+    //        (3) pin every element — using saved position if the admin already
+    //            moved it, otherwise the live-measured position.
+    // This means NO element ever stays in flow, so moving one can never
+    // reflow its siblings.
     function _initDragLayout() {
       const hero  = document.querySelector('.hero');
       const inner = document.querySelector('.hero-inner');
       const col   = document.querySelector('.hero-text-col');
       if (!hero) return;
 
-      // Expand containers to cover the full hero
+      // Step 1: measure BEFORE touching any styles
+      const hr = hero.getBoundingClientRect();
+      const snapshots = {};
+      _DRAG_KEYS.forEach(key => {
+        const el = document.querySelector('[data-hp-drag="' + key + '"]');
+        if (!el) return;
+        const er = el.getBoundingClientRect();
+        snapshots[key] = {
+          x: +((er.left - hr.left) / hr.width  * 100).toFixed(1),
+          y: +((er.top  - hr.top)  / hr.height * 100).toFixed(1),
+        };
+      });
+
+      // Step 2: set containers — AFTER measuring so snapshots are from natural flow
       if (inner) inner.style.cssText =
         'position:absolute;inset:0;width:auto;height:auto;' +
         'display:block;pointer-events:none;z-index:5;';
@@ -1419,68 +1443,65 @@
         'position:absolute;inset:0;width:auto;height:auto;' +
         'padding:0;gap:0;pointer-events:none;';
 
-      // Snapshot every drag element at its current rendered position,
-      // then pin it there with position:absolute — all at once so no
-      // sibling ever reflows.
-      const hr = hero.getBoundingClientRect();
+      // Step 3: pin every element — saved position wins, otherwise snapshot
       _DRAG_KEYS.forEach(key => {
         const el = document.querySelector('[data-hp-drag="' + key + '"]');
         if (!el) return;
-        if (el.style.position !== 'absolute') {
-          const er = el.getBoundingClientRect();
-          el.style.cssText += [
-            ';position:absolute',
-            'margin:0',
-            'z-index:10',
-            'pointer-events:all',
-            'left:' + ((er.left - hr.left) / hr.width  * 100).toFixed(1) + '%',
-            'top:'  + ((er.top  - hr.top)  / hr.height * 100).toFixed(1) + '%',
-          ].join(';');
-        }
+        const pos = _savedLayout[key] || snapshots[key] || { x: 5, y: 10 };
+        el.style.position      = 'absolute';
+        el.style.left          = pos.x + '%';
+        el.style.top           = pos.y + '%';
+        el.style.margin        = '0';
+        el.style.zIndex        = '10';
+        el.style.pointerEvents = 'all';
       });
     }
+
+    // When the admin sends a new config, extract the heroLayout positions
+    // so _initDragLayout can use them, then re-init layout.
+    window.addEventListener('message', (e) => {
+      if (e.data?.type !== 'lpn-preview') return;
+      const cfg = e.data.config;
+      _savedLayout = (cfg?.heroLayoutEnabled && cfg?.heroLayout) ? cfg.heroLayout : _savedLayout;
+      // applyHomepageConfig already called by the earlier listener;
+      // re-init drag layout after one paint so new text/sizes are measured.
+      requestAnimationFrame(_initDragLayout);
+    });
 
     // Arrow-key nudge (1% per press) for fine placement
     document.addEventListener('keydown', (e) => {
       const focused = document.querySelector('[data-hp-drag]:focus');
       if (!focused) return;
-      const NUDGE = { ArrowLeft:'left', ArrowRight:'left', ArrowUp:'top', ArrowDown:'top' };
-      const prop  = NUDGE[e.key];
-      if (!prop) return;
+      const dirs = { ArrowLeft:['left',-1], ArrowRight:['left',1], ArrowUp:['top',-1], ArrowDown:['top',1] };
+      const dir  = dirs[e.key];
+      if (!dir) return;
       e.preventDefault();
-      const cur  = parseFloat(focused.style[prop]) || 0;
-      const next = Math.max(0, Math.min(95, cur + (e.key.includes('Right') || e.key.includes('Down') ? 1 : -1)));
+      const [prop, delta] = dir;
+      const next = Math.max(0, Math.min(95, (parseFloat(focused.style[prop]) || 0) + delta));
       focused.style[prop] = next + '%';
       const hr = document.querySelector('.hero').getBoundingClientRect();
       const er = focused.getBoundingClientRect();
       const x  = +((er.left - hr.left) / hr.width  * 100).toFixed(1);
       const y  = +((er.top  - hr.top)  / hr.height * 100).toFixed(1);
+      _savedLayout[focused.dataset.hpDrag] = { x, y };
       window.parent.postMessage({ type: 'lpn-pos-update', key: focused.dataset.hpDrag, x, y }, '*');
     });
 
-    // Pointer-event drag — captures pointer for clean cross-element moves
+    // Pointer-event drag with setPointerCapture for reliable tracking
     document.addEventListener('pointerdown', (e) => {
       const el = e.target.closest('[data-hp-drag]');
       if (!el) return;
       e.preventDefault();
       const hero = document.querySelector('.hero');
-      const hr   = hero.getBoundingClientRect();
       const er   = el.getBoundingClientRect();
-
       el.setPointerCapture(e.pointerId);
       el.style.cursor     = 'grabbing';
       el.style.userSelect = 'none';
-      el.style.zIndex     = '20';  // float above siblings while dragging
+      el.style.zIndex     = '20';
       el.setAttribute('tabindex', '0');
       el.focus({ preventScroll: true });
-
-      _activeDrag = {
-        el,
-        key:  el.dataset.hpDrag,
-        offX: e.clientX - er.left,
-        offY: e.clientY - er.top,
-        hero,
-      };
+      _activeDrag = { el, key: el.dataset.hpDrag, hero,
+        offX: e.clientX - er.left, offY: e.clientY - er.top };
     });
 
     document.addEventListener('pointermove', (e) => {
@@ -1489,12 +1510,12 @@
       const hr = hero.getBoundingClientRect();
       const x  = Math.max(0, Math.min(95, ((e.clientX - offX - hr.left) / hr.width)  * 100));
       const y  = Math.max(0, Math.min(95, ((e.clientY - offY - hr.top)  / hr.height) * 100));
-      // Update visual position only — NO postMessage until drag ends
+      // Visual update only — no postMessage mid-drag
       el.style.left = x + '%';
       el.style.top  = y + '%';
     });
 
-    document.addEventListener('pointerup', (e) => {
+    document.addEventListener('pointerup', () => {
       if (!_activeDrag) return;
       const { el, key, hero } = _activeDrag;
       el.style.cursor     = '';
@@ -1504,21 +1525,12 @@
       const er = el.getBoundingClientRect();
       const x  = +Math.max(0, Math.min(95, ((er.left - hr.left) / hr.width)  * 100)).toFixed(1);
       const y  = +Math.max(0, Math.min(95, ((er.top  - hr.top)  / hr.height) * 100)).toFixed(1);
-      // postMessage only on drag END — never mid-drag
+      _savedLayout[key] = { x, y };
       window.parent.postMessage({ type: 'lpn-pos-update', key, x, y }, '*');
       _activeDrag = null;
     });
 
-    // Wire _initDragLayout to run after every config application.
-    // Wrap the existing postMessage handler so we also init after each preview update.
-    const _origMsg = window.onmessage;
-    window.addEventListener('message', (e) => {
-      if (e.data?.type === 'lpn-preview') {
-        requestAnimationFrame(_initDragLayout);
-      }
-    });
-
-    // Run once after initial page render so elements are pre-locked to absolute
+    // Initial layout lock — double rAF so the first paint has settled
     requestAnimationFrame(() => requestAnimationFrame(_initDragLayout));
   }
 
