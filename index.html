@@ -132,6 +132,13 @@
       backdrop-filter: blur(2px);
     }
     .hero-btns { display: flex; flex-direction: row; gap: 14px; flex-wrap: wrap; }
+    .hero-member-badge {
+      margin: 0; font-size: 14px; font-weight: 600; color: #1a3a10;
+      background: rgba(255,255,255,0.78); border-radius: 20px;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 14px; width: fit-content;
+    }
+    .hero-member-badge strong { font-size: 16px; color: #1A6B2F; }
     /* In admin preview: draggable elements show grab cursor */
     body.admin-preview [data-hp-drag] { cursor: grab; }
     body.admin-preview [data-hp-drag]:active { cursor: grabbing; }
@@ -407,6 +414,10 @@
           <a href="about.html" class="hero-btn-learn"><span class="en">Learn More</span><span class="es">Aprender Más</span></a>
           <a href="#signup" class="hero-btn-signup"><span class="en">Sign Up Today!</span><span class="es">¡Regístrate Hoy!</span></a>
         </div>
+        <p class="hero-member-badge">
+          🧑‍🤝‍🧑 <strong id="hero-member-count">—</strong>
+          <span class="en">neighbors joined</span><span class="es">vecinos se unieron</span>
+        </p>
         <a id="hero-join-btn" class="hero-join-btn" data-hp-drag="joinUs" href="volunteer.html">
           <span class="en">Join Us</span>
           <span class="es">Únete</span>
@@ -888,24 +899,29 @@
 
   // Live member counter
   (async function() {
-    const el = document.getElementById('member-count');
-    const proof = document.getElementById('signup-social-proof');
+    const statEl  = document.getElementById('member-count');
+    const heroEl  = document.getElementById('hero-member-count');
+    const proof   = document.getElementById('signup-social-proof');
     try {
       const { count } = await _sb.from('signups').select('*', { count: 'exact', head: true });
       if (count == null) return;
-      // Animate counter
       const target = count;
       const dur = 1200;
       const start = performance.now();
       function tick(now) {
         const pct = Math.min(1, (now - start) / dur);
-        const val = Math.round(pct * pct * target); // ease-in-quad
-        if (el) el.textContent = val.toLocaleString();
+        const val = Math.round(pct * pct * target);
+        const str = val.toLocaleString();
+        if (statEl) statEl.textContent = str;
+        if (heroEl) heroEl.textContent = str;
         if (pct < 1) requestAnimationFrame(tick);
-        else if (el) el.textContent = target.toLocaleString();
+        else {
+          const final = target.toLocaleString();
+          if (statEl) statEl.textContent = final;
+          if (heroEl) heroEl.textContent = final;
+        }
       }
       requestAnimationFrame(tick);
-      // Social proof text below sign-up form
       if (proof && target > 0) {
         proof.innerHTML =
           `<span class="en">Join ${target.toLocaleString()} neighbors already signed up!</span>` +
