@@ -39,6 +39,12 @@
       z-index: 0;
       display: block;
     }
+    /* Z-index scale (all within .hero stacking context):
+       0  = background photo
+       1-4 = decorative overlays (capped at 4 in admin)
+       5  = hero-inner (text + buttons — always above overlays)
+       6  = swoop divider
+       Content inside hero-inner uses its own sub-scale (1-10). */
     .hero-inner {
       display: flex;
       align-items: stretch;
@@ -46,7 +52,7 @@
       margin: 0;
       padding: 0;
       position: relative;
-      z-index: 1;
+      z-index: 5;
     }
     /* Left-side scrim: ensures text reads over any background photo */
     .hero-inner::before {
@@ -172,7 +178,7 @@
       bottom: -1px;
       line-height: 0;
       pointer-events: none;
-      z-index: 2;
+      z-index: 6;
     }
     .hero-swoop svg {
       display: block;
@@ -1298,12 +1304,14 @@
       const scaleX = ov.flipH ? -1 : 1;
       const scaleY = ov.flipV ? -1 : 1;
       const transform = (scaleX === -1 || scaleY === -1) ? `scale(${scaleX},${scaleY})` : 'none';
+      // Cap overlay z-index at 4 — hero-inner is z-index:5, so content is always above overlays.
+      const ovZ = Math.min(4, Math.max(0, ov.zIndex ?? 2));
       div.style.cssText = [
         'position:absolute',
         target.edge === 'bottom' ? 'bottom:-1px;left:0;right:0' : 'top:-1px;left:0;right:0',
         `width:${ov.width || '100%'}`,
         ov.height && ov.height !== 'auto' ? `height:${ov.height}` : '',
-        `z-index:${ov.zIndex ?? 2}`,
+        `z-index:${ovZ}`,
         `opacity:${ov.opacity ?? 1}`,
         'pointer-events:none',
         'line-height:0',
@@ -1387,76 +1395,131 @@
     if (e.data?.type === 'lpn-preview') applyHomepageConfig(e.data.config);
   });
 
-  // Drag-to-position in admin preview mode
+  // ── Admin preview drag system ───────────────────────────────
   if (new URLSearchParams(location.search).get('admin-preview') === '1') {
     document.body.classList.add('admin-preview');
-    let _drag = null;
 
-    document.addEventListener('mousedown', (e) => {
+    const _DRAG_KEYS = ['headline', 'subtitle', 'btns', 'joinUs'];
+    let _activeDrag  = null;
+
+    // Called after every applyHomepageConfig in admin-preview mode.
+    // Locks ALL draggable elements to position:absolute so document flow
+    // never reflows when one element is moved.
+    function _initDragLayout() {
+      const hero  = document.querySelector('.hero');
+      const inner = document.querySelector('.hero-inner');
+      const col   = document.querySelector('.hero-text-col');
+      if (!hero) return;
+
+      // Expand containers to cover the full hero
+      if (inner) inner.style.cssText =
+        'position:absolute;inset:0;width:auto;height:auto;' +
+        'display:block;pointer-events:none;z-index:5;';
+      if (col) col.style.cssText =
+        'position:absolute;inset:0;width:auto;height:auto;' +
+        'padding:0;gap:0;pointer-events:none;';
+
+      // Snapshot every drag element at its current rendered position,
+      // then pin it there with position:absolute — all at once so no
+      // sibling ever reflows.
+      const hr = hero.getBoundingClientRect();
+      _DRAG_KEYS.forEach(key => {
+        const el = document.querySelector('[data-hp-drag="' + key + '"]');
+        if (!el) return;
+        if (el.style.position !== 'absolute') {
+          const er = el.getBoundingClientRect();
+          el.style.cssText += [
+            ';position:absolute',
+            'margin:0',
+            'z-index:10',
+            'pointer-events:all',
+            'left:' + ((er.left - hr.left) / hr.width  * 100).toFixed(1) + '%',
+            'top:'  + ((er.top  - hr.top)  / hr.height * 100).toFixed(1) + '%',
+          ].join(';');
+        }
+      });
+    }
+
+    // Arrow-key nudge (1% per press) for fine placement
+    document.addEventListener('keydown', (e) => {
+      const focused = document.querySelector('[data-hp-drag]:focus');
+      if (!focused) return;
+      const NUDGE = { ArrowLeft:'left', ArrowRight:'left', ArrowUp:'top', ArrowDown:'top' };
+      const prop  = NUDGE[e.key];
+      if (!prop) return;
+      e.preventDefault();
+      const cur  = parseFloat(focused.style[prop]) || 0;
+      const next = Math.max(0, Math.min(95, cur + (e.key.includes('Right') || e.key.includes('Down') ? 1 : -1)));
+      focused.style[prop] = next + '%';
+      const hr = document.querySelector('.hero').getBoundingClientRect();
+      const er = focused.getBoundingClientRect();
+      const x  = +((er.left - hr.left) / hr.width  * 100).toFixed(1);
+      const y  = +((er.top  - hr.top)  / hr.height * 100).toFixed(1);
+      window.parent.postMessage({ type: 'lpn-pos-update', key: focused.dataset.hpDrag, x, y }, '*');
+    });
+
+    // Pointer-event drag — captures pointer for clean cross-element moves
+    document.addEventListener('pointerdown', (e) => {
       const el = e.target.closest('[data-hp-drag]');
       if (!el) return;
       e.preventDefault();
-      const hero  = document.querySelector('.hero');
-      const hr    = hero.getBoundingClientRect();
-      const er    = el.getBoundingClientRect();
-      const key   = el.dataset.hpDrag;
+      const hero = document.querySelector('.hero');
+      const hr   = hero.getBoundingClientRect();
+      const er   = el.getBoundingClientRect();
 
-      // Ensure hero-inner and hero-text-col cover full hero so dragging works anywhere
-      const inner = document.querySelector('.hero-inner');
-      const col   = document.querySelector('.hero-text-col');
-      if (inner && !inner.style.position) {
-        inner.style.cssText = 'position:absolute;inset:0;width:auto;height:auto;display:block;pointer-events:none;';
-      }
-      if (col && !col.style.position) {
-        col.style.cssText = 'position:absolute;inset:0;width:auto;height:auto;padding:0;pointer-events:none;';
-      }
-
-      // Snap to absolute if not already
-      if (el.style.position !== 'absolute') {
-        const curLeft = (er.left - hr.left) / hr.width * 100;
-        const curTop  = (er.top  - hr.top)  / hr.height * 100;
-        el.style.position     = 'absolute';
-        el.style.left         = curLeft + '%';
-        el.style.top          = curTop  + '%';
-        el.style.margin       = '0';
-        el.style.zIndex       = '10';
-        el.style.pointerEvents = 'all';
-      }
-
-      _drag = {
-        el, key, hero,
-        offX: e.clientX - el.getBoundingClientRect().left,
-        offY: e.clientY - el.getBoundingClientRect().top,
-      };
-      el.style.cursor    = 'grabbing';
+      el.setPointerCapture(e.pointerId);
+      el.style.cursor     = 'grabbing';
       el.style.userSelect = 'none';
+      el.style.zIndex     = '20';  // float above siblings while dragging
+      el.setAttribute('tabindex', '0');
+      el.focus({ preventScroll: true });
+
+      _activeDrag = {
+        el,
+        key:  el.dataset.hpDrag,
+        offX: e.clientX - er.left,
+        offY: e.clientY - er.top,
+        hero,
+      };
     });
 
-    document.addEventListener('mousemove', (e) => {
-      if (!_drag) return;
-      const { el, hero, offX, offY } = _drag;
+    document.addEventListener('pointermove', (e) => {
+      if (!_activeDrag) return;
+      const { el, hero, offX, offY } = _activeDrag;
       const hr = hero.getBoundingClientRect();
       const x  = Math.max(0, Math.min(95, ((e.clientX - offX - hr.left) / hr.width)  * 100));
       const y  = Math.max(0, Math.min(95, ((e.clientY - offY - hr.top)  / hr.height) * 100));
+      // Update visual position only — NO postMessage until drag ends
       el.style.left = x + '%';
       el.style.top  = y + '%';
     });
 
-    document.addEventListener('mouseup', () => {
-      if (!_drag) return;
-      const { el, key, hero } = _drag;
-      el.style.cursor    = '';
+    document.addEventListener('pointerup', (e) => {
+      if (!_activeDrag) return;
+      const { el, key, hero } = _activeDrag;
+      el.style.cursor     = '';
       el.style.userSelect = '';
+      el.style.zIndex     = '10';
       const hr = hero.getBoundingClientRect();
       const er = el.getBoundingClientRect();
-      const x  = Math.max(0, Math.min(95, ((er.left - hr.left) / hr.width)  * 100));
-      const y  = Math.max(0, Math.min(95, ((er.top  - hr.top)  / hr.height) * 100));
-      window.parent.postMessage(
-        { type: 'lpn-pos-update', key, x: +x.toFixed(1), y: +y.toFixed(1) },
-        '*'
-      );
-      _drag = null;
+      const x  = +Math.max(0, Math.min(95, ((er.left - hr.left) / hr.width)  * 100)).toFixed(1);
+      const y  = +Math.max(0, Math.min(95, ((er.top  - hr.top)  / hr.height) * 100)).toFixed(1);
+      // postMessage only on drag END — never mid-drag
+      window.parent.postMessage({ type: 'lpn-pos-update', key, x, y }, '*');
+      _activeDrag = null;
     });
+
+    // Wire _initDragLayout to run after every config application.
+    // Wrap the existing postMessage handler so we also init after each preview update.
+    const _origMsg = window.onmessage;
+    window.addEventListener('message', (e) => {
+      if (e.data?.type === 'lpn-preview') {
+        requestAnimationFrame(_initDragLayout);
+      }
+    });
+
+    // Run once after initial page render so elements are pre-locked to absolute
+    requestAnimationFrame(() => requestAnimationFrame(_initDragLayout));
   }
 
   // ── Load leadership from Supabase ────────────────────────

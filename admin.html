@@ -832,6 +832,12 @@
 
           <!-- Active overlays list -->
           <div id="hp-active-ovs"></div>
+
+          <!-- Layers reference -->
+          <div style="margin-top:20px;padding:14px;background:#f7f9f7;border-radius:10px;border:1px solid #e0ece4;">
+            <p style="font-size:12px;font-weight:700;color:#1A6B2F;margin:0 0 10px;letter-spacing:0.4px;">📐 HERO LAYER ORDER (bottom → top)</p>
+            <div id="hp-layers-list" style="display:flex;flex-direction:column;gap:6px;font-size:12px;"></div>
+          </div>
         </div>
 
         <!-- Section Visibility -->
@@ -2265,6 +2271,7 @@ function initHomepageTab() {
   _buildTextFields();
   _buildHeroLayoutFields();
   loadHpConfig();
+  _renderLayersList();
   loadHpLibrary();
   loadHpHistory();
   updatePreviewScale();
@@ -2794,8 +2801,8 @@ function _renderActiveOverlays(overlays) {
           <input type="range" min="0" max="100" value="${Math.round((ov.opacity??1)*100)}"
             oninput="document.getElementById('hp-ov-op-${idx}').textContent=this.value;_hpConfig.overlays[${idx}].opacity=this.value/100;hpPreview()" /></div>
         <div class="pe-slider-row">
-          <label>Z-index — <span id="hp-ov-z-${idx}">${ov.zIndex??2}</span></label>
-          <input type="range" min="0" max="10" value="${ov.zIndex??2}"
+          <label>Z-index (0–4, below content layer) — <span id="hp-ov-z-${idx}">${Math.min(4,ov.zIndex??2)}</span></label>
+          <input type="range" min="0" max="4" value="${Math.min(4,ov.zIndex??2)}"
             oninput="document.getElementById('hp-ov-z-${idx}').textContent=this.value;_hpConfig.overlays[${idx}].zIndex=+this.value;hpPreview()" /></div>
         <div class="toggle-wrap" style="margin-bottom:8px;">
           <label class="toggle"><input type="checkbox" ${ov.flipH?'checked':''} onchange="_hpConfig.overlays[${idx}].flipH=this.checked;hpPreview()"/><span class="toggle-slider"></span></label>
@@ -2821,6 +2828,34 @@ function removeHpOv(idx) {
   _renderActiveOverlays(_hpConfig.overlays);
   hpPreview();
 }
+
+function _renderLayersList() {
+  const el = document.getElementById('hp-layers-list');
+  if (!el) return;
+  const ovs = (_hpConfig?.overlays || []).filter(o => o.active && o.section?.startsWith('hero'));
+  const rows = [
+    { z: 0,   label: '🖼 Background photo',        color: '#888' },
+    ...ovs.sort((a,b) => (a.zIndex??2)-(b.zIndex??2)).map(o => ({
+      z: Math.min(4, o.zIndex ?? 2),
+      label: `🌊 Overlay: ${o.name} (z=${Math.min(4,o.zIndex??2)})`,
+      color: '#1A6B2F',
+    })),
+    { z: 5,   label: '📝 Text &amp; buttons (z=5)', color: '#0D2B4E' },
+    { z: 6,   label: '〰 Swoop divider (z=6)',     color: '#555'   },
+  ];
+  el.innerHTML = rows.map(r => `
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="width:22px;height:22px;border-radius:4px;background:${r.color};opacity:0.18;flex-shrink:0;"></span>
+      <span style="color:${r.color};font-weight:600;">${r.label}</span>
+    </div>`).join('');
+}
+
+// Patch _renderActiveOverlays to also refresh layers panel
+const _origRenderActive = _renderActiveOverlays;
+_renderActiveOverlays = function(overlays) {
+  _origRenderActive(overlays);
+  _renderLayersList();
+};
 </script>
 
 <!-- Edit Modal -->
