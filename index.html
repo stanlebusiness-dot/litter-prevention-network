@@ -17,10 +17,10 @@
   <style>
     /* ── HOMEPAGE HERO ── */
     .hero {
-      background: linear-gradient(170deg, #7EC8E3 0%, #A8D8F0 20%, #C5E8C0 60%, #9CD68A 100%);
+      background: linear-gradient(135deg, #0e3d1c 0%, #1A6B2F 55%, #4a9e2f 100%);
       background-size: cover;
       background-position: center top;
-      min-height: 540px;
+      min-height: 580px;
       position: relative;
       z-index: 1;
       display: flex;
@@ -48,13 +48,29 @@
       position: relative;
       z-index: 1;
     }
-    /* Text overlaid on the full-bleed image */
+    /* Left-side scrim: ensures text reads over any background photo */
+    .hero-inner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg,
+        rgba(255,255,255,0.93) 0%,
+        rgba(255,255,255,0.72) 38%,
+        rgba(255,255,255,0.15) 58%,
+        transparent 72%);
+      z-index: 2;
+      pointer-events: none;
+    }
+    /* Text column — left half, vertically centered */
     .hero-text-col {
-      flex: 0 0 50%;
-      padding: 64px 40px 72px 56px;
+      flex: 0 0 auto;
+      width: 50%;
+      max-width: 520px;
+      padding: 56px 40px 64px 5vw;
       display: flex;
       flex-direction: column;
       justify-content: center;
+      gap: 20px;
       position: relative;
       z-index: 3;
     }
@@ -62,10 +78,10 @@
     .hero-hl {
       display: flex;
       flex-direction: column;
-      margin: 0 0 22px;
+      margin: 0;
       font-family: 'Outfit', sans-serif;
       font-weight: 900;
-      line-height: 1.02;
+      line-height: 1.05;
       letter-spacing: -1px;
     }
     /* Higher specificity than .hero in the injected theme CSS — keeps our layout intact */
@@ -78,15 +94,19 @@
     }
     .hero-hl > span {
       display: block;
-      -webkit-text-stroke: 3px white;
+      -webkit-text-stroke: 2px #fff;
       paint-order: stroke fill;
-      /* default white glow — overridden by admin portal via JS */
-      text-shadow: 0 0 30px rgba(255,255,255,0.75), 0 2px 20px rgba(255,255,255,0.9);
+      text-shadow:
+        0 0 8px rgba(255,255,255,0.9),
+        2px  2px 0 #fff,
+       -2px -2px 0 #fff,
+        2px -2px 0 #fff,
+       -2px  2px 0 #fff;
     }
-    .hl-see     { font-size: 52px;  color: #1A6B2F; }
-    .hl-report  { font-size: 66px;  color: #0D2B4E; }
-    .hl-clean   { font-size: 80px;  color: #1A6B2F; }
-    .hl-prevent { font-size: 94px;  color: #0D2B4E; position: relative; }
+    .hl-see     { font-size: clamp(2rem, 4vw, 52px);    color: #5A9E2F; }
+    .hl-report  { font-size: clamp(2.4rem, 5vw, 66px);  color: #1A6B2F; }
+    .hl-clean   { font-size: clamp(2.9rem, 6vw, 80px);  color: #5A9E2F; }
+    .hl-prevent { font-size: clamp(3.4rem, 7vw, 94px);  color: #1E3A5F; position: relative; }
     .hl-prevent::after {
       content: '';
       display: block;
@@ -99,11 +119,16 @@
     }
     .hero-sub {
       font-size: 17px; color: #1a1a1a; line-height: 1.65;
-      margin: 0; max-width: 220px; font-weight: 500;
-      text-shadow: 0 0 25px rgba(255,255,255,0.9), 0 0 50px rgba(255,255,255,0.7);
+      margin: 0; max-width: 420px; font-weight: 500;
+      background: rgba(255,255,255,0.82);
+      padding: 10px 14px;
+      border-radius: 10px;
+      backdrop-filter: blur(2px);
     }
-    .hero-sub-row { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
-    .hero-btns { display: flex; flex-direction: column; gap: 10px; }
+    .hero-btns { display: flex; flex-direction: row; gap: 14px; flex-wrap: wrap; }
+    /* In admin preview: draggable elements show grab cursor */
+    body.admin-preview [data-hp-drag] { cursor: grab; }
+    body.admin-preview [data-hp-drag]:active { cursor: grabbing; }
     .hero-btn-learn {
       background: #0D2B4E; color: white; padding: 13px 28px; border-radius: 50px;
       font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700;
@@ -130,17 +155,13 @@
     }
     .hero-join-btn:hover { background: #5aab1f; transform: translateY(-2px); box-shadow: 0 0 32px rgba(107,191,42,0.7), 0 6px 22px rgba(0,0,0,0.18); }
     @media (max-width: 960px) {
-      .hero-text-col { flex: none; width: 100%; padding: 48px 32px 40px; }
-      .hl-see { font-size: 38px; } .hl-report { font-size: 48px; }
-      .hl-clean { font-size: 58px; } .hl-prevent { font-size: 68px; }
+      .hero-text-col { flex: none; width: 100%; max-width: 100%; padding: 48px 32px 40px; }
+      .hero-inner::before { background: linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.7) 60%, transparent 100%); }
     }
     @media (max-width: 480px) {
       .hero-text-col { padding: 36px 20px 32px; }
-      .hl-see { font-size: 30px; -webkit-text-stroke: 2px white; }
-      .hl-report { font-size: 38px; -webkit-text-stroke: 2px white; }
-      .hl-clean  { font-size: 46px; -webkit-text-stroke: 2px white; }
-      .hl-prevent { font-size: 56px; -webkit-text-stroke: 2px white; }
       .hero-sub { font-size: 15px; max-width: 100%; }
+      .hero-btns { flex-direction: column; }
     }
 
     /* ── HERO SWOOP (river-curve SVG inside .hero, absolutely pinned to bottom) ── */
@@ -164,9 +185,18 @@
       background: var(--cream);
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      padding: 16px 32px 44px;
+      gap: 24px;
+      padding: 28px 32px 48px;
+      max-width: 1200px;
+      margin: 0 auto;
+      box-sizing: border-box;
+      width: 100%;
     }
-    .feature-item { display: flex; align-items: flex-start; gap: 16px; padding: 16px 18px; }
+    .feature-strip-wrap {
+      background: var(--cream);
+      width: 100%;
+    }
+    .feature-item { display: flex; align-items: flex-start; gap: 14px; }
     .fi-circle {
       width: 54px; height: 54px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
@@ -181,11 +211,11 @@
     .fi-title-green { color: #1A6B2F; }
     .fi-title-navy  { color: #0D2B4E; }
     .fi-desc { font-size: 13px; color: #555; line-height: 1.6; margin: 0; }
-    @media (max-width: 860px) {
+    @media (max-width: 900px) {
       .feature-strip { grid-template-columns: repeat(2, 1fr); }
     }
-    @media (max-width: 480px) {
-      .feature-strip { grid-template-columns: 1fr; padding: 12px 16px 28px; }
+    @media (max-width: 560px) {
+      .feature-strip { grid-template-columns: 1fr; padding: 16px 20px 32px; gap: 12px; }
     }
 
     /* kept for rest-of-page uses */
@@ -357,23 +387,21 @@
     <img id="trash-rangers-photo" src="data:," alt="" aria-hidden="true" />
     <div class="hero-inner">
       <div class="hero-text-col">
-        <h1 class="hero-hl">
+        <h1 class="hero-hl" data-hp-drag="headline">
           <span class="hl-see"><span class="en">See It.</span><span class="es">Véalo.</span></span>
           <span class="hl-report"><span class="en">Report It.</span><span class="es">Repórtelo.</span></span>
           <span class="hl-clean"><span class="en">Clean It.</span><span class="es">Límpielo.</span></span>
           <span class="hl-prevent"><span class="en">Prevent It.</span><span class="es">Prevénganlo.</span></span>
         </h1>
-        <div class="hero-sub-row">
-          <p class="hero-sub">
-            <span class="en">Working together to keep our streets, waterways, and wildlife clean and safe for everyone.</span>
-            <span class="es">Trabajando juntos para mantener nuestras calles, vías fluviales y vida silvestre limpias y seguras para todos.</span>
-          </p>
-          <div class="hero-btns">
-            <a href="about.html" class="hero-btn-learn"><span class="en">Learn More</span><span class="es">Aprender Más</span></a>
-            <a href="#signup" class="hero-btn-signup"><span class="en">Sign Up Today!</span><span class="es">¡Regístrate Hoy!</span></a>
-          </div>
+        <p class="hero-sub" data-hp-drag="subtitle">
+          <span class="en">Working together to keep our streets, waterways, and wildlife clean and safe for everyone.</span>
+          <span class="es">Trabajando juntos para mantener nuestras calles, vías fluviales y vida silvestre limpias y seguras para todos.</span>
+        </p>
+        <div class="hero-btns" data-hp-drag="btns">
+          <a href="about.html" class="hero-btn-learn"><span class="en">Learn More</span><span class="es">Aprender Más</span></a>
+          <a href="#signup" class="hero-btn-signup"><span class="en">Sign Up Today!</span><span class="es">¡Regístrate Hoy!</span></a>
         </div>
-        <a id="hero-join-btn" class="hero-join-btn" href="volunteer.html">
+        <a id="hero-join-btn" class="hero-join-btn" data-hp-drag="joinUs" href="volunteer.html">
           <span class="en">Join Us</span>
           <span class="es">Únete</span>
         </a>
@@ -393,6 +421,7 @@
   </section>
 
   <!-- ══ FEATURE STRIP ══ -->
+  <div class="feature-strip-wrap">
   <section class="feature-strip" aria-label="What we do">
       <div class="feature-item">
         <div class="fi-circle fi-green" aria-hidden="true">
@@ -431,6 +460,7 @@
         </div>
       </div>
   </section>
+  </div>
 
   <!-- Donate bar -->
   <div id="donate-bar" style="background:linear-gradient(135deg,#0a4a35 0%,#1D9E75 60%,#0F6E56 100%);padding:22px 40px;text-align:center;">
@@ -1033,7 +1063,7 @@
   // localStorage cache, or admin postMessage) to the live DOM.
 
   const _HP_SECTION_MAP = {
-    feature_strip: '.feature-strip',
+    feature_strip: '.feature-strip-wrap',
     donate_bar:    '#donate-bar',
     parallax_1:    '#parallax-1',
     stats:         '.stats',
@@ -1147,36 +1177,73 @@
       if (b2.color) btn2El.style.background = b2.color;
     }
 
-    // ── Button group position ──────────────────────────────
-    const btnsEl = document.querySelector('.hero-btns');
-    const subRow = document.querySelector('.hero-sub-row');
-    if (subRow && cfg.buttons) {
-      const posMode = cfg.buttons.posMode || 'flow';
-      if (posMode === 'free') {
-        subRow.style.position  = 'absolute';
-        subRow.style.left      = (cfg.buttons.xPos ?? 5) + '%';
-        subRow.style.top       = (cfg.buttons.yPos ?? 55) + '%';
-        subRow.style.zIndex    = '10';
-        subRow.style.alignSelf = '';
-        subRow.style.marginTop = '';
-      } else {
-        subRow.style.position  = '';
-        subRow.style.left      = '';
-        subRow.style.top       = '';
-        subRow.style.zIndex    = '';
-        const align = b1?.align || 'left';
-        subRow.style.alignSelf = align === 'right' ? 'flex-end' : align === 'center' ? 'center' : 'flex-start';
-        const vOff = parseInt(b1?.vOffset) || 0;
-        subRow.style.marginTop = vOff ? `clamp(0px,${Math.abs(vOff)*.05}vw,${Math.abs(vOff)}px)` : '';
-      }
-    }
     // ── Button layout (stacked vs side-by-side) ────────────
+    const btnsEl = document.querySelector('.hero-btns');
     if (btnsEl && cfg.buttons) {
       const layout = cfg.buttons.btn1?.btnLayout || cfg.buttons.btnLayout || 'column';
       btnsEl.style.flexDirection = layout === 'row' ? 'row' : 'column';
       btnsEl.style.flexWrap      = 'wrap';
       btnsEl.style.gap           = layout === 'row' ? '12px' : '10px';
     }
+
+    // ── Per-element hero layout (free drag positioning) ────
+    // Only applied when heroLayoutEnabled:true — prevents stale positions from a
+    // previous config version from breaking the default flow layout.
+    const _heroLayout    = (cfg.heroLayoutEnabled && cfg.heroLayout) ? cfg.heroLayout : {};
+    const _heroInner     = document.querySelector('.hero-inner');
+    const _heroCol       = document.querySelector('.hero-text-col');
+    const _dragKeys      = ['headline','subtitle','btns','joinUs'];
+    const _anyPositioned = _dragKeys.some(k => _heroLayout[k]?.x != null);
+
+    if (_heroInner) _heroInner.style.cssText = _anyPositioned
+      ? 'position:absolute;inset:0;width:auto;height:auto;display:block;pointer-events:none;'
+      : '';
+    if (_heroCol) _heroCol.style.cssText = _anyPositioned
+      ? 'position:absolute;inset:0;width:auto;height:auto;padding:0;pointer-events:none;'
+      : '';
+
+    _dragKeys.forEach(key => {
+      const el  = document.querySelector('[data-hp-drag="'+key+'"]');
+      if (!el) return;
+      const pos = _heroLayout[key];
+      if (pos && pos.x != null) {
+        el.style.position     = 'absolute';
+        el.style.left         = pos.x + '%';
+        el.style.top          = pos.y + '%';
+        el.style.zIndex       = '10';
+        el.style.margin       = '0';
+        el.style.pointerEvents= 'all';
+      } else {
+        el.style.position      = '';
+        el.style.left          = '';
+        el.style.top           = '';
+        el.style.zIndex        = '';
+        el.style.margin        = '';
+        el.style.pointerEvents = '';
+      }
+    });
+
+    // ── Per-element text style ─────────────────────────────
+    const _textStyle = cfg.heroTextStyle || {};
+    const _styleMap  = {
+      headline: '.hero-hl',
+      subtitle: '.hero-sub',
+      btns:     '.hero-btns',
+      joinUs:   '#hero-join-btn',
+    };
+    _dragKeys.forEach(key => {
+      const style = _textStyle[key];
+      if (!style) return;
+      const el = document.querySelector(_styleMap[key]);
+      if (!el) return;
+      if (style.fontSize)   el.style.fontSize   = style.fontSize   + 'px';
+      if (style.fontWeight) el.style.fontWeight = style.fontWeight;
+      if (style.fontFamily) el.style.fontFamily = style.fontFamily;
+      if (key === 'headline' && style.scale) {
+        el.style.transform       = 'scale(' + style.scale + ')';
+        el.style.transformOrigin = 'top left';
+      }
+    });
     // ── Join Us button config ─────────────────────────────
     if (cfg.joinUs) {
       const ju = cfg.joinUs;
@@ -1322,39 +1389,72 @@
 
   // Drag-to-position in admin preview mode
   if (new URLSearchParams(location.search).get('admin-preview') === '1') {
+    document.body.classList.add('admin-preview');
     let _drag = null;
+
     document.addEventListener('mousedown', (e) => {
-      const el = e.target.closest('.hero-sub-row');
+      const el = e.target.closest('[data-hp-drag]');
       if (!el) return;
       e.preventDefault();
-      const hero = el.closest('.hero');
-      const hr = hero.getBoundingClientRect();
-      const er = el.getBoundingClientRect();
-      _drag = { el, hero, offX: e.clientX - er.left, offY: e.clientY - er.top };
-      el.style.cursor = 'grabbing';
+      const hero  = document.querySelector('.hero');
+      const hr    = hero.getBoundingClientRect();
+      const er    = el.getBoundingClientRect();
+      const key   = el.dataset.hpDrag;
+
+      // Ensure hero-inner and hero-text-col cover full hero so dragging works anywhere
+      const inner = document.querySelector('.hero-inner');
+      const col   = document.querySelector('.hero-text-col');
+      if (inner && !inner.style.position) {
+        inner.style.cssText = 'position:absolute;inset:0;width:auto;height:auto;display:block;pointer-events:none;';
+      }
+      if (col && !col.style.position) {
+        col.style.cssText = 'position:absolute;inset:0;width:auto;height:auto;padding:0;pointer-events:none;';
+      }
+
+      // Snap to absolute if not already
+      if (el.style.position !== 'absolute') {
+        const curLeft = (er.left - hr.left) / hr.width * 100;
+        const curTop  = (er.top  - hr.top)  / hr.height * 100;
+        el.style.position     = 'absolute';
+        el.style.left         = curLeft + '%';
+        el.style.top          = curTop  + '%';
+        el.style.margin       = '0';
+        el.style.zIndex       = '10';
+        el.style.pointerEvents = 'all';
+      }
+
+      _drag = {
+        el, key, hero,
+        offX: e.clientX - el.getBoundingClientRect().left,
+        offY: e.clientY - el.getBoundingClientRect().top,
+      };
+      el.style.cursor    = 'grabbing';
       el.style.userSelect = 'none';
     });
+
     document.addEventListener('mousemove', (e) => {
       if (!_drag) return;
       const { el, hero, offX, offY } = _drag;
       const hr = hero.getBoundingClientRect();
-      const x = Math.max(0, Math.min(90, ((e.clientX - offX - hr.left) / hr.width) * 100));
-      const y = Math.max(0, Math.min(90, ((e.clientY - offY - hr.top)  / hr.height) * 100));
-      el.style.position = 'absolute';
-      el.style.left     = x + '%';
-      el.style.top      = y + '%';
-      el.style.zIndex   = '10';
+      const x  = Math.max(0, Math.min(95, ((e.clientX - offX - hr.left) / hr.width)  * 100));
+      const y  = Math.max(0, Math.min(95, ((e.clientY - offY - hr.top)  / hr.height) * 100));
+      el.style.left = x + '%';
+      el.style.top  = y + '%';
     });
-    document.addEventListener('mouseup', (e) => {
+
+    document.addEventListener('mouseup', () => {
       if (!_drag) return;
-      const { el, hero } = _drag;
-      el.style.cursor = '';
+      const { el, key, hero } = _drag;
+      el.style.cursor    = '';
       el.style.userSelect = '';
       const hr = hero.getBoundingClientRect();
       const er = el.getBoundingClientRect();
-      const x = Math.max(0, Math.min(90, ((er.left - hr.left) / hr.width) * 100));
-      const y = Math.max(0, Math.min(90, ((er.top  - hr.top)  / hr.height) * 100));
-      window.parent.postMessage({ type: 'lpn-pos-update', x: +x.toFixed(1), y: +y.toFixed(1) }, '*');
+      const x  = Math.max(0, Math.min(95, ((er.left - hr.left) / hr.width)  * 100));
+      const y  = Math.max(0, Math.min(95, ((er.top  - hr.top)  / hr.height) * 100));
+      window.parent.postMessage(
+        { type: 'lpn-pos-update', key, x: +x.toFixed(1), y: +y.toFixed(1) },
+        '*'
+      );
       _drag = null;
     });
   }

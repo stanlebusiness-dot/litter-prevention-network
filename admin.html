@@ -121,7 +121,8 @@
     .hp-editor-wrap { display:grid;grid-template-columns:1.4fr 1fr;gap:24px;align-items:start; }
     @media(max-width:1100px) { .hp-editor-wrap { grid-template-columns:1fr; } }
     .hp-preview-box { position:relative;border-radius:12px;overflow:hidden;border:2px solid #e5e5e3;background:#f0f0ee; }
-    .hp-preview-box iframe { width:100%;height:560px;border:none;display:block; }
+    .hp-preview-scale-wrap { position:relative;overflow:hidden;border-radius:10px; }
+    .hp-preview-box iframe { width:1280px;border:none;display:block;transform-origin:top left; }
     .hp-preview-overlay { position:absolute;inset:0;background:rgba(255,255,255,0.88);display:flex;align-items:center;justify-content:center;font-size:14px;color:#888;transition:opacity 0.3s; }
     .hp-controls { max-height:620px;overflow-y:auto;padding-right:4px; }
     .hp-align-btn { padding:7px 14px;border:1px solid #ddd;background:white;border-radius:6px;font-size:12px;font-weight:600;color:#555;cursor:pointer;transition:all 0.15s; }
@@ -726,8 +727,10 @@
       <!-- Left: iframe preview -->
       <div>
         <div class="pe-preview-label">Live Preview</div>
-        <div class="hp-preview-box">
-          <iframe id="hp-iframe" src="about:blank"></iframe>
+        <div class="hp-preview-box" id="hp-preview-box">
+          <div class="hp-preview-scale-wrap" id="hp-scale-wrap">
+            <iframe id="hp-iframe" src="about:blank" height="800"></iframe>
+          </div>
           <div class="hp-preview-overlay" id="hp-preview-overlay">Click the Homepage tab to load preview</div>
         </div>
         <div style="font-size:12px;color:#aaa;margin-top:6px;text-align:center;">Preview of index.html — changes appear before saving</div>
@@ -767,42 +770,6 @@
             <input type="color" id="hp-b2-color" value="#1A6B2F" oninput="hpPreview()"
               style="height:36px;padding:3px 6px;border:1px solid #ddd;border-radius:6px;cursor:pointer;width:72px;" /></div>
 
-          <p class="pe-fg-label" style="margin-top:16px;">Button Group Position</p>
-          <div class="pe-field">
-            <label>Position Mode</label>
-            <div style="display:flex;gap:8px;">
-              <button class="hp-align-btn hp-posmode-btn hp-active" data-posmode="flow" onclick="setHpPosMode('flow',this)">🔲 Flow</button>
-              <button class="hp-align-btn hp-posmode-btn" data-posmode="free" onclick="setHpPosMode('free',this)">🖱 Free Drag</button>
-            </div>
-            <p style="font-size:11px;color:#888;margin:4px 0 0;">Free Drag: drag the subtitle+buttons block anywhere in the preview. Or use the X/Y sliders below.</p>
-          </div>
-          <div id="hp-pos-flow-block">
-            <div class="pe-field">
-              <label>Alignment</label>
-              <div style="display:flex;gap:8px;">
-                <button class="hp-align-btn hp-active" data-align="left"   onclick="setHpAlign('left',this)">← Left</button>
-                <button class="hp-align-btn" data-align="center" onclick="setHpAlign('center',this)">Center</button>
-                <button class="hp-align-btn" data-align="right"  onclick="setHpAlign('right',this)">Right →</button>
-              </div>
-            </div>
-            <div class="pe-slider-row">
-              <label>Vertical offset — <span class="pe-sv" id="hp-voff-val">0</span>px</label>
-              <input type="range" id="hp-voff" min="-60" max="60" value="0"
-                oninput="document.getElementById('hp-voff-val').textContent=this.value;hpPreview()" />
-            </div>
-          </div>
-          <div id="hp-pos-free-block" style="display:none;">
-            <div class="pe-slider-row">
-              <label>X position — <span class="pe-sv" id="hp-xpos-val">5</span>%</label>
-              <input type="range" id="hp-xpos" min="0" max="90" value="5"
-                oninput="document.getElementById('hp-xpos-val').textContent=this.value;hpPreview()" />
-            </div>
-            <div class="pe-slider-row">
-              <label>Y position — <span class="pe-sv" id="hp-ypos-val">55</span>%</label>
-              <input type="range" id="hp-ypos" min="0" max="90" value="55"
-                oninput="document.getElementById('hp-ypos-val').textContent=this.value;hpPreview()" />
-            </div>
-          </div>
           <div class="pe-field">
             <label>Button Layout</label>
             <div style="display:flex;gap:8px;">
@@ -810,6 +777,15 @@
               <button class="hp-align-btn hp-layout-btn" data-layout="row" onclick="setHpBtnLayout('row',this)">➡ Side by Side</button>
             </div>
           </div>
+        </div>
+
+        <!-- Hero Layout — per-element drag positioning -->
+        <div class="settings-card">
+          <h3>🧲 Hero Layout</h3>
+          <p class="card-desc">Drag any element in the preview, or use the sliders below. Reset clears all free positioning and returns to default flow layout.</p>
+          <p style="font-size:11px;color:#888;margin:-6px 0 14px;">Tip: drag elements directly in the preview panel on the left.</p>
+          <div id="hp-hero-layout-fields"></div>
+          <button onclick="resetHeroLayout()" style="margin-top:8px;padding:8px 16px;background:#f5f5f3;border:1px solid #ddd;border-radius:6px;font-size:13px;cursor:pointer;">↺ Reset all positions</button>
         </div>
 
         <!-- Join Us Button -->
@@ -2266,42 +2242,151 @@ function _buildTextFields() {
     </div>`).join('');
 }
 
-let _hpConfig    = null;
-let _hpLibrary   = [];
-let _hpAlign     = 'left';
-let _hpBtnLayout = 'column';
-let _hpPosMode   = 'flow';
-let _hpXPos      = 5;
-let _hpYPos      = 55;
-let _hpTabReady  = false;
-let _hpIfReady   = false;
+let _hpConfig        = null;
+let _hpLibrary       = [];
+let _hpAlign         = 'left';
+let _hpBtnLayout     = 'column';
+let _hpTabReady      = false;
+let _hpIfReady       = false;
+
+const HP_ELEMENTS = [
+  { key: 'headline', label: 'Headline',       defaultX: 5, defaultY: 8,  textKey: 'fontSize', defaultSize: 52, weightOpts: [700,800,900] },
+  { key: 'subtitle', label: 'Subtitle Text',  defaultX: 5, defaultY: 55, textKey: 'fontSize', defaultSize: 18, weightOpts: [400,500,600,700] },
+  { key: 'btns',     label: 'CTA Buttons',    defaultX: 5, defaultY: 65, textKey: 'fontSize', defaultSize: 15, weightOpts: [600,700,800] },
+  { key: 'joinUs',   label: '"Join Us" Pill', defaultX: 5, defaultY: 78, textKey: 'fontSize', defaultSize: 17, weightOpts: [700,800,900] },
+];
+let _hpHeroLayout    = {};  // { headline:{x,y}, subtitle:{x,y}, ... }
+let _hpHeroTextStyle = {};  // { headline:{fontSize,fontWeight,fontFamily}, ... }
 
 function initHomepageTab() {
   if (_hpTabReady) return;
   _hpTabReady = true;
   _buildSectionToggles();
   _buildTextFields();
+  _buildHeroLayoutFields();
   loadHpConfig();
   loadHpLibrary();
   loadHpHistory();
+  updatePreviewScale();
+  window.addEventListener('resize', updatePreviewScale);
+
   // Listen for drag-position updates from preview iframe
   window.addEventListener('message', (e) => {
     if (e.data?.type !== 'lpn-pos-update') return;
-    _hpXPos = e.data.x;
-    _hpYPos = e.data.y;
-    const xEl = document.getElementById('hp-xpos');
-    const yEl = document.getElementById('hp-ypos');
-    if (xEl) { xEl.value = _hpXPos; document.getElementById('hp-xpos-val').textContent = _hpXPos; }
-    if (yEl) { yEl.value = _hpYPos; document.getElementById('hp-ypos-val').textContent = _hpYPos; }
+    const { key, x, y } = e.data;
+    if (!key) return;
+    _hpHeroLayout[key] = { x, y };
+    const xEl = document.getElementById('hl-x-' + key);
+    const yEl = document.getElementById('hl-y-' + key);
+    const xVl = document.getElementById('hl-xv-' + key);
+    const yVl = document.getElementById('hl-yv-' + key);
+    if (xEl) { xEl.value = x; }
+    if (yEl) { yEl.value = y; }
+    if (xVl) xVl.textContent = x;
+    if (yVl) yVl.textContent = y;
   });
+
   // Load iframe
   const iframe = document.getElementById('hp-iframe');
   iframe.onload = () => {
     _hpIfReady = true;
     document.getElementById('hp-preview-overlay').style.display = 'none';
+    updatePreviewScale();
     hpPreview();
   };
   iframe.src = 'index.html?admin-preview=1';
+}
+
+function updatePreviewScale() {
+  const box   = document.getElementById('hp-preview-box');
+  const wrap  = document.getElementById('hp-scale-wrap');
+  const iframe = document.getElementById('hp-iframe');
+  if (!box || !wrap || !iframe) return;
+  const containerW = box.clientWidth || 600;
+  const scale      = containerW / 1280;
+  const iframeH    = 800;
+  iframe.style.transform  = `scale(${scale})`;
+  iframe.style.height     = iframeH + 'px';
+  wrap.style.height       = Math.round(iframeH * scale) + 'px';
+}
+
+function _buildHeroLayoutFields() {
+  const container = document.getElementById('hp-hero-layout-fields');
+  if (!container) return;
+  const fonts = ['Outfit,sans-serif','Georgia,serif','Arial,sans-serif','Courier New,monospace'];
+  container.innerHTML = HP_ELEMENTS.map(el => `
+    <div style="margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid #f0f0ee;">
+      <p class="pe-fg-label" style="margin:0 0 8px;">${el.label}</p>
+      <div class="pe-slider-row">
+        <label>X — <span class="pe-sv" id="hl-xv-${el.key}">—</span>%</label>
+        <input type="range" id="hl-x-${el.key}" min="0" max="95" value="${el.defaultX}" style="width:100%;"
+          oninput="document.getElementById('hl-xv-${el.key}').textContent=this.value;_setHeroPos('${el.key}')" />
+      </div>
+      <div class="pe-slider-row">
+        <label>Y — <span class="pe-sv" id="hl-yv-${el.key}">—</span>%</label>
+        <input type="range" id="hl-y-${el.key}" min="0" max="95" value="${el.defaultY}" style="width:100%;"
+          oninput="document.getElementById('hl-yv-${el.key}').textContent=this.value;_setHeroPos('${el.key}')" />
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:6px;">
+        <div class="pe-field" style="margin:0;">
+          <label style="font-size:11px;">Size (px)</label>
+          <input type="number" id="hts-size-${el.key}" min="8" max="120" value="${el.defaultSize}" style="width:100%;padding:5px 6px;border:1px solid #ddd;border-radius:6px;font-size:13px;"
+            oninput="_setHeroTextStyle('${el.key}')" />
+        </div>
+        <div class="pe-field" style="margin:0;">
+          <label style="font-size:11px;">Weight</label>
+          <select id="hts-wt-${el.key}" style="width:100%;padding:5px 6px;border:1px solid #ddd;border-radius:6px;font-size:13px;"
+            onchange="_setHeroTextStyle('${el.key}')">
+            ${el.weightOpts.map(w => `<option value="${w}">${w}</option>`).join('')}
+          </select>
+        </div>
+        <div class="pe-field" style="margin:0;">
+          <label style="font-size:11px;">Font</label>
+          <select id="hts-ff-${el.key}" style="width:100%;padding:5px 6px;border:1px solid #ddd;border-radius:6px;font-size:13px;"
+            onchange="_setHeroTextStyle('${el.key}')">
+            ${fonts.map(f => `<option value="${f}" ${f.startsWith('Outfit') ? 'selected' : ''}>${f.split(',')[0]}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function _setHeroPos(key) {
+  const x = parseFloat(document.getElementById('hl-x-' + key)?.value);
+  const y = parseFloat(document.getElementById('hl-y-' + key)?.value);
+  if (isNaN(x) || isNaN(y)) return;
+  _hpHeroLayout[key] = { x, y };
+  hpPreview();
+}
+
+function _setHeroTextStyle(key) {
+  const size = parseFloat(document.getElementById('hts-size-' + key)?.value);
+  const wt   = document.getElementById('hts-wt-' + key)?.value;
+  const ff   = document.getElementById('hts-ff-' + key)?.value;
+  _hpHeroTextStyle[key] = {
+    fontSize:   isNaN(size) ? undefined : size,
+    fontWeight: wt || undefined,
+    fontFamily: ff || undefined,
+  };
+  hpPreview();
+}
+
+function resetHeroLayout() {
+  _hpHeroLayout    = {};
+  _hpHeroTextStyle = {};
+  HP_ELEMENTS.forEach(el => {
+    const xEl = document.getElementById('hl-x-' + el.key);
+    const yEl = document.getElementById('hl-y-' + el.key);
+    const xVl = document.getElementById('hl-xv-' + el.key);
+    const yVl = document.getElementById('hl-yv-' + el.key);
+    if (xEl) xEl.value = el.defaultX;
+    if (yEl) yEl.value = el.defaultY;
+    if (xVl) xVl.textContent = '—';
+    if (yVl) yVl.textContent = '—';
+    const sizeEl = document.getElementById('hts-size-' + el.key);
+    if (sizeEl) sizeEl.value = el.defaultSize;
+  });
+  hpPreview();
 }
 
 function _buildSectionToggles() {
@@ -2345,26 +2430,10 @@ function _populateHpControls(cfg) {
   document.getElementById('hp-b2-color').value = b2.color || '#1A6B2F';
 
   _hpAlign = b1.align || 'left';
-  document.querySelectorAll('.hp-align-btn:not(.hp-layout-btn):not(.hp-posmode-btn)').forEach(b => b.classList.toggle('hp-active', b.dataset.align === _hpAlign));
+  document.querySelectorAll('.hp-align-btn:not(.hp-layout-btn)').forEach(b => b.classList.toggle('hp-active', b.dataset.align === _hpAlign));
 
   _hpBtnLayout = cfg.buttons?.btn1?.btnLayout || cfg.buttons?.btnLayout || 'column';
   document.querySelectorAll('.hp-layout-btn').forEach(b => b.classList.toggle('hp-active', b.dataset.layout === _hpBtnLayout));
-
-  _hpPosMode = cfg.buttons?.posMode || 'flow';
-  document.querySelectorAll('.hp-posmode-btn').forEach(b => b.classList.toggle('hp-active', b.dataset.posmode === _hpPosMode));
-  document.getElementById('hp-pos-flow-block').style.display = _hpPosMode === 'flow' ? '' : 'none';
-  document.getElementById('hp-pos-free-block').style.display = _hpPosMode === 'free' ? '' : 'none';
-
-  _hpXPos = cfg.buttons?.xPos ?? 5;
-  _hpYPos = cfg.buttons?.yPos ?? 55;
-  const xEl = document.getElementById('hp-xpos');
-  const yEl = document.getElementById('hp-ypos');
-  if (xEl) { xEl.value = _hpXPos; document.getElementById('hp-xpos-val').textContent = _hpXPos; }
-  if (yEl) { yEl.value = _hpYPos; document.getElementById('hp-ypos-val').textContent = _hpYPos; }
-
-  const vOff = b1.vOffset || 0;
-  document.getElementById('hp-voff').value = vOff;
-  document.getElementById('hp-voff-val').textContent = vOff;
 
   HP_SECTIONS.forEach(s => {
     const el = document.getElementById('hp-sec-' + s.key);
@@ -2380,11 +2449,33 @@ function _populateHpControls(cfg) {
   const juUrl = document.getElementById('ju-url');
   const juVis = document.getElementById('ju-visible');
   const juHVis= document.getElementById('ju-hero-visible');
-  if (juEn)  juEn.value   = ju.en   || 'Join Us';
-  if (juEs)  juEs.value   = ju.es   || 'Únete';
-  if (juUrl) juUrl.value  = ju.url  || 'volunteer.html';
+  if (juEn)  juEn.value    = ju.en   || 'Join Us';
+  if (juEs)  juEs.value    = ju.es   || 'Únete';
+  if (juUrl) juUrl.value   = ju.url  || 'volunteer.html';
   if (juVis) juVis.checked = ju.visible !== false;
   if (juHVis) juHVis.checked = ju.heroVisible !== false;
+
+  // Restore per-element hero layout
+  _hpHeroLayout    = cfg.heroLayout    || {};
+  _hpHeroTextStyle = cfg.heroTextStyle || {};
+  HP_ELEMENTS.forEach(el => {
+    const pos   = _hpHeroLayout[el.key];
+    const style = _hpHeroTextStyle[el.key] || {};
+    const xEl   = document.getElementById('hl-x-' + el.key);
+    const yEl   = document.getElementById('hl-y-' + el.key);
+    const xVl   = document.getElementById('hl-xv-' + el.key);
+    const yVl   = document.getElementById('hl-yv-' + el.key);
+    if (xEl) xEl.value = pos?.x ?? el.defaultX;
+    if (yEl) yEl.value = pos?.y ?? el.defaultY;
+    if (xVl) xVl.textContent = pos?.x != null ? pos.x : '—';
+    if (yVl) yVl.textContent = pos?.y != null ? pos.y : '—';
+    const sizeEl = document.getElementById('hts-size-' + el.key);
+    const wtEl   = document.getElementById('hts-wt-'   + el.key);
+    const ffEl   = document.getElementById('hts-ff-'   + el.key);
+    if (sizeEl) sizeEl.value = style.fontSize   || el.defaultSize;
+    if (wtEl)   wtEl.value   = style.fontWeight  || el.weightOpts[0];
+    if (ffEl)   ffEl.value   = style.fontFamily  || 'Outfit,sans-serif';
+  });
 
   // Populate text fields
   if (cfg.text) {
@@ -2409,14 +2500,7 @@ function setHpBtnLayout(layout, el) {
   hpPreview();
 }
 
-function setHpPosMode(mode, el) {
-  _hpPosMode = mode;
-  document.querySelectorAll('.hp-posmode-btn').forEach(b => b.classList.remove('hp-active'));
-  el.classList.add('hp-active');
-  document.getElementById('hp-pos-flow-block').style.display = mode === 'flow' ? '' : 'none';
-  document.getElementById('hp-pos-free-block').style.display = mode === 'free' ? '' : 'none';
-  hpPreview();
-}
+
 
 function _buildHpConfig() {
   const secs = {};
@@ -2424,36 +2508,54 @@ function _buildHpConfig() {
     const el = document.getElementById('hp-sec-' + s.key);
     secs[s.key] = el ? el.checked : true;
   });
-  const vOffset = parseInt(document.getElementById('hp-voff').value) || 0;
-  const xPos = parseFloat(document.getElementById('hp-xpos')?.value ?? _hpXPos) || _hpXPos;
-  const yPos = parseFloat(document.getElementById('hp-ypos')?.value ?? _hpYPos) || _hpYPos;
   const text = {};
   HP_TEXT_DEF.forEach(sec => sec.fields.forEach(f => {
     const el = document.getElementById('ht-' + f.key);
     if (el) text[f.key] = el.value;
   }));
+
+  // Build heroLayout — only include keys that have been explicitly set (sliders moved)
+  const heroLayout = {};
+  HP_ELEMENTS.forEach(el => {
+    const pos = _hpHeroLayout[el.key];
+    if (pos != null) heroLayout[el.key] = pos;
+  });
+
+  // Build heroTextStyle — always include current slider values
+  const heroTextStyle = {};
+  HP_ELEMENTS.forEach(el => {
+    const size = parseFloat(document.getElementById('hts-size-' + el.key)?.value);
+    const wt   = document.getElementById('hts-wt-'   + el.key)?.value;
+    const ff   = document.getElementById('hts-ff-'   + el.key)?.value;
+    heroTextStyle[el.key] = {
+      fontSize:   isNaN(size) ? el.defaultSize : size,
+      fontWeight: wt || String(el.weightOpts[0]),
+      fontFamily: ff || 'Outfit,sans-serif',
+    };
+  });
+
   return {
     buttons: {
-      posMode: _hpPosMode,
-      xPos,
-      yPos,
       btnLayout: _hpBtnLayout,
-      btn1: { en: document.getElementById('hp-b1-en').value.trim() || 'Learn More',
-              es: document.getElementById('hp-b1-es').value.trim() || 'Aprender Más',
+      btn1: { en: document.getElementById('hp-b1-en').value.trim()  || 'Learn More',
+              es: document.getElementById('hp-b1-es').value.trim()  || 'Aprender Más',
               url: document.getElementById('hp-b1-url').value.trim() || 'about.html',
-              color: document.getElementById('hp-b1-color').value, align: _hpAlign, vOffset, btnLayout: _hpBtnLayout },
-      btn2: { en: document.getElementById('hp-b2-en').value.trim() || 'Sign Up Today!',
-              es: document.getElementById('hp-b2-es').value.trim() || '¡Regístrate Hoy!',
+              color: document.getElementById('hp-b1-color').value, align: _hpAlign, btnLayout: _hpBtnLayout },
+      btn2: { en: document.getElementById('hp-b2-en').value.trim()  || 'Sign Up Today!',
+              es: document.getElementById('hp-b2-es').value.trim()  || '¡Regístrate Hoy!',
               url: document.getElementById('hp-b2-url').value.trim() || '#signup',
-              color: document.getElementById('hp-b2-color').value, align: _hpAlign, vOffset, btnLayout: _hpBtnLayout }
+              color: document.getElementById('hp-b2-color').value, align: _hpAlign, btnLayout: _hpBtnLayout }
     },
     joinUs: {
-      en:          (document.getElementById('ju-en')?.value.trim())          || 'Join Us',
-      es:          (document.getElementById('ju-es')?.value.trim())          || 'Únete',
-      url:         (document.getElementById('ju-url')?.value.trim())         || 'volunteer.html',
+      en:          document.getElementById('ju-en')?.value.trim()          || 'Join Us',
+      es:          document.getElementById('ju-es')?.value.trim()          || 'Únete',
+      url:         document.getElementById('ju-url')?.value.trim()         || 'volunteer.html',
       visible:     document.getElementById('ju-visible')?.checked   !== false,
       heroVisible: document.getElementById('ju-hero-visible')?.checked !== false,
     },
+    heroLayoutEnabled: Object.keys(heroLayout).length > 0,
+    heroLayout:        Object.keys(heroLayout).length    ? heroLayout    : undefined,
+    heroTextStyle:     Object.keys(heroTextStyle).length ? heroTextStyle : undefined,
     overlays: _hpConfig?.overlays || [],
     sections: secs,
     text
