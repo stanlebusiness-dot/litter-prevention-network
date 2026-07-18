@@ -237,7 +237,7 @@
     .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
     .btn-secondary { background: transparent; color: white; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 16px; text-decoration: none; border: 2px solid rgba(255,255,255,0.7); transition: border-color 0.2s, background 0.2s; display: inline-block; }
     .btn-secondary:hover { border-color: white; background: rgba(255,255,255,0.12); }
-    .stats { display: flex; justify-content: center; gap: 60px; padding: 48px 40px; background: #f9f9f7; flex-wrap: wrap; }
+    .stats { display: flex; justify-content: center; gap: 60px; padding: 72px 40px; background: #fff; flex-wrap: wrap; }
     .stat { text-align: center; }
     .stat-number { font-size: 40px; font-weight: 800; color: #0F6E56; }
     .stat-label { font-size: 15px; color: #666; margin-top: 4px; }
@@ -262,7 +262,7 @@
     .mission h2 { font-size: 32px; margin-bottom: 20px; font-family: 'Outfit', sans-serif; }
     .mission p { font-size: 17px; color: #555; line-height: 1.8; }
     .mission .sub-tag { font-size: 14px; color: #0F6E56; font-style: italic; margin-top: 16px; font-weight: 600; }
-    .how { background: #f9f9f7; padding: 64px 40px; text-align: center; }
+    .how { background: #fff; padding: 72px 40px; text-align: center; }
     .how h2 { font-size: 32px; margin-bottom: 48px; font-family: 'Outfit', sans-serif; }
     .steps { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; max-width: 960px; margin: 0 auto; }
     .step { background: white; border-radius: 12px; padding: 32px 24px; width: 200px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); cursor: pointer; transition: all 0.2s; text-decoration: none; color: inherit; display: block; }
@@ -358,9 +358,7 @@
     }
 
     /* ── SECTION SPACING RHYTHM — consistent 72px desktop / 48px mobile ── */
-    .stats      { padding: 72px 40px; background: #fff; }
     .mission    { padding: 72px 40px; }
-    .how        { padding: 72px 40px; background: #fff; }
     .help-section { padding: 72px 40px; }
     @media (max-width: 600px) {
       .stats, .mission, .how, .help-section { padding: 48px 20px; }
@@ -1050,7 +1048,6 @@
   (async function() {
     try {
       const { data } = await _sb.from('site_settings').select('key,value').in('key', [
-        'hero_index_image','hero_index_position','hero_index_xposition','hero_index_zoom',
         'parallax_1_img','parallax_2_img','parallax_3_img',
         'trash_rangers_photo','trash_rangers_alt',
         'hero_text_shadow_blur','hero_text_shadow_opacity',
@@ -1060,15 +1057,6 @@
       ]);
       if (data) {
         const s = Object.fromEntries(data.map(r => [r.key, r.value]));
-        if (s.hero_index_image) {
-          const heroEl = document.querySelector('.hero');
-          heroEl.style.backgroundImage = `url('${s.hero_index_image}')`;
-          const yRaw = s.hero_index_position || 'center 50%';
-          const y = (yRaw.match(/(\d+)%/) || ['','50'])[1];
-          const x = s.hero_index_xposition || '50';
-          heroEl.style.backgroundPosition = x + '% ' + y + '%';
-          if (s.hero_index_zoom) heroEl.style.backgroundSize = s.hero_index_zoom + '%';
-        }
         if (s.parallax_1_img) document.getElementById('parallax-1').style.backgroundImage = `url('${s.parallax_1_img}')`;
         if (s.parallax_2_img) document.getElementById('parallax-2').style.backgroundImage = `url('${s.parallax_2_img}')`;
         if (s.parallax_3_img) document.getElementById('parallax-3').style.backgroundImage = `url('${s.parallax_3_img}')`;
@@ -1145,18 +1133,46 @@
     } catch(e) { grid.innerHTML = placeholderHtml; }
   })();
 
-  // Suggestions box
-  document.getElementById('idea-btn').addEventListener('click', function() {
-    const name = document.getElementById('idea-name').value.trim();
+  // Suggestions box — saves to contact_messages table
+  document.getElementById('idea-btn').addEventListener('click', async function() {
+    const name  = document.getElementById('idea-name').value.trim();
     const email = document.getElementById('idea-email').value.trim();
-    const msg = document.getElementById('idea-message').value.trim();
-    if (!name || !email || !msg) { alert('Please fill in all fields.'); return; }
-    const el = document.getElementById('idea-msg');
-    el.textContent = 'Thank you! We\'ll be in touch soon.';
-    el.style.display = 'block';
-    document.getElementById('idea-name').value = '';
-    document.getElementById('idea-email').value = '';
-    document.getElementById('idea-message').value = '';
+    const msg   = document.getElementById('idea-message').value.trim();
+    const msgEl = document.getElementById('idea-msg');
+
+    if (!name || !email || !msg) {
+      alert(_t('Please fill in all fields.', 'Por favor completa todos los campos.'));
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      alert(_t('Please enter a valid email address.', 'Por favor ingresa un correo electrónico válido.'));
+      return;
+    }
+
+    const btn = document.getElementById('idea-btn');
+    btn.disabled = true;
+    btn.textContent = _t('Sending…', 'Enviando…');
+
+    const { error } = await _sb.from('contact_messages').insert([{
+      name, email, message: msg, subject: 'Community Idea', status: 'unread'
+    }]);
+
+    btn.disabled = false;
+    btn.innerHTML = `<span class="en">Send Your Idea</span><span class="es">Enviar Tu Idea</span>`;
+
+    if (error) {
+      msgEl.textContent = _t('Something went wrong — please try again.', 'Algo salió mal — por favor intenta de nuevo.');
+      msgEl.style.background = '#FFEBEE';
+      msgEl.style.color = '#b71c1c';
+    } else {
+      msgEl.textContent = _t('Thank you! We\'ll be in touch soon.', '¡Gracias! Nos pondremos en contacto pronto.');
+      msgEl.style.background = '#E1F5EE';
+      msgEl.style.color = '#0F6E56';
+      document.getElementById('idea-name').value = '';
+      document.getElementById('idea-email').value = '';
+      document.getElementById('idea-message').value = '';
+    }
+    msgEl.style.display = 'block';
   });
 
   // Age gate enforcement — inline validation
@@ -1255,6 +1271,20 @@
       alert(_t(
         'Please enter your first name and email address.',
         'Por favor ingresa tu nombre y correo electrónico.'
+      ));
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      alert(_t(
+        'Please enter a valid email address.',
+        'Por favor ingresa un correo electrónico válido.'
+      ));
+      return;
+    }
+    if (zip_code && !/^\d{5}(-\d{4})?$/.test(zip_code)) {
+      alert(_t(
+        'Please enter a valid 5-digit ZIP code (e.g., 77378).',
+        'Por favor ingresa un código postal válido de 5 dígitos (ej. 77378).'
       ));
       return;
     }

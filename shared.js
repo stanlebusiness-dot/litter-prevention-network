@@ -124,31 +124,6 @@ function getPageKey() {
     const heroPosition = heroXPos+'% '+(heroYPos.match(/(\d+)%/) ? heroYPos.match(/(\d+)%/)[1] : '50')+'%';
     const overlayOpacity = parseFloat(s.hero_overlay_opacity || '0.6');
 
-    // Load hero text from page_content
-    if (pageKey) {
-      try {
-        const pcRes = await fetch(SUPABASE_URL+'/rest/v1/page_content?page=eq.'+pageKey+'&select=*', {
-          headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer '+SUPABASE_ANON }
-        });
-        const pcRows = await pcRes.json();
-        if (Array.isArray(pcRows) && pcRows.length > 0) {
-          const pc = pcRows[0];
-          const lang = localStorage.getItem('lpn-lang') || 'en';
-          const headline = lang === 'es' ? (pc.hero_headline_es || pc.hero_headline_en) : pc.hero_headline_en;
-          const subtext  = lang === 'es' ? (pc.hero_subtext_es  || pc.hero_subtext_en)  : pc.hero_subtext_en;
-          if (headline) {
-            // Override h1 text in hero
-            const heroEl2 = document.querySelector('.hero h1, .page-hero h1');
-            if (heroEl2) heroEl2.innerHTML = headline;
-          }
-          if (subtext) {
-            const heroP = document.querySelector('.hero > p, .page-hero > p');
-            if (heroP) heroP.innerHTML = subtext;
-          }
-        }
-      } catch(e) {}
-    }
-
     // Inject zoom keyframe + theme CSS
     const zoomKeyframe = heroImageUrl ? '@keyframes lpn-hero-zoom{from{transform:scale(1.08)}to{transform:scale(1)}}' : '';
 
@@ -167,13 +142,13 @@ function getPageKey() {
       '.dash-hero{min-height:160px!important;padding:50px 40px!important;}',
       '.points-banner{min-height:200px!important;padding:60px 20px!important;}',
       // Stats
-      '.stats{background:'+tintBg+'!important}',
+      '.stats{background:'+tintBg+'}',
       '.stat-number{color:'+secondary+'!important}',
       // Mission
       '.section-tag{background:'+tintLight+'!important;color:'+secondary+'!important}',
       '.mission .sub-tag{color:'+secondary+'!important}',
       // How it works
-      '.how{background:'+tintBg+'!important}',
+      '.how{background:'+tintBg+'}',
       '.step:hover{border-color:'+primary+'!important}',
       '.step-num{background:'+secondary+'!important}',
       // Buttons
@@ -660,7 +635,7 @@ function renderPersonalizedHero(user, points) {
       <a href="prize-portal.html"><span class="en">Redeem points</span><span class="es">Canjear puntos</span></a>
       <a href="dashboard.html"><span class="en">View dashboard</span><span class="es">Ver panel</span></a>
     `;
-    const heroButtons = hero.querySelector('.hero-buttons');
+    const heroButtons = hero.querySelector('.hero-btns');
     if (heroButtons) heroButtons.after(quick);
     else hero.appendChild(quick);
   }
