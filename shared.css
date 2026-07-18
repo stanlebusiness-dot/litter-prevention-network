@@ -88,8 +88,8 @@ nav {
   flex-shrink: 0;
 }
 .nav-logo img {
-  width: 44px;
-  height: 44px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   object-fit: cover;
   display: block;
@@ -381,7 +381,8 @@ nav {
   background: #0F2318;
   color: #ccc;
   padding: 60px 40px 32px;
-  margin-top: 80px;
+  margin-top: 0;
+  position: relative;
 }
 .footer-grid {
   display: grid;

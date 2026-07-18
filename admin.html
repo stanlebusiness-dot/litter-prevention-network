@@ -565,6 +565,70 @@
       <div class="announcement-preview" id="ann-preview">Preview will appear here</div>
     </div>
 
+    <!-- Brand Assets -->
+    <div class="settings-card">
+      <h3>🎨 Brand Assets</h3>
+      <p class="card-desc">Upload the site logo and Trash Rangers character art. All images are swappable — uploading a new file updates the site instantly.</p>
+
+      <!-- Logo -->
+      <div style="margin-bottom:28px;">
+        <p style="font-size:13px;font-weight:700;color:#333;margin-bottom:12px;">Site Logo</p>
+        <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;">
+          <div style="width:72px;height:72px;border-radius:50%;overflow:hidden;background:#e8f5e9;flex-shrink:0;border:2px solid #e0e0e0;">
+            <img id="brand-logo-preview" src="logo_500x500.svg" alt="Current logo" style="width:100%;height:100%;object-fit:cover;" />
+          </div>
+          <div style="flex:1;min-width:200px;">
+            <input type="file" id="brand-logo-file" accept="image/*" onchange="previewBrandAsset('brand-logo-preview', this)" style="font-size:13px;margin-bottom:8px;display:block;" />
+            <p style="font-size:11px;color:#aaa;margin-bottom:8px;">PNG/SVG, ideally 500×500px. Displays in nav (60px) and footer. Updates header &amp; footer sitewide.</p>
+            <button onclick="saveBrandLogo()" style="background:#1D9E75;color:white;border:none;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">💾 Save Logo</button>
+            <span class="settings-msg" id="brand-logo-msg" style="margin-left:10px;"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Founder / co-founder photos shortcut -->
+      <div style="margin-bottom:28px;">
+        <p style="font-size:13px;font-weight:700;color:#333;margin-bottom:6px;">Founder Photos (Vanessa &amp; Adán)</p>
+        <p style="font-size:12px;color:#888;margin-bottom:12px;">Manage founder photos in the Leadership tab — photos upload to <code>site-images/leadership/</code> and display on the homepage teaser and About page.</p>
+        <button onclick="showTab('leadership', document.querySelector('[onclick*=leadership]'))" style="background:#0D2B4E;color:white;border:none;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">Go to Leadership Tab →</button>
+      </div>
+
+      <!-- Trash Rangers character slots -->
+      <div>
+        <p style="font-size:13px;font-weight:700;color:#333;margin-bottom:4px;">Trash Rangers Character Art</p>
+        <p style="font-size:12px;color:#aaa;margin-bottom:16px;">Three decorative positions on the homepage. Leave blank to hide a slot. Final artist art drops in with zero code changes.</p>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;">
+          <div id="char-card-hero" class="settings-card" style="padding:16px;">
+            <p style="font-size:12px;font-weight:700;color:#555;margin-bottom:8px;">Slot 1 — Hero (right side)</p>
+            <div style="width:80px;height:80px;background:#e8f5e9;border-radius:8px;overflow:hidden;margin-bottom:8px;">
+              <img id="char-hero-preview" src="" alt="" style="width:100%;height:100%;object-fit:contain;display:block;" />
+            </div>
+            <input type="file" id="char-hero-file" accept="image/*" onchange="previewBrandAsset('char-hero-preview', this)" style="font-size:12px;margin-bottom:8px;display:block;" />
+            <button onclick="saveBrandChar('hero')" style="background:#1D9E75;color:white;border:none;padding:7px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">Save</button>
+            <span class="settings-msg" id="char-hero-msg" style="font-size:11px;margin-left:6px;"></span>
+          </div>
+          <div id="char-card-strip" class="settings-card" style="padding:16px;">
+            <p style="font-size:12px;font-weight:700;color:#555;margin-bottom:8px;">Slot 2 — Feature Strip (right edge)</p>
+            <div style="width:80px;height:80px;background:#e8f5e9;border-radius:8px;overflow:hidden;margin-bottom:8px;">
+              <img id="char-strip-preview" src="" alt="" style="width:100%;height:100%;object-fit:contain;display:block;" />
+            </div>
+            <input type="file" id="char-strip-file" accept="image/*" onchange="previewBrandAsset('char-strip-preview', this)" style="font-size:12px;margin-bottom:8px;display:block;" />
+            <button onclick="saveBrandChar('strip')" style="background:#1D9E75;color:white;border:none;padding:7px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">Save</button>
+            <span class="settings-msg" id="char-strip-msg" style="font-size:11px;margin-left:6px;"></span>
+          </div>
+          <div id="char-card-footer" class="settings-card" style="padding:16px;">
+            <p style="font-size:12px;font-weight:700;color:#555;margin-bottom:8px;">Slot 3 — Footer (near grass)</p>
+            <div style="width:80px;height:80px;background:#e8f5e9;border-radius:8px;overflow:hidden;margin-bottom:8px;">
+              <img id="char-footer-preview" src="" alt="" style="width:100%;height:100%;object-fit:contain;display:block;" />
+            </div>
+            <input type="file" id="char-footer-file" accept="image/*" onchange="previewBrandAsset('char-footer-preview', this)" style="font-size:12px;margin-bottom:8px;display:block;" />
+            <button onclick="saveBrandChar('footer')" style="background:#1D9E75;color:white;border:none;padding:7px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">Save</button>
+            <span class="settings-msg" id="char-footer-msg" style="font-size:11px;margin-left:6px;"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Theme Colors -->
     <div class="settings-card">
       <h3>🎨 Theme Colors</h3>
@@ -1830,6 +1894,89 @@ async function saveTrashRangersPhoto() {
   setTimeout(() => { msgEl.textContent = ''; }, 4000);
 }
 
+// ── BRAND ASSETS ────────────────────────────────────────────────
+
+function previewBrandAsset(previewId, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = document.getElementById(previewId);
+    if (img) img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function saveBrandLogo() {
+  const msgEl  = document.getElementById('brand-logo-msg');
+  const file   = document.getElementById('brand-logo-file').files[0];
+  msgEl.style.color = '#888';
+  msgEl.textContent = 'Saving…';
+  try {
+    if (!file) { msgEl.textContent = 'No file selected.'; return; }
+    const ext = file.name.split('.').pop().toLowerCase();
+    const path = `logo/lpn-logo.${ext}`;
+    const { error: upErr } = await _sb.storage.from('site-images').upload(path, file, { upsert: true });
+    if (upErr) throw upErr;
+    const { data: { publicUrl } } = _sb.storage.from('site-images').getPublicUrl(path);
+    await _sb.from('site_settings').upsert({ key: 'logo_url', value: publicUrl }, { onConflict: 'key' });
+    // Bust the logo cache so shared.js picks up the new URL
+    localStorage.removeItem('lpn-logo-v1');
+    document.getElementById('brand-logo-preview').src = publicUrl;
+    document.getElementById('brand-logo-file').value = '';
+    msgEl.style.color = '#0F6E56';
+    msgEl.textContent = '✅ Logo updated';
+  } catch(e) {
+    msgEl.style.color = '#e74c3c';
+    msgEl.textContent = '❌ ' + (e.message || 'Upload failed');
+  }
+  setTimeout(() => { msgEl.textContent = ''; }, 5000);
+}
+
+const _CHAR_SLOTS = {
+  hero:   { fileId: 'char-hero-file',   msgId: 'char-hero-msg',   settingKey: 'char_slot_hero',   storagePath: 'characters/slot-hero' },
+  strip:  { fileId: 'char-strip-file',  msgId: 'char-strip-msg',  settingKey: 'char_slot_strip',  storagePath: 'characters/slot-strip' },
+  footer: { fileId: 'char-footer-file', msgId: 'char-footer-msg', settingKey: 'char_slot_footer', storagePath: 'characters/slot-footer' },
+};
+
+async function saveBrandChar(slot) {
+  const cfg   = _CHAR_SLOTS[slot];
+  const msgEl = document.getElementById(cfg.msgId);
+  const file  = document.getElementById(cfg.fileId).files[0];
+  msgEl.style.color = '#888';
+  msgEl.textContent = 'Saving…';
+  try {
+    if (!file) { msgEl.textContent = 'No file selected.'; return; }
+    const ext  = file.name.split('.').pop().toLowerCase();
+    const path = `${cfg.storagePath}.${ext}`;
+    const { error: upErr } = await _sb.storage.from('site-images').upload(path, file, { upsert: true });
+    if (upErr) throw upErr;
+    const { data: { publicUrl } } = _sb.storage.from('site-images').getPublicUrl(path);
+    await _sb.from('site_settings').upsert({ key: cfg.settingKey, value: publicUrl }, { onConflict: 'key' });
+    document.getElementById(cfg.fileId).value = '';
+    msgEl.style.color = '#0F6E56';
+    msgEl.textContent = '✅ Saved';
+  } catch(e) {
+    msgEl.style.color = '#e74c3c';
+    msgEl.textContent = '❌ ' + (e.message || 'Upload failed');
+  }
+  setTimeout(() => { msgEl.textContent = ''; }, 5000);
+}
+
+// Load current brand asset previews when settings tab opens
+async function loadBrandAssetPreviews() {
+  try {
+    const { data } = await _sb.from('site_settings').select('key,value')
+      .in('key', ['logo_url','char_slot_hero','char_slot_strip','char_slot_footer']);
+    if (!data) return;
+    const s = Object.fromEntries(data.map(r => [r.key, r.value]));
+    if (s.logo_url) document.getElementById('brand-logo-preview').src = s.logo_url;
+    if (s.char_slot_hero)   { const img = document.getElementById('char-hero-preview');   if (img) img.src = s.char_slot_hero; }
+    if (s.char_slot_strip)  { const img = document.getElementById('char-strip-preview');  if (img) img.src = s.char_slot_strip; }
+    if (s.char_slot_footer) { const img = document.getElementById('char-footer-preview'); if (img) img.src = s.char_slot_footer; }
+  } catch(e) {}
+}
+
 async function loadBeforeAfterTable() {
   const { data, error } = await _sb.from('before_after_sets').select('*').order('date_submitted', { ascending: false });
   const body = document.getElementById('body-before-after');
@@ -1941,6 +2088,12 @@ async function loadSettingsTab() {
   if (!data) return;
   const s = {};
   data.forEach(row => s[row.key] = row.value);
+
+  // Load brand asset previews
+  if (s.logo_url) document.getElementById('brand-logo-preview').src = s.logo_url;
+  if (s.char_slot_hero)   { const img = document.getElementById('char-hero-preview');   if (img) img.src = s.char_slot_hero; }
+  if (s.char_slot_strip)  { const img = document.getElementById('char-strip-preview');  if (img) img.src = s.char_slot_strip; }
+  if (s.char_slot_footer) { const img = document.getElementById('char-footer-preview'); if (img) img.src = s.char_slot_footer; }
 
   document.getElementById('ann-text').value = s.announcement_text || '';
   const isActive = s.announcement_active === 'true';

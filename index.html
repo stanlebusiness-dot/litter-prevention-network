@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <link rel="manifest" href="/manifest.json" />
+  <link rel="icon" id="lpn-favicon" href="logo_500x500.svg" type="image/svg+xml" />
   <meta name="theme-color" content="#1D9E75" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Litter Prevention Network – Willis, TX</title>
@@ -307,6 +308,63 @@
     .grass-svg { position: absolute; left: 0; right: 0; width: 100%; pointer-events: none; display: block; z-index: 3; }
     .grass-top { top: -1px; }
     .grass-bottom { bottom: -1px; }
+
+    /* ── FEATURE STRIP SUPPORT LINE ── */
+    .feature-strip-support {
+      text-align: center; padding: 10px 32px 20px; margin: 0;
+      font-size: 14px; color: #666;
+    }
+    .feature-strip-support a { color: #1A6B2F; font-weight: 700; text-decoration: none; }
+    .feature-strip-support a:hover { text-decoration: underline; }
+
+    /* ── TRASH RANGERS CHARACTER SLOTS ── */
+    .char-slot-wrap {
+      position: absolute; pointer-events: none; z-index: 10;
+      overflow: visible;
+    }
+    .char-slot-wrap img {
+      display: block; object-fit: contain; opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .char-slot-wrap img.loaded { opacity: 1; }
+    /* Hero character — right side of hero, vertically centered */
+    #char-wrap-hero {
+      right: 2%; bottom: 0; width: clamp(100px, 15vw, 200px);
+    }
+    /* Feature strip character — right edge, bottom-anchored */
+    #char-wrap-strip {
+      right: 0; bottom: 0; width: clamp(80px, 10vw, 140px);
+    }
+    /* Footer character — lower-right near grass */
+    #char-wrap-footer {
+      right: 40px; top: -60px; width: clamp(70px, 9vw, 120px);
+    }
+    @media (max-width: 600px) {
+      #char-wrap-hero, #char-wrap-strip, #char-wrap-footer { display: none; }
+    }
+
+    /* ── FOOTER GRASS DIVIDER ── */
+    .footer-grass-divider {
+      line-height: 0;
+      background: var(--cream, #F5F0E6);
+    }
+    .footer-grass-divider svg { display: block; width: 100%; }
+
+    /* ── NEWS CTA — de-boxed ── */
+    .news-cta {
+      max-width: 760px; margin: 0 auto;
+      padding: 0 40px 64px;
+      background: none; border: none; border-radius: 0; box-shadow: none;
+    }
+
+    /* ── SECTION SPACING RHYTHM — consistent 72px desktop / 48px mobile ── */
+    .stats      { padding: 72px 40px; background: #fff; }
+    .mission    { padding: 72px 40px; }
+    .how        { padding: 72px 40px; background: #fff; }
+    .help-section { padding: 72px 40px; }
+    @media (max-width: 600px) {
+      .stats, .mission, .how, .help-section { padding: 48px 20px; }
+    }
   </style>
 </head>
 <body>
@@ -424,6 +482,10 @@
         </a>
       </div>
     </div>
+    <!-- Trash Rangers character slot — hero right side -->
+    <div class="char-slot-wrap" id="char-wrap-hero" aria-hidden="true">
+      <img id="char-slot-hero" src="" alt="" loading="lazy" />
+    </div>
     <!-- Sand-dune swoop (swoop-cascade-A flipped horizontally) -->
     <div class="hero-swoop">
       <svg viewBox="0 0 1440 200" preserveAspectRatio="none" aria-hidden="true">
@@ -438,7 +500,7 @@
   </section>
 
   <!-- ══ FEATURE STRIP ══ -->
-  <div class="feature-strip-wrap">
+  <div class="feature-strip-wrap" style="position:relative;overflow:visible;">
   <section class="feature-strip" aria-label="What we do">
       <div class="feature-item">
         <div class="fi-circle fi-green" aria-hidden="true">
@@ -477,12 +539,15 @@
         </div>
       </div>
   </section>
+  <p class="feature-strip-support">
+    <a href="donate.html"><span class="en">Support LPN Willis →</span><span class="es">Apoya LPN Willis →</span></a>
+    <span class="en"> &nbsp;·&nbsp; 100% goes to local outreach &amp; education</span>
+    <span class="es"> &nbsp;·&nbsp; El 100% va a la divulgación y educación local</span>
+  </p>
+  <!-- Trash Rangers character slot — feature strip right edge -->
+  <div class="char-slot-wrap" id="char-wrap-strip" aria-hidden="true">
+    <img id="char-slot-strip" src="" alt="" loading="lazy" />
   </div>
-
-  <!-- Donate bar -->
-  <div id="donate-bar" style="background:linear-gradient(135deg,#0a4a35 0%,#1D9E75 60%,#0F6E56 100%);padding:22px 40px;text-align:center;">
-    <a href="donate.html" style="display:inline-block;background:white;color:#0F6E56;font-family:'Outfit',sans-serif;font-weight:800;font-size:15px;padding:11px 28px;border-radius:8px;text-decoration:none;transition:transform 0.15s,box-shadow 0.15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 16px rgba(0,0,0,0.18)'" onmouseout="this.style.transform='';this.style.boxShadow=''"><span class="en">Support LPN Willis →</span><span class="es">Apoya LPN Willis →</span></a>
-    <div style="color:rgba(255,255,255,0.7);font-size:12px;margin-top:8px;"><span class="en">100% goes to local outreach &amp; education</span><span class="es">El 100% va a la divulgación y educación local</span></div>
   </div>
 
   <!--
@@ -517,7 +582,7 @@
   </div>
 
 
-  <section class="stats">
+  <section class="stats" id="stats">
     <div class="stat">
       <div style="font-size:28px;margin-bottom:6px;">🧑‍🤝‍🧑</div>
       <div class="stat-number" id="member-count" style="min-width:60px;">—</div>
@@ -540,7 +605,7 @@
     </div>
   </section>
 
-  <section class="news-cta">
+  <section class="news-cta" id="news-cta">
     <h3><span class="en">Need news? Start here.</span><span class="es">¿Buscas noticias? Empieza aquí.</span></h3>
     <p>
       <span class="en">The latest updates, event announcements, and volunteer stories are all in the News section. Tap in to see what’s happening in Willis.</span>
@@ -560,7 +625,7 @@
   </section>
 
   <!-- ══ LEADERSHIP TEASER ══ -->
-  <section id="leadership-teaser" style="background:#f9fdf7;border-top:1px solid #e4ede8;">
+  <section id="leadership-teaser" style="background:var(--cream,#F5F0E6);">
     <div class="leadership-section" style="padding-top:56px;padding-bottom:56px;">
       <h2><span class="en">Our Leadership</span><span class="es">Nuestra Directiva</span></h2>
       <p class="leadership-intro">
@@ -684,9 +749,9 @@
       </div>
     </div>
 
-    <div style="margin-top:48px;">
-      <a href="#signup" class="btn-primary" style="background:#1D9E75;color:white;padding:14px 36px;border-radius:8px;font-weight:700;font-size:16px;text-decoration:none;display:inline-block;font-family:'Outfit',sans-serif;transition:transform 0.15s,box-shadow 0.15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='';this.style.boxShadow=''"><span class="en">Join the Network</span><span class="es">Únete a la Red</span></a>
-    </div>
+    <p style="margin-top:40px;font-size:15px;color:#666;">
+      <a href="#signup" style="color:#1A6B2F;font-weight:700;text-decoration:underline;"><span class="en">Join the Network — it's free →</span><span class="es">Únete a la Red — es gratis →</span></a>
+    </p>
   </section>
 
   <!-- Before & After gallery — managed via admin portal, only approved sets display -->
@@ -806,8 +871,8 @@
     </svg>
   </div>
 
-  <!-- TODO: connect this form to backend or email handler -->
-  <section style="background:#f9f9f7;padding:64px 40px;">
+  <!-- Community voice / ideas form -->
+  <section style="background:var(--cream,#F5F0E6);padding:72px 40px;">
     <div style="max-width:640px;margin:0 auto;text-align:center;">
       <span class="section-tag"><span class="en">Community Voice</span><span class="es">Voz Comunitaria</span></span>
       <h2 style="font-size:28px;font-family:'Outfit',sans-serif;margin:16px 0 12px;"><span class="en">Have an Idea or Connection?</span><span class="es">¿Tienes una Idea o Conexión?</span></h2>
@@ -831,7 +896,58 @@
     </div>
   </section>
 
+  <!-- ══ FOOTER GRASS DIVIDER ══ -->
+  <div class="footer-grass-divider" aria-hidden="true">
+    <svg viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" style="height:clamp(48px,6vw,80px);">
+      <path fill="#0F2318" d="M0,80 L0,70
+        L15,42 L22,62
+        L38,28 L47,55
+        L60,38 L68,65
+        L85,18 L95,52
+        L115,30 L125,68
+        L145,15 L158,58
+        L178,35 L188,70
+        L210,20 L222,60
+        L248,32 L258,65
+        L278,22 L290,55
+        L315,12 L328,50
+        L355,28 L367,65
+        L390,18 L402,58
+        L428,35 L440,70
+        L468,15 L480,52
+        L505,25 L518,62
+        L545,18 L558,55
+        L582,32 L595,68
+        L620,22 L633,58
+        L660,10 L673,50
+        L698,28 L712,65
+        L740,18 L753,55
+        L780,35 L793,70
+        L818,15 L832,52
+        L858,28 L870,65
+        L896,18 L910,58
+        L935,35 L948,70
+        L975,12 L988,52
+        L1015,22 L1028,60
+        L1055,28 L1068,65
+        L1095,18 L1108,55
+        L1135,32 L1148,70
+        L1175,15 L1188,52
+        L1215,25 L1228,62
+        L1255,18 L1268,55
+        L1295,32 L1308,70
+        L1330,20 L1343,58
+        L1368,35 L1380,70
+        L1400,18 L1412,55
+        L1440,70 L1440,80 Z"/>
+    </svg>
+  </div>
+
   <footer class="site-footer">
+    <!-- Trash Rangers character slot — near grass edge -->
+    <div class="char-slot-wrap" id="char-wrap-footer" aria-hidden="true">
+      <img id="char-slot-footer" src="" alt="" loading="lazy" />
+    </div>
     <div class="footer-grid">
       <div class="footer-brand">
         <img src="logo_500x500.svg" alt="Litter Prevention Network" class="footer-logo-img" />
@@ -939,7 +1055,8 @@
         'trash_rangers_photo','trash_rangers_alt',
         'hero_text_shadow_blur','hero_text_shadow_opacity',
         'hero_subtitle_en','hero_subtitle_es',
-        'hero_btn1_text','hero_btn1_url','hero_btn2_text','hero_btn2_url'
+        'hero_btn1_text','hero_btn1_url','hero_btn2_text','hero_btn2_url',
+        'char_slot_hero','char_slot_strip','char_slot_footer'
       ]);
       if (data) {
         const s = Object.fromEntries(data.map(r => [r.key, r.value]));
@@ -992,6 +1109,14 @@
           if (s.hero_btn2_text) { const en = btn2.querySelector('.en'); if (en) en.textContent = s.hero_btn2_text; }
           if (s.hero_btn2_url)  btn2.href = s.hero_btn2_url;
         }
+        // Trash Rangers character slots — show when admin has uploaded art
+        [['char_slot_hero','char-slot-hero'],['char_slot_strip','char-slot-strip'],['char_slot_footer','char-slot-footer']].forEach(([key, id]) => {
+          if (!s[key]) return;
+          const img = document.getElementById(id);
+          if (!img) return;
+          img.src = s[key];
+          img.onload = () => img.classList.add('loaded');
+        });
       }
     } catch(e) {}
   })();

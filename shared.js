@@ -33,6 +33,38 @@ function setLang(lang) {
 }
 (function() { const saved = localStorage.getItem('lpn-lang'); if (saved) setLang(saved); })();
 
+// Swappable logo loader — fetches logo_url from site_settings, falls back to local SVG
+(async function() {
+  const CACHE_KEY = 'lpn-logo-v1';
+  const TTL = 3600000; // 1 hour
+  let url = null;
+  try {
+    const c = JSON.parse(localStorage.getItem(CACHE_KEY));
+    if (c && Date.now() - c.t < TTL) url = c.v;
+  } catch(e) {}
+  if (!url) {
+    try {
+      const r = await fetch(
+        'https://elgzfppmlsrrmskgloeo.supabase.co/rest/v1/site_settings?key=eq.logo_url&select=value',
+        { headers: {
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
+        }}
+      );
+      const d = await r.json();
+      if (d?.[0]?.value) {
+        url = d[0].value;
+        localStorage.setItem(CACHE_KEY, JSON.stringify({ v: url, t: Date.now() }));
+      }
+    } catch(e) {}
+  }
+  if (url) {
+    document.querySelectorAll('.nav-logo img, .footer-logo-img').forEach(img => { img.src = url; });
+    const fav = document.querySelector('link[rel="icon"]');
+    if (fav) fav.href = url;
+  }
+})();
+
 function hexToRgba(hex, alpha) {
   try {
     const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
