@@ -399,7 +399,7 @@ function buildNav() {
   const _ctaCfg = getHomepageCtaConfig();
 
   const signInLink = document.createElement('a');
-  signInLink.href = 'login.html';
+  signInLink.href = 'signin.html';
   signInLink.className = 'nav-link nav-signin-link';
   signInLink.id = 'desktop-nav-signin';
   signInLink.innerHTML = '<span class="en">Sign In</span><span class="es">Iniciar sesión</span>';
@@ -457,7 +457,7 @@ function buildNav() {
   mobileInner.appendChild(div);
 
   const mobileSignIn = document.createElement('a');
-  mobileSignIn.href = 'login.html';
+  mobileSignIn.href = 'signin.html';
   mobileSignIn.className = 'mobile-nav-link mobile-nav-signin';
   mobileSignIn.id = 'mobile-nav-signin';
   mobileSignIn.innerHTML = '<span class="en">Sign In</span><span class="es">Iniciar sesión</span>';
@@ -528,7 +528,7 @@ async function requireLogin() {
   if (!sb) return null;
   const { data: { session } } = await sb.auth.getSession();
   if (!session || !session.user) {
-    window.location.href = 'login.html';
+    window.location.href = 'signin.html';
     return null;
   }
   return session.user;
@@ -555,7 +555,7 @@ function renderPersonalizedNav(user, points) {
   const signOut = async () => {
     const sb = await getLpnSupabase();
     if (sb) await sb.auth.signOut();
-    window.location.href = 'login.html';
+    window.location.href = 'signin.html';
   };
 
   // Desktop SIGN UP pill → becomes user name + pts

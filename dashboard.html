@@ -198,7 +198,7 @@
         <a href="sponsors.html"><span class="en">Become a Sponsor</span><span class="es">S&#xE9; Patrocinador</span></a>
         <a href="contact.html"><span class="en">Contact Us</span><span class="es">Cont&#xE1;ctanos</span></a>
         <a href="coming-soon.html"><span class="en">Future Phases</span><span class="es">Fases Futuras</span></a>
-        <a href="login.html"><span class="en">Sign In</span><span class="es">Iniciar Sesi&#xF3;n</span></a>
+        <a href="signin.html"><span class="en">Sign In</span><span class="es">Iniciar Sesi&#xF3;n</span></a>
       </div>
       <div class="footer-col">
         <h4><span class="en">About</span><span class="es">Acerca de</span></h4>
@@ -243,7 +243,7 @@
       setTimeout(() => { document.getElementById('copy-msg').style.display = 'none'; }, 2500);
     });
   }
-  async function handleLogout() { await _sb.auth.signOut(); window.location.href = 'login.html'; }
+  async function handleLogout() { await _sb.auth.signOut(); window.location.href = 'signin.html'; }
   init();
   </script>
   <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js');</script>
