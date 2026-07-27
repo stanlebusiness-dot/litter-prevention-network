@@ -1097,40 +1097,35 @@
   })();
 
   // ── Video portholes — circular looping-clip component ──
-  // Add an entry per placement; leave src/poster '' to show the placeholder
-  // icon until a real clip is uploaded (site-images bucket, e.g. videos/<name>.mp4).
-  const VIDEO_PORTHOLES = [
-    { id: 'porthole-mission', poster: '', src: '' },
-    { id: 'porthole-gallery', poster: '', src: '' },
-  ];
-
-  (function initVideoPortholes() {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        const video = entry.target;
-        if (entry.isIntersecting) {
-          if (!video.src && video.dataset.src) { video.src = video.dataset.src; video.load(); }
-          video.play().catch(() => {});
-        } else {
-          video.pause();
-        }
-      });
-    }, { threshold: 0.25 });
-
-    VIDEO_PORTHOLES.forEach(cfg => {
-      const wrap = document.getElementById(cfg.id);
-      if (!wrap) return;
-      const video = wrap.querySelector('video');
-      if (!video) return;
-      if (cfg.poster) video.poster = cfg.poster;
-      if (cfg.src) {
-        video.dataset.src = cfg.src;
-        observer.observe(video);
-        const icon = wrap.querySelector('.video-porthole__placeholder-icon');
-        if (icon) icon.style.display = 'none';
+  // Sources are admin-editable (Site Settings → Video Portholes, uploads to
+  // site-images/videos/); until one is set, the placeholder icon shows instead.
+  const VIDEO_PORTHOLE_OBSERVER = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const video = entry.target;
+      if (entry.isIntersecting) {
+        if (!video.src && video.dataset.src) { video.src = video.dataset.src; video.load(); }
+        video.play().catch(() => {});
+      } else {
+        video.pause();
       }
     });
-  })();
+  }, { threshold: 0.25 });
+
+  function setPortholeVideo(wrapId, src) {
+    const wrap = document.getElementById(wrapId);
+    if (!wrap || !src) return;
+    const video = wrap.querySelector('video');
+    if (!video) return;
+    video.dataset.src = src;
+    const icon = wrap.querySelector('.video-porthole__placeholder-icon');
+    if (icon) icon.style.display = 'none';
+    // If it's already on-screen by the time config loads, the observer won't
+    // re-fire on its own (nothing changed intersection-wise) — kick it manually.
+    const r = video.getBoundingClientRect();
+    if (r.top < window.innerHeight && r.bottom > 0) { video.src = src; video.load(); video.play().catch(() => {}); }
+  }
+
+  document.querySelectorAll('.video-porthole video').forEach(video => VIDEO_PORTHOLE_OBSERVER.observe(video));
 
   // Load parallax background images from site settings
   (async function() {
@@ -1141,7 +1136,7 @@
         'hero_text_shadow_blur','hero_text_shadow_opacity',
         'hero_subtitle_en','hero_subtitle_es',
         'char_slot_hero','char_slot_strip','char_slot_footer',
-        'grass_divider_url'
+        'grass_divider_url', 'porthole_mission_video_url', 'porthole_gallery_video_url'
       ]);
       if (data) {
         const s = Object.fromEntries(data.map(r => [r.key, r.value]));
@@ -1149,6 +1144,8 @@
         if (s.parallax_2_img) document.getElementById('parallax-2').style.backgroundImage = `url('${s.parallax_2_img}')`;
         if (s.parallax_3_img) document.getElementById('parallax-3').style.backgroundImage = `url('${s.parallax_3_img}')`;
         if (s.grass_divider_url) document.documentElement.style.setProperty('--grass-divider-img', `url('${s.grass_divider_url}')`);
+        if (s.porthole_mission_video_url) setPortholeVideo('porthole-mission', s.porthole_mission_video_url);
+        if (s.porthole_gallery_video_url) setPortholeVideo('porthole-gallery', s.porthole_gallery_video_url);
         if (s.trash_rangers_photo) {
           const trEl = document.getElementById('trash-rangers-photo');
           if (trEl) { trEl.src = s.trash_rangers_photo; trEl.alt = s.trash_rangers_alt || 'Willis Texas Home of the Trash Rangers'; }

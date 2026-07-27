@@ -755,6 +755,50 @@
       </div>
     </div>
 
+    <!-- Video Portholes -->
+    <div class="settings-card">
+      <h3>🎥 Video Portholes</h3>
+      <p class="card-desc">Looping video clips for the two circular "porthole" spots on the home page (Mission section, Community Impact lead-in). Drop an MP4 — it autoplays muted/looped whenever a visitor scrolls it into view.</p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;">
+        <div>
+          <p style="font-size:13px;font-weight:700;color:#333;margin-bottom:8px;">Mission Section</p>
+          <div style="width:120px;aspect-ratio:1/1;border-radius:50%;overflow:hidden;background:#0F2318;margin-bottom:10px;">
+            <video id="porthole-mission-preview" muted loop playsinline autoplay style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+          </div>
+          <div class="hp-drop-zone" id="porthole-mission-drop-zone" style="padding:14px;margin-bottom:8px;"
+            onclick="document.getElementById('porthole-mission-file').click()"
+            ondragover="event.preventDefault();this.classList.add('drag-over')"
+            ondragleave="this.classList.remove('drag-over')"
+            ondrop="event.preventDefault();this.classList.remove('drag-over');uploadPortholeVideo('mission', event.dataTransfer.files)">
+            <div style="font-size:22px;margin-bottom:4px;">📁</div>
+            <div style="font-size:13px;font-weight:600;color:#555;">Click or drop MP4 here</div>
+          </div>
+          <input type="file" id="porthole-mission-file" accept="video/mp4,video/webm,.mp4,.webm" style="display:none"
+            onchange="uploadPortholeVideo('mission', this.files)" />
+          <span class="settings-msg" id="porthole-mission-msg"></span>
+        </div>
+
+        <div>
+          <p style="font-size:13px;font-weight:700;color:#333;margin-bottom:8px;">Community Impact Section</p>
+          <div style="width:120px;aspect-ratio:1/1;border-radius:50%;overflow:hidden;background:#0F2318;margin-bottom:10px;">
+            <video id="porthole-gallery-preview" muted loop playsinline autoplay style="width:100%;height:100%;object-fit:cover;display:block;"></video>
+          </div>
+          <div class="hp-drop-zone" id="porthole-gallery-drop-zone" style="padding:14px;margin-bottom:8px;"
+            onclick="document.getElementById('porthole-gallery-file').click()"
+            ondragover="event.preventDefault();this.classList.add('drag-over')"
+            ondragleave="this.classList.remove('drag-over')"
+            ondrop="event.preventDefault();this.classList.remove('drag-over');uploadPortholeVideo('gallery', event.dataTransfer.files)">
+            <div style="font-size:22px;margin-bottom:4px;">📁</div>
+            <div style="font-size:13px;font-weight:600;color:#555;">Click or drop MP4 here</div>
+          </div>
+          <input type="file" id="porthole-gallery-file" accept="video/mp4,video/webm,.mp4,.webm" style="display:none"
+            onchange="uploadPortholeVideo('gallery', this.files)" />
+          <span class="settings-msg" id="porthole-gallery-msg"></span>
+        </div>
+      </div>
+    </div>
+
     <!-- Homepage Hero Controls -->
     <div class="settings-card">
       <h3>🏠 Homepage Hero</h3>
@@ -2046,6 +2090,44 @@ async function uploadGrassDivider(files) {
   setTimeout(() => { msgEl.textContent = ''; }, 6000);
 }
 
+const PORTHOLE_SLOTS = {
+  mission: { settingKey: 'porthole_mission_video_url', storagePath: 'videos/porthole-mission' },
+  gallery: { settingKey: 'porthole_gallery_video_url', storagePath: 'videos/porthole-gallery' },
+};
+
+async function uploadPortholeVideo(slot, files) {
+  if (!files?.length) return;
+  const cfg   = PORTHOLE_SLOTS[slot];
+  const file  = files[0];
+  const msgEl = document.getElementById(`porthole-${slot}-msg`);
+  msgEl.style.color = '#888';
+  msgEl.textContent = 'Uploading…';
+  if (file.size > 20 * 1024 * 1024) {
+    msgEl.style.color = '#f59e0b';
+    msgEl.textContent = '⚠️ File is over 20 MB — this may slow page load. Uploading anyway…';
+  }
+  try {
+    const ext  = file.name.split('.').pop().toLowerCase();
+    const path = `${cfg.storagePath}.${ext}`;
+    const { error: upErr } = await _sb.storage.from('site-images').upload(path, file, {
+      contentType: file.type || 'video/mp4',
+      upsert: true
+    });
+    if (upErr) throw upErr;
+    const { data: { publicUrl } } = _sb.storage.from('site-images').getPublicUrl(path);
+    await _sb.from('site_settings').upsert({ key: cfg.settingKey, value: publicUrl }, { onConflict: 'key' });
+    const preview = document.getElementById(`porthole-${slot}-preview`);
+    if (preview) { preview.src = publicUrl; preview.load(); preview.play().catch(() => {}); }
+    document.getElementById(`porthole-${slot}-file`).value = '';
+    msgEl.style.color = '#0F6E56';
+    msgEl.textContent = '✅ Updated — live on the homepage now';
+  } catch(e) {
+    msgEl.style.color = '#e74c3c';
+    msgEl.textContent = '❌ ' + (e.message || 'Upload failed');
+  }
+  setTimeout(() => { msgEl.textContent = ''; }, 6000);
+}
+
 // Load current brand asset previews when settings tab opens
 async function loadBrandAssetPreviews() {
   try {
@@ -2179,6 +2261,8 @@ async function loadSettingsTab() {
   if (s.char_slot_strip)  { const img = document.getElementById('char-strip-preview');  if (img) img.src = s.char_slot_strip; }
   if (s.char_slot_footer) { const img = document.getElementById('char-footer-preview'); if (img) img.src = s.char_slot_footer; }
   if (s.grass_divider_url) { const img = document.getElementById('grass-divider-preview'); if (img) img.src = s.grass_divider_url; }
+  if (s.porthole_mission_video_url) { const v = document.getElementById('porthole-mission-preview'); if (v) { v.src = s.porthole_mission_video_url; v.play().catch(() => {}); } }
+  if (s.porthole_gallery_video_url) { const v = document.getElementById('porthole-gallery-preview'); if (v) { v.src = s.porthole_gallery_video_url; v.play().catch(() => {}); } }
 
   document.getElementById('ann-text').value = s.announcement_text || '';
   const isActive = s.announcement_active === 'true';
