@@ -297,7 +297,7 @@
     .parallax-content a:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.25); }
     .grass-divider {
       position: absolute; left: 0; right: 0; width: 100%; aspect-ratio: 12 / 1;
-      background-image: url('assets/grass-divider.png'); background-size: 100% 100%; background-repeat: no-repeat;
+      background-image: var(--grass-divider-img, url('assets/grass-divider.png')); background-size: 100% 100%; background-repeat: no-repeat;
       pointer-events: none; display: block; z-index: 3;
     }
     .grass-divider.grass-top { top: -1px; transform: scaleY(-1); }
@@ -355,6 +355,50 @@
     .help-section { padding: 72px 40px; }
     @media (max-width: 600px) {
       .stats, .mission, .how, .help-section { padding: 48px 20px; }
+    }
+
+    /* ── VIDEO PORTHOLE — reusable circular looping-video component ── */
+    /* Layout lives on an inner div, not the <section> — shared.css forces
+       `section { display: block !important }` sitewide, which would stomp a
+       flex rule applied directly to .porthole-row. */
+    .porthole-row { padding: 56px 40px; }
+    .porthole-row-inner {
+      display: flex; align-items: center; justify-content: center; gap: 48px;
+      flex-wrap: wrap; text-align: left; max-width: 1100px; margin: 0 auto;
+    }
+    .porthole-row.reverse .porthole-row-inner { flex-direction: row-reverse; }
+    .porthole-row-text { flex: 1 1 340px; max-width: 480px; }
+    .porthole-row-text h2 { font-size: 30px; font-family: 'Outfit', sans-serif; margin-bottom: 12px; line-height: 1.2; }
+    .porthole-row-text p  { font-size: 16px; color: #666; line-height: 1.7; margin-bottom: 18px; }
+    .porthole-row-text a  {
+      display: inline-block; background: #1A6B2F; color: white; padding: 12px 26px;
+      border-radius: 50px; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 14px;
+      text-decoration: none; transition: background 0.2s, transform 0.15s;
+    }
+    .porthole-row-text a:hover { background: #0F5224; transform: translateY(-2px); }
+    @media (max-width: 700px) {
+      .porthole-row-inner, .porthole-row.reverse .porthole-row-inner { flex-direction: column; text-align: center; }
+      .porthole-row { padding: 40px 20px; }
+      .porthole-row-text { max-width: none; }
+    }
+
+    .video-porthole {
+      --ph-size: clamp(150px, 24vw, 260px);
+      width: var(--ph-size); height: var(--ph-size);
+      border-radius: 50%; flex-shrink: 0; padding: 7px;
+      background: conic-gradient(from 200deg, #1A6B2F, #0D2B4E, #6BBF2A, #0D2B4E, #1A6B2F);
+      box-shadow: 0 12px 32px rgba(15,35,24,0.22);
+    }
+    .video-porthole__inner {
+      width: 100%; height: 100%; border-radius: 50%; overflow: hidden;
+      background: #0F2318; position: relative;
+    }
+    .video-porthole__placeholder-icon {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      font-size: calc(var(--ph-size) * 0.26); opacity: 0.35; pointer-events: none;
+    }
+    .video-porthole__media {
+      width: 100%; height: 100%; object-fit: cover; display: block;
     }
   </style>
 </head>
@@ -594,6 +638,23 @@
     <p class="sub-tag"><span class="en">Prevention over cleanup. Always.</span><span class="es">Prevención sobre limpieza. Siempre.</span></p>
   </section>
 
+  <!-- ══ VIDEO PORTHOLE #1 ══ -->
+  <section class="porthole-row" aria-label="Prevention in action">
+    <div class="porthole-row-inner">
+      <div class="video-porthole" id="porthole-mission">
+        <div class="video-porthole__inner">
+          <video class="video-porthole__media" muted loop playsinline preload="none" loading="lazy" aria-hidden="true"></video>
+          <span class="video-porthole__placeholder-icon" aria-hidden="true">🎥</span>
+        </div>
+      </div>
+      <div class="porthole-row-text">
+        <h2><span class="en">See Prevention in Action</span><span class="es">Mira la Prevención en Acción</span></h2>
+        <p><span class="en">Watch Willis neighbors secure loads, cover bins, and clean up — the small habits that add up to a litter-free community.</span><span class="es">Mira a los vecinos de Willis asegurar cargas, tapar contenedores y limpiar — los pequeños hábitos que se suman a una comunidad libre de basura.</span></p>
+        <a href="our-work.html"><span class="en">See Our Work</span><span class="es">Ve Nuestro Trabajo</span></a>
+      </div>
+    </div>
+  </section>
+
   <!-- ══ LEADERSHIP TEASER ══ -->
   <section id="leadership-teaser" style="background:var(--cream,#F5F0E6);">
     <div class="leadership-section" style="padding-top:56px;padding-bottom:56px;">
@@ -725,6 +786,23 @@
   </section>
 
   <!-- Before & After gallery — managed via admin portal, only approved sets display -->
+  <!-- ══ VIDEO PORTHOLE #2 ══ -->
+  <section class="porthole-row reverse" aria-label="Neighbors cleaning up">
+    <div class="porthole-row-inner">
+      <div class="video-porthole" id="porthole-gallery">
+        <div class="video-porthole__inner">
+          <video class="video-porthole__media" muted loop playsinline preload="none" loading="lazy" aria-hidden="true"></video>
+          <span class="video-porthole__placeholder-icon" aria-hidden="true">🎥</span>
+        </div>
+      </div>
+      <div class="porthole-row-text">
+        <h2><span class="en">Neighbors Making a Difference</span><span class="es">Vecinos Marcando la Diferencia</span></h2>
+        <p><span class="en">Real before-and-after cleanups from real Willis neighbors — proof that small actions add up fast.</span><span class="es">Limpiezas reales de antes y después de vecinos reales de Willis — prueba de que las pequeñas acciones se suman rápido.</span></p>
+        <a href="submit-proof.html"><span class="en">Submit Your Photos</span><span class="es">Envía Tus Fotos</span></a>
+      </div>
+    </div>
+  </section>
+
   <section id="gallery-section" style="padding:64px 40px;background:white;text-align:center;">
     <span class="section-tag"><span class="en">Community Impact</span><span class="es">Impacto Comunitario</span></span>
     <h2 style="font-size:32px;font-family:'Outfit',sans-serif;margin-bottom:12px;margin-top:16px;"><span class="en">See the Difference</span><span class="es">Mira la Diferencia</span></h2>
@@ -1001,6 +1079,42 @@
     } catch(e) { /* non-critical — leave placeholder */ }
   })();
 
+  // ── Video portholes — circular looping-clip component ──
+  // Add an entry per placement; leave src/poster '' to show the placeholder
+  // icon until a real clip is uploaded (site-images bucket, e.g. videos/<name>.mp4).
+  const VIDEO_PORTHOLES = [
+    { id: 'porthole-mission', poster: '', src: '' },
+    { id: 'porthole-gallery', poster: '', src: '' },
+  ];
+
+  (function initVideoPortholes() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const video = entry.target;
+        if (entry.isIntersecting) {
+          if (!video.src && video.dataset.src) { video.src = video.dataset.src; video.load(); }
+          video.play().catch(() => {});
+        } else {
+          video.pause();
+        }
+      });
+    }, { threshold: 0.25 });
+
+    VIDEO_PORTHOLES.forEach(cfg => {
+      const wrap = document.getElementById(cfg.id);
+      if (!wrap) return;
+      const video = wrap.querySelector('video');
+      if (!video) return;
+      if (cfg.poster) video.poster = cfg.poster;
+      if (cfg.src) {
+        video.dataset.src = cfg.src;
+        observer.observe(video);
+        const icon = wrap.querySelector('.video-porthole__placeholder-icon');
+        if (icon) icon.style.display = 'none';
+      }
+    });
+  })();
+
   // Load parallax background images from site settings
   (async function() {
     try {
@@ -1009,13 +1123,15 @@
         'trash_rangers_photo','trash_rangers_alt',
         'hero_text_shadow_blur','hero_text_shadow_opacity',
         'hero_subtitle_en','hero_subtitle_es',
-        'char_slot_hero','char_slot_strip','char_slot_footer'
+        'char_slot_hero','char_slot_strip','char_slot_footer',
+        'grass_divider_url'
       ]);
       if (data) {
         const s = Object.fromEntries(data.map(r => [r.key, r.value]));
         if (s.parallax_1_img) document.getElementById('parallax-1').style.backgroundImage = `url('${s.parallax_1_img}')`;
         if (s.parallax_2_img) document.getElementById('parallax-2').style.backgroundImage = `url('${s.parallax_2_img}')`;
         if (s.parallax_3_img) document.getElementById('parallax-3').style.backgroundImage = `url('${s.parallax_3_img}')`;
+        if (s.grass_divider_url) document.documentElement.style.setProperty('--grass-divider-img', `url('${s.grass_divider_url}')`);
         if (s.trash_rangers_photo) {
           const trEl = document.getElementById('trash-rangers-photo');
           if (trEl) { trEl.src = s.trash_rangers_photo; trEl.alt = s.trash_rangers_alt || 'Willis Texas Home of the Trash Rangers'; }
