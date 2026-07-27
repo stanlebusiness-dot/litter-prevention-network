@@ -310,27 +310,44 @@
     .feature-strip-support a { color: #1A6B2F; font-weight: 700; text-decoration: none; }
     .feature-strip-support a:hover { text-decoration: underline; }
 
-    /* ── TRASH RANGERS CHARACTER SLOTS ── */
+    /* ── TRASH RANGERS CHARACTER SLOTS ──
+       Decorative only: pointer-events:none (never blocks clicks regardless
+       of paint order) and z-index kept low so they sit visually below page
+       content (hero-inner is 5, feature-strip/footer content is unpositioned
+       static flow — 2 stays comfortably under both). */
     .char-slot-wrap {
-      position: absolute; pointer-events: none; z-index: 10;
+      position: absolute; pointer-events: none; z-index: 2;
       overflow: visible;
     }
     .char-slot-wrap img {
-      display: block; object-fit: contain; opacity: 0;
+      display: block; width: 100%; height: auto; object-fit: contain; opacity: 0;
       transition: opacity 0.4s ease;
     }
-    .char-slot-wrap img.loaded { opacity: 1; }
+    .char-slot-wrap img.loaded {
+      opacity: 1;
+      animation: char-float var(--char-float-dur, 5s) var(--char-float-delay, 0s) ease-in-out infinite;
+    }
+    @keyframes char-float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50%      { transform: translateY(-8px) rotate(-2deg); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .char-slot-wrap img.loaded { animation: none; }
+    }
     /* Hero character — right side of hero, vertically centered */
     #char-wrap-hero {
       right: 2%; bottom: 0; width: clamp(100px, 15vw, 200px);
+      --char-float-dur: 5s; --char-float-delay: 0s;
     }
     /* Feature strip character — right edge, bottom-anchored */
     #char-wrap-strip {
       right: 0; bottom: 0; width: clamp(80px, 10vw, 140px);
+      --char-float-dur: 6s; --char-float-delay: 0.7s;
     }
     /* Footer character — lower-right near grass */
     #char-wrap-footer {
       right: 40px; top: -60px; width: clamp(70px, 9vw, 120px);
+      --char-float-dur: 4.5s; --char-float-delay: 1.4s;
     }
     @media (max-width: 600px) {
       #char-wrap-hero, #char-wrap-strip, #char-wrap-footer { display: none; }
