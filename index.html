@@ -310,14 +310,23 @@
     .feature-strip-support a { color: #1A6B2F; font-weight: 700; text-decoration: none; }
     .feature-strip-support a:hover { text-decoration: underline; }
 
-    /* ── TRASH RANGERS CHARACTER SLOTS ──
-       Decorative only: pointer-events:none (never blocks clicks regardless
-       of paint order) and z-index kept low so they sit visually below page
-       content (hero-inner is 5, feature-strip/footer content is unpositioned
-       static flow — 2 stays comfortably under both). */
+    /* ── TRASH RANGERS CHARACTER LAYER ──
+       Page-level so characters can straddle section seams without being
+       clipped by any section's own overflow (.hero uses overflow:hidden
+       for its swoop/photo, which would otherwise clip anything crossing
+       its bottom edge). Decorative only: pointer-events:none throughout
+       (clicks always pass through, regardless of visual stacking) and a
+       z-index high enough to sit above every section's background/photo/
+       divider, but characters are positioned at seams — not over text —
+       so they never visually cover a headline or button. Vertical (top)
+       position is computed by JS relative to real section edges; see
+       positionCharLayer() below. */
+    #char-layer {
+      position: absolute; top: 0; left: 0; width: 100%;
+      pointer-events: none; z-index: 6; overflow: visible;
+    }
     .char-slot-wrap {
-      position: absolute; pointer-events: none; z-index: 2;
-      overflow: visible;
+      position: absolute; pointer-events: none; overflow: visible;
     }
     .char-slot-wrap img {
       display: block; width: 100%; height: auto; object-fit: contain; opacity: 0;
@@ -334,23 +343,26 @@
     @media (prefers-reduced-motion: reduce) {
       .char-slot-wrap img.loaded { animation: none; }
     }
-    /* Hero character — right side of hero, vertically centered */
+    /* Hero character — straddles the hero/feature-strip seam, right side */
     #char-wrap-hero {
-      right: 2%; bottom: 0; width: clamp(100px, 15vw, 200px);
+      right: 2%; width: clamp(100px, 15vw, 200px);
       --char-float-dur: 5s; --char-float-delay: 0s;
     }
-    /* Feature strip character — right edge, bottom-anchored */
+    /* Feature strip character — straddles the feature-strip/parallax-1 seam */
     #char-wrap-strip {
-      right: 0; bottom: 0; width: clamp(80px, 10vw, 140px);
+      right: 0; width: clamp(80px, 10vw, 140px);
       --char-float-dur: 6s; --char-float-delay: 0.7s;
     }
-    /* Footer character — lower-right near grass */
+    /* Footer character — straddles the parallax-3/footer (grass) seam */
     #char-wrap-footer {
-      right: 40px; top: -60px; width: clamp(70px, 9vw, 120px);
+      right: 40px; width: clamp(70px, 9vw, 120px);
       --char-float-dur: 4.5s; --char-float-delay: 1.4s;
     }
+    /* Mobile: shrink to ~45% instead of hiding — still peeking in, clear of text */
     @media (max-width: 600px) {
-      #char-wrap-hero, #char-wrap-strip, #char-wrap-footer { display: none; }
+      #char-wrap-hero   { right: 2%;  width: clamp(45px, 22vw, 90px); }
+      #char-wrap-strip  { right: 4px; width: clamp(38px, 18vw, 65px); }
+      #char-wrap-footer { right: 12px; width: clamp(32px, 15vw, 55px); }
     }
 
     /* ── FOOTER GRASS DIVIDER ── */
@@ -420,6 +432,23 @@
   </style>
 </head>
 <body>
+  <!-- ══ TRASH RANGERS CHARACTER LAYER ══
+       Page-level, so characters can straddle section seams (e.g. half in the
+       hero, half in the feature strip) without being clipped by any
+       section's own overflow. Positioned by JS relative to real section
+       edges; pointer-events:none throughout so nothing ever blocks a click. -->
+  <div id="char-layer" aria-hidden="true">
+    <div class="char-slot-wrap" id="char-wrap-hero">
+      <img id="char-slot-hero" src="" alt="" loading="lazy" />
+    </div>
+    <div class="char-slot-wrap" id="char-wrap-strip">
+      <img id="char-slot-strip" src="" alt="" loading="lazy" />
+    </div>
+    <div class="char-slot-wrap" id="char-wrap-footer">
+      <img id="char-slot-footer" src="" alt="" loading="lazy" />
+    </div>
+  </div>
+
   <a href="#main-content" class="skip-link">Skip to main content</a>
   <div class="lang-bar">
     <button class="active" onclick="setLang('en')">English</button>
@@ -528,10 +557,6 @@
         </p>
       </div>
     </div>
-    <!-- Trash Rangers character slot — hero right side -->
-    <div class="char-slot-wrap" id="char-wrap-hero" aria-hidden="true">
-      <img id="char-slot-hero" src="" alt="" loading="lazy" />
-    </div>
   </section>
 
   <!-- ══ FEATURE STRIP ══ -->
@@ -579,10 +604,6 @@
     <span class="en"> &nbsp;·&nbsp; 100% goes to local outreach &amp; education</span>
     <span class="es"> &nbsp;·&nbsp; El 100% va a la divulgación y educación local</span>
   </p>
-  <!-- Trash Rangers character slot — feature strip right edge -->
-  <div class="char-slot-wrap" id="char-wrap-strip" aria-hidden="true">
-    <img id="char-slot-strip" src="" alt="" loading="lazy" />
-  </div>
   </div>
 
   <!--
@@ -995,10 +1016,6 @@
   </div>
 
   <footer class="site-footer">
-    <!-- Trash Rangers character slot — near grass edge -->
-    <div class="char-slot-wrap" id="char-wrap-footer" aria-hidden="true">
-      <img id="char-slot-footer" src="" alt="" loading="lazy" />
-    </div>
     <div class="footer-grid">
       <div class="footer-brand">
         <img src="logo_500x500.svg" alt="Litter Prevention Network" class="footer-logo-img" />
@@ -1096,6 +1113,39 @@
     } catch(e) { /* non-critical — leave placeholder */ }
   })();
 
+  // ── Trash Rangers character layer — straddles section seams ──
+  // Each character's vertical (top) position is computed in document
+  // coordinates from the real bottom edge of an anchor section, so it
+  // visually crosses that seam regardless of how tall the section renders
+  // (responsive hero height, admin-configured content, etc). Horizontal
+  // position and size stay in plain CSS (see #char-wrap-* rules above).
+  const CHAR_SEAMS = [
+    { wrapId: 'char-wrap-hero',   anchor: '.hero',               straddle: 0.5,  straddleMobile: 0.3  }, // half in hero, half in feature strip
+    { wrapId: 'char-wrap-strip',  anchor: '.feature-strip-wrap',  straddle: 0.5,  straddleMobile: 0.12 }, // feature strip stacks tall on mobile (4 rows + support link) — keep the peek small so it clears that text
+    { wrapId: 'char-wrap-footer', anchor: '#parallax-3',          straddle: 0.35, straddleMobile: 0.25 }, // mostly footer, peeking up over the grass seam
+  ];
+
+  function positionCharLayer() {
+    const scrollY = window.scrollY || document.documentElement.scrollTop || 0;
+    const isMobile = window.innerWidth <= 600;
+    CHAR_SEAMS.forEach(cfg => {
+      const wrap = document.getElementById(cfg.wrapId);
+      const anchor = document.querySelector(cfg.anchor);
+      if (!wrap || !anchor) return;
+      const seamY = anchor.getBoundingClientRect().bottom + scrollY;
+      const h = wrap.getBoundingClientRect().height || wrap.getBoundingClientRect().width;
+      const straddle = isMobile ? cfg.straddleMobile : cfg.straddle;
+      wrap.style.top = (seamY - h * straddle) + 'px';
+    });
+  }
+  window.addEventListener('load', positionCharLayer);
+  window.addEventListener('resize', () => {
+    clearTimeout(window.__charLayerResizeT);
+    window.__charLayerResizeT = setTimeout(positionCharLayer, 150);
+  });
+  document.addEventListener('lpn-homepage-config', () => setTimeout(positionCharLayer, 250));
+  positionCharLayer();
+
   // ── Video portholes — circular looping-clip component ──
   // Sources are admin-editable (Site Settings → Video Portholes, uploads to
   // site-images/videos/); until one is set, the placeholder icon shows instead.
@@ -1178,7 +1228,7 @@
           const img = document.getElementById(id);
           if (!img) return;
           img.src = s[key];
-          img.onload = () => img.classList.add('loaded');
+          img.onload = () => { img.classList.add('loaded'); positionCharLayer(); };
         });
       }
     } catch(e) {}
