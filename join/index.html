@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Join the Litter Prevention Network</title>
+  <link rel="stylesheet" href="../shared.css" />
+  <style>
+    body {
+      background: linear-gradient(135deg, #f7fbf6 0%, #eef8ef 100%);
+      min-height: 100vh;
+      color: #14291f;
+    }
+    .join-shell {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px 40px;
+    }
+    .join-card {
+      width: min(100%, 620px);
+      background: rgba(255,255,255,0.96);
+      border: 1px solid #e7efe8;
+      border-radius: 24px;
+      box-shadow: 0 24px 70px rgba(15, 35, 24, 0.12);
+      padding: 24px;
+    }
+    .join-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .join-badge {
+      display: inline-flex;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #e8f5eb;
+      color: #1a6b2f;
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .lang-toggle {
+      display: flex;
+      gap: 6px;
+    }
+    .lang-toggle button {
+      border: 1px solid #dce9de;
+      background: white;
+      color: #1a1a1a;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .lang-toggle button.active {
+      background: #1d9e75;
+      color: white;
+      border-color: #1d9e75;
+    }
+    .join-card h1 {
+      font-size: clamp(24px, 5vw, 34px);
+      font-family: 'Outfit', sans-serif;
+      margin-bottom: 8px;
+      color: #0f2318;
+    }
+    .join-card p {
+      color: #556;
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+    .join-count {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #1a6b2f;
+      margin-bottom: 20px;
+    }
+    .join-form {
+      display: grid;
+      gap: 14px;
+    }
+    .form-row {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: 1fr 1fr;
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .field label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #2b3d35;
+    }
+    .field input,
+    .field select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid #d7e3da;
+      border-radius: 12px;
+      font-size: 15px;
+      color: #15261e;
+      background: #fcfdfc;
+    }
+    .field input:focus,
+    .field select:focus {
+      outline: none;
+      border-color: #1d9e75;
+      box-shadow: 0 0 0 3px rgba(29,158,117,0.15);
+    }
+    .submit-btn {
+      border: none;
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #1d9e75 0%, #1a6b2f 100%);
+      color: white;
+      font-weight: 800;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: progress;
+    }
+    .footer-note {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 13px;
+      color: #6b7a72;
+    }
+    .footer-note a {
+      color: #1d9e75;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    @media (max-width: 640px) {
+      .join-card { padding: 20px; border-radius: 20px; }
+      .form-row { grid-template-columns: 1fr; }
+      .join-top { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <main class="join-shell">
+    <section class="join-card" aria-labelledby="join-title">
+      <div class="join-top">
+        <span class="join-badge"><span class="en">Free Sign Up</span><span class="es">Registro Gratis</span></span>
+        <div class="lang-toggle" role="group" aria-label="Language toggle">
+          <button type="button" onclick="setLang('en')" class="active" data-lang="en">EN</button>
+          <button type="button" onclick="setLang('es')" data-lang="es">ES</button>
+        </div>
+      </div>
+      <h1 id="join-title"><span class="en">Join the Litter Prevention Network</span><span class="es">Únete a la Red de Prevención de Basura</span></h1>
+      <p><span class="en">Create your account in less than a minute and join neighbors working to keep Willis cleaner.</span><span class="es">Crea tu cuenta en menos de un minuto y únete a vecinos que trabajan para mantener Willis más limpio.</span></p>
+      <div class="join-count" id="join-count">👥 <span class="en">Loading members…</span><span class="es">Cargando miembros…</span></div>
+      <form class="join-form" id="join-form">
+        <div class="form-row">
+          <div class="field">
+            <label for="first-name"><span class="en">First Name</span><span class="es">Nombre</span></label>
+            <input id="first-name" name="first_name" type="text" required />
+          </div>
+          <div class="field">
+            <label for="last-name"><span class="en">Last Name</span><span class="es">Apellido</span></label>
+            <input id="last-name" name="last_name" type="text" required />
+          </div>
+        </div>
+        <div class="field">
+          <label for="signup-email"><span class="en">Email Address</span><span class="es">Correo Electrónico</span></label>
+          <input id="signup-email" name="email" type="email" required />
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label for="signup-age"><span class="en">Age</span><span class="es">Edad</span></label>
+            <input id="signup-age" name="age" type="number" min="1" max="120" />
+          </div>
+          <div class="field">
+            <label for="signup-zip"><span class="en">Zip Code</span><span class="es">Código Postal</span></label>
+            <input id="signup-zip" name="zip_code" type="text" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="signup-phone"><span class="en">Phone Number (optional)</span><span class="es">Teléfono (opcional)</span></label>
+          <input id="signup-phone" name="phone" type="tel" />
+        </div>
+        <div class="field">
+          <label for="signup-referral-type"><span class="en">How did you hear about us?</span><span class="es">¿Cómo nos conociste?</span></label>
+          <select id="signup-referral-type" name="referral_type">
+            <option value="" data-en="Select one..." data-es="Selecciona una...">Select one...</option>
+            <option value="friend" data-en="A friend referred me" data-es="Un amigo me recomendó">A friend referred me</option>
+            <option value="social" data-en="Social media" data-es="Redes sociales">Social media</option>
+            <option value="event" data-en="Community event" data-es="Evento comunitario">Community event</option>
+            <option value="school" data-en="School" data-es="Escuela">School</option>
+            <option value="flyer" data-en="Flyer or brochure" data-es="Volante o folleto">Flyer or brochure</option>
+            <option value="other" data-en="Other" data-es="Otro">Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="signup-language"><span class="en">Preferred Language</span><span class="es">Idioma Preferido</span></label>
+          <select id="signup-language" name="language">
+            <option value="English">English</option>
+            <option value="Español">Español</option>
+          </select>
+        </div>
+        <button class="submit-btn" type="submit"><span class="en">Create My Account</span><span class="es">Crear Mi Cuenta</span></button>
+      </form>
+      <div class="footer-note">
+        <span class="en">Already a member? <a href="../login.html">Sign in here</a>.</span>
+        <span class="es">¿Ya eres miembro? <a href="../login.html">Inicia sesión aquí</a>.</span>
+      </div>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../shared.js"></script>
+  <script>
+    const _sb = window.supabase.createClient(
+      'https://elgzfppmlsrrmskgloeo.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
+    );
+
+    function _t(en, es) {
+      return document.body.classList.contains('spanish') ? es : en;
+    }
+
+    function getSignupSource() {
+      const params = new URLSearchParams(window.location.search);
+      const src = params.get('src');
+      return src || 'main';
+    }
+
+    async function refreshCount() {
+      const el = document.getElementById('join-count');
+      if (!el) return;
+      try {
+        const { count } = await _sb.from('signups').select('*', { count: 'exact', head: true });
+        const value = (count || 0).toLocaleString();
+        el.innerHTML = `👥 ${value}`;
+      } catch (e) {
+        el.innerHTML = '👥 —';
+      }
+    }
+
+    async function insertSignupRecord(payload) {
+      try {
+        const { error } = await _sb.from('signups').insert([payload]);
+        if (error) throw error;
+        return { error: null };
+      } catch (error) {
+        const isMissingColumn = error?.message?.toLowerCase().includes('signup_source') || error?.message?.toLowerCase().includes('column') || error?.code === '42703';
+        if (!isMissingColumn) throw error;
+        const { error: fallbackError } = await _sb.from('signups').insert([{
+          full_name: payload.full_name,
+          email: payload.email,
+          zip_code: payload.zip_code,
+          language: payload.language,
+          phone: payload.phone,
+          age: payload.age,
+          referral_type: payload.referral_type,
+          referral_name: payload.referral_name,
+        }]);
+        if (fallbackError) throw fallbackError;
+        return { error: null };
+      }
+    }
+
+    function syncLangButtons() {
+      const isEs = document.body.classList.contains('spanish');
+      document.querySelectorAll('.lang-toggle button').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === (isEs ? 'es' : 'en'));
+      });
+    }
+
+    document.querySelectorAll('.lang-toggle button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        setLang(btn.dataset.lang);
+        syncLangButtons();
+      });
+    });
+
+    document.addEventListener('lpn-lang-change', syncLangButtons);
+
+    document.getElementById('join-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const firstName = document.getElementById('first-name').value.trim();
+      const lastName = document.getElementById('last-name').value.trim();
+      const email = document.getElementById('signup-email').value.trim();
+      const age = document.getElementById('signup-age').value.trim();
+      const zipCode = document.getElementById('signup-zip').value.trim();
+      const phone = document.getElementById('signup-phone').value.trim();
+      const referralType = document.getElementById('signup-referral-type').value;
+      const langRaw = document.getElementById('signup-language').value;
+      const language = langRaw === 'Español' ? 'es' : 'en';
+      const fullName = `${firstName} ${lastName}`.trim();
+
+      if (!firstName || !email) {
+        alert(_t('Please enter your first name and email address.', 'Por favor ingresa tu nombre y correo electrónico.'));
+        return;
+      }
+
+      const submitBtn = form.querySelector('.submit-btn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = _t('Submitting…', 'Enviando…');
+
+      try {
+        const { error } = await insertSignupRecord({
+          full_name: fullName,
+          email,
+          zip_code: zipCode,
+          language,
+          phone,
+          age: age ? parseInt(age) : null,
+          referral_type: referralType,
+          referral_name: '',
+          signup_source: getSignupSource(),
+        });
+        if (error) throw error;
+        form.innerHTML = `
+          <div style="text-align:center;padding:20px 10px;">
+            <div style="font-size:54px;margin-bottom:12px;">🎉</div>
+            <h2 style="font-size:24px;margin-bottom:8px;color:#1d9e75;font-family:'Outfit',sans-serif;">
+              <span class="en">You’re in!</span><span class="es">¡Ya eres parte!</span>
+            </h2>
+            <p style="color:#556;line-height:1.7;">
+              <span class="en">Thanks for joining. We’ll be in touch soon.</span><span class="es">Gracias por unirte. Pronto nos pondremos en contacto.</span>
+            </p>
+          </div>`;
+        await refreshCount();
+      } catch (error) {
+        console.error(error);
+        alert(_t('Something went wrong — please try again in a moment.', 'Algo salió mal — por favor intenta de nuevo en un momento.'));
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = _t('Create My Account', 'Crear Mi Cuenta');
+      }
+    });
+
+    syncLangButtons();
+    refreshCount();
+  </script>
+</body>
+</html>

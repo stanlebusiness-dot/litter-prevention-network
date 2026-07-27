@@ -282,9 +282,36 @@ function injectNewsNavLink() {
   }
 }
 
+function getHomepageCtaConfig() {
+  try {
+    const cached = localStorage.getItem('lpn-hpc');
+    if (!cached) return {};
+    const parsed = JSON.parse(cached);
+    if (parsed && Date.now() - parsed.t < 86400000) return parsed.c?.buttons?.btn2 || {};
+  } catch (e) {}
+  return {};
+}
+
+function applyNavCtaLabels() {
+  const cfg = getHomepageCtaConfig();
+  const en = cfg.en || 'Free Sign Up';
+  const es = cfg.es || 'Registro Gratis';
+  document.querySelectorAll('#desktop-nav-auth, #mobile-nav-auth').forEach(el => {
+    const eEl = el.querySelector('.en');
+    const sEl = el.querySelector('.es');
+    if (eEl) eEl.textContent = en;
+    if (sEl) sEl.textContent = es;
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   buildNav();
   initializePersonalization();
+  applyNavCtaLabels();
+});
+window.addEventListener('lpn-homepage-config', () => {
+  buildNav();
+  applyNavCtaLabels();
 });
 
 function buildNav() {
@@ -365,26 +392,23 @@ function buildNav() {
     }
   });
 
-  // ── Build right section: JOIN US + SIGN UP pill + hamburger ──
+  // ── Build right section: SIGN IN + SIGN UP pill + hamburger ──
   const rightEl = document.createElement('div');
   rightEl.className = 'nav-right';
 
-  // Read cached homepage config for Join Us settings
-  const _juCfg = (() => {
-    try { const c = JSON.parse(localStorage.getItem('lpn-hpc')); return (c && Date.now() - c.t < 86400000) ? (c.c?.joinUs || {}) : {}; } catch(e) { return {}; }
-  })();
-  const joinPill = document.createElement('a');
-  joinPill.href    = _juCfg.url || 'volunteer.html';
-  joinPill.className = 'nav-join-pill';
-  joinPill.id      = 'nav-join-us';
-  joinPill.innerHTML = '<span class="en">' + (_juCfg.en || 'Join Us') + '</span><span class="es">' + (_juCfg.es || 'Únete') + '</span>';
-  if (_juCfg.visible === false) joinPill.style.display = 'none';
+  const _ctaCfg = getHomepageCtaConfig();
+
+  const signInLink = document.createElement('a');
+  signInLink.href = 'login.html';
+  signInLink.className = 'nav-link nav-signin-link';
+  signInLink.id = 'desktop-nav-signin';
+  signInLink.innerHTML = '<span class="en">Sign In</span><span class="es">Iniciar sesión</span>';
 
   const pill = document.createElement('a');
-  pill.href = 'login.html';
+  pill.href = _ctaCfg.url || 'join/';
   pill.className = 'nav-signup-pill';
   pill.id = 'desktop-nav-auth';
-  pill.innerHTML = '<span class="en">Sign Up</span><span class="es">Regístrate</span>';
+  pill.innerHTML = '<span class="en">' + (_ctaCfg.en || 'Free Sign Up') + '</span><span class="es">' + (_ctaCfg.es || 'Registro Gratis') + '</span>';
 
   const ham = document.createElement('button');
   ham.className = 'hamburger';
@@ -394,7 +418,7 @@ function buildNav() {
   ham.innerHTML = '<span></span><span></span><span></span>';
   ham.addEventListener('click', toggleMobileNav);
 
-  rightEl.appendChild(joinPill);
+  rightEl.appendChild(signInLink);
   rightEl.appendChild(pill);
   rightEl.appendChild(ham);
 
@@ -432,19 +456,18 @@ function buildNav() {
   div.className = 'mobile-nav-divider';
   mobileInner.appendChild(div);
 
-  const mobileJoin = document.createElement('a');
-  mobileJoin.href = _juCfg.url || 'volunteer.html';
-  mobileJoin.className = 'mobile-nav-link mobile-nav-join';
-  mobileJoin.id = 'mobile-nav-join';
-  mobileJoin.innerHTML = '<span class="en">' + (_juCfg.en || 'Join Us') + '</span><span class="es">' + (_juCfg.es || 'Únete') + '</span>';
-  if (_juCfg.visible === false) mobileJoin.style.display = 'none';
-  mobileInner.appendChild(mobileJoin);
+  const mobileSignIn = document.createElement('a');
+  mobileSignIn.href = 'login.html';
+  mobileSignIn.className = 'mobile-nav-link mobile-nav-signin';
+  mobileSignIn.id = 'mobile-nav-signin';
+  mobileSignIn.innerHTML = '<span class="en">Sign In</span><span class="es">Iniciar sesión</span>';
+  mobileInner.appendChild(mobileSignIn);
 
   const mobileSignup = document.createElement('a');
-  mobileSignup.href = 'login.html';
+  mobileSignup.href = _ctaCfg.url || 'join/';
   mobileSignup.className = 'mobile-nav-link mobile-nav-signup';
   mobileSignup.id = 'mobile-nav-auth';
-  mobileSignup.innerHTML = '<span class="en">Sign Up</span><span class="es">Regístrate</span>';
+  mobileSignup.innerHTML = '<span class="en">' + (_ctaCfg.en || 'Free Sign Up') + '</span><span class="es">' + (_ctaCfg.es || 'Registro Gratis') + '</span>';
   mobileInner.appendChild(mobileSignup);
 
   mobilePanel.appendChild(mobileInner);

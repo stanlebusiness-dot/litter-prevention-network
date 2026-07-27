@@ -54,7 +54,7 @@ ALTER PUBLICATION supabase_realtime ADD TABLE public.homepage_config;
 -- ── Default seed ────────────────────────────────────────────
 INSERT INTO public.homepage_config (config, updated_by)
 VALUES (
-  '{"buttons":{"btn1":{"en":"Learn More","es":"Aprender Más","url":"about.html","color":"#0D2B4E","align":"left","vOffset":0},"btn2":{"en":"Sign Up Today!","es":"¡Regístrate Hoy!","url":"#signup","color":"#1A6B2F","align":"left","vOffset":0}},"joinUs":{"en":"Join Us","es":"Únete","url":"volunteer.html","visible":true,"heroVisible":true},"overlays":[],"sections":{"feature_strip":true,"donate_bar":true,"parallax_1":true,"stats":true,"news_cta":true,"mission":true,"how_it_works":true,"help_section":true,"gallery":true,"parallax_2":true,"parallax_3":true}}',
+  '{"buttons":{"btn1":{"en":"Learn More","es":"Aprender Más","url":"about.html","color":"#0D2B4E","align":"left","vOffset":0},"btn2":{"en":"Free Sign Up","es":"Registro Gratis","url":"#signup","color":"#1A6B2F","align":"left","vOffset":0}},"joinUs":{"en":"Join Us","es":"Únete","url":"volunteer.html","visible":true,"heroVisible":true},"overlays":[],"sections":{"feature_strip":true,"donate_bar":true,"parallax_1":true,"stats":true,"news_cta":true,"mission":true,"how_it_works":true,"help_section":true,"gallery":true,"parallax_2":true,"parallax_3":true}}',
   'system'
 );
 

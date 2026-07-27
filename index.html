@@ -133,6 +133,12 @@
       backdrop-filter: blur(2px);
     }
     .hero-btns { display: flex; flex-direction: row; gap: 14px; flex-wrap: wrap; }
+    .hero-cta-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
     .hero-member-badge {
       margin: 0; font-size: 14px; font-weight: 600; color: #1a3a10;
       background: rgba(255,255,255,0.78); border-radius: 20px;
@@ -176,22 +182,6 @@
       .hero-text-col { padding: 36px 20px 32px; }
       .hero-sub { font-size: 15px; max-width: 100%; }
       .hero-btns { flex-direction: column; }
-    }
-
-    /* ── HERO SWOOP (river-curve SVG inside .hero, absolutely pinned to bottom) ── */
-    .hero-swoop {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: -1px;
-      line-height: 0;
-      pointer-events: none;
-      z-index: 6;
-    }
-    .hero-swoop svg {
-      display: block;
-      width: 100%;
-      height: clamp(70px, 12.5vw, 180px);
     }
 
     /* ── FEATURE STRIP (4-item row, sits directly below hero swoop) ── */
@@ -444,8 +434,6 @@
       <div class="drawer-divider"></div>
       <a href="contact.html"><span class="nav-icon">&#x1F4EC;</span><span class="en">Contact Us</span><span class="es">Cont&#xE1;ctanos</span></a>
       <a href="faq.html"><span class="nav-icon">&#x2753;</span>FAQ</a>
-      <div class="drawer-divider"></div>
-      <a href="login.html"><span class="nav-icon">&#x1F510;</span><span class="en">Sign In</span><span class="es">Iniciar Sesi&#xF3;n</span></a>
     </div>
     <div class="drawer-footer-note">&#xA9; 2026 Litter Prevention Network &middot; Willis, TX</div>
   </div>
@@ -468,32 +456,17 @@
         </p>
         <div class="hero-btns" data-hp-drag="btns">
           <a href="about.html" class="hero-btn-learn"><span class="en">Learn More</span><span class="es">Aprender Más</span></a>
-          <a href="#signup" class="hero-btn-signup"><span class="en">Sign Up Today!</span><span class="es">¡Regístrate Hoy!</span></a>
+          <a href="join/" data-homepage-cta="signup" class="hero-btn-signup"><span class="en">Free Sign Up</span><span class="es">Registro Gratis</span></a>
         </div>
         <p class="hero-member-badge">
           🧑‍🤝‍🧑 <strong id="hero-member-count">—</strong>
           <span class="en">neighbors joined</span><span class="es">vecinos se unieron</span>
         </p>
-        <a id="hero-join-btn" class="hero-join-btn" data-hp-drag="joinUs" href="volunteer.html">
-          <span class="en">Join Us</span>
-          <span class="es">Únete</span>
-        </a>
       </div>
     </div>
     <!-- Trash Rangers character slot — hero right side -->
     <div class="char-slot-wrap" id="char-wrap-hero" aria-hidden="true">
       <img id="char-slot-hero" src="" alt="" loading="lazy" />
-    </div>
-    <!-- Sand-dune swoop (swoop-cascade-A flipped horizontally) -->
-    <div class="hero-swoop">
-      <svg viewBox="0 0 1440 200" preserveAspectRatio="none" aria-hidden="true">
-        <path style="fill: var(--cream, #F5F0E6)" d="M0,28
-          C 90,42 180,60 300,98
-          C 430,142 540,110 680,140
-          C 820,172 920,138 1060,162
-          C 1200,188 1310,142 1440,168
-          L 1440,200 L 0,200 Z"/>
-      </svg>
     </div>
   </section>
 
@@ -656,7 +629,7 @@
   <section class="how" id="how">
     <h2><span class="en">How It Works</span><span class="es">Cómo Funciona</span></h2>
     <div class="steps">
-      <a href="#signup" class="step">
+      <a href="join/" class="step">
         <div class="step-num">1</div>
         <h3><span class="en">Join the Network</span><span class="es">Únete a la Red</span></h3>
         <p><span class="en">Sign up free and connect with Willis neighbors who care about a cleaner community.</span><span class="es">Regístrate gratis y conéctate con vecinos de Willis que se preocupan por una comunidad más limpia.</span></p>
@@ -748,7 +721,7 @@
     </div>
 
     <p style="margin-top:40px;font-size:15px;color:#666;">
-      <a href="#signup" style="color:#1A6B2F;font-weight:700;text-decoration:underline;"><span class="en">Join the Network — it's free →</span><span class="es">Únete a la Red — es gratis →</span></a>
+      <a href="join/" data-homepage-cta="signup" style="color:#1A6B2F;font-weight:700;text-decoration:underline;"><span class="en">Free Sign Up →</span><span class="es">Registro Gratis →</span></a>
     </p>
   </section>
 
@@ -771,7 +744,7 @@
     <div class="parallax-content">
       <h2><span class="en">Together, We're Stronger</span><span class="es">Juntos, Somos Más Fuertes</span></h2>
       <p><span class="en">Every secured load, every covered bin, every neighbor who leads by example moves Willis forward. Ready to be part of it?</span><span class="es">Cada carga asegurada, cada contenedor tapado, cada vecino que da el ejemplo hace avanzar a Willis. ¿Listo para ser parte de ello?</span></p>
-      <a href="#signup"><span class="en">Join the Network</span><span class="es">Únete a la Red</span></a>
+      <a href="join/"><span class="en">Free Sign Up</span><span class="es">Registro Gratis</span></a>
     </div>
     <svg class="grass-svg grass-bottom" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
       <path fill="#ffffff" d="M0,120 L1440,120 L1440,85 Q1428,47 1416,85 Q1404,28 1392,85 Q1380,44 1368,85 Q1356,21 1344,85 Q1332,52 1320,85 Q1308,29 1296,85 Q1284,39 1272,85 Q1260,14 1248,85 Q1236,56 1224,85 Q1212,19 1200,85 Q1188,49 1176,85 Q1164,33 1152,85 Q1140,43 1128,85 Q1116,25 1104,85 Q1092,55 1080,85 Q1068,13 1056,85 Q1044,50 1032,85 Q1020,37 1008,85 Q996,35 984,85 Q972,17 960,85 Q948,60 936,85 Q924,27 912,85 Q900,45 888,85 Q876,20 864,85 Q852,53 840,85 Q828,30 816,85 Q804,40 792,85 Q780,15 768,85 Q756,57 744,85 Q732,23 720,85 Q708,47 696,85 Q684,28 672,85 Q660,44 648,85 Q636,21 624,85 Q612,52 600,85 Q588,29 576,85 Q564,39 552,85 Q540,14 528,85 Q516,56 504,85 Q492,19 480,85 Q468,49 456,85 Q444,33 432,85 Q420,43 408,85 Q396,25 384,85 Q372,55 360,85 Q348,13 336,85 Q324,50 312,85 Q300,37 288,85 Q276,35 264,85 Q252,17 240,85 Q228,60 216,85 Q204,27 192,85 Q180,45 168,85 Q156,20 144,85 Q132,53 120,85 Q108,30 96,85 Q84,40 72,85 Q60,15 48,85 Q36,57 24,85 Q12,23 0,85 Z"/>
@@ -846,12 +819,6 @@
       <select id="signup-language"><option>English</option><option>Español</option></select>
     </div>
     <button class="btn-submit" id="signup-btn"><span class="en">Create My Account</span><span class="es">Crear Mi Cuenta</span></button>
-    <div style="text-align:center;margin-top:24px;padding-top:20px;border-top:1px solid #eee;">
-      <p style="font-size:13px;color:#888;line-height:1.7;">
-        <span class="en">Already a member? <a href="login.html" style="color:#1D9E75;font-weight:700;">Sign in to your account</a>.</span>
-        <span class="es">¿Ya eres miembro? <a href="login.html" style="color:#1D9E75;font-weight:700;">Inicia sesión en tu cuenta</a>.</span>
-      </p>
-    </div>
   </section>
 
   <!-- Parallax 3: bottom of page -->
@@ -862,7 +829,7 @@
     <div class="parallax-content">
       <h2><span class="en">Willis Is Worth It</span><span class="es">Willis Vale la Pena</span></h2>
       <p><span class="en">Every neighbor who prevents one piece of litter builds something bigger. Come be part of it.</span><span class="es">Cada vecino que previene una pieza de basura construye algo más grande. Ven a ser parte de ello.</span></p>
-      <a href="#signup"><span class="en">Join the Network</span><span class="es">Únete a la Red</span></a>
+      <a href="join/"><span class="en">Free Sign Up</span><span class="es">Registro Gratis</span></a>
     </div>
     <svg class="grass-svg grass-bottom" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
       <path fill="#0F2318" d="M0,120 L1440,120 L1440,85 Q1428,47 1416,85 Q1404,28 1392,85 Q1380,44 1368,85 Q1356,21 1344,85 Q1332,52 1320,85 Q1308,29 1296,85 Q1284,39 1272,85 Q1260,14 1248,85 Q1236,56 1224,85 Q1212,19 1200,85 Q1188,49 1176,85 Q1164,33 1152,85 Q1140,43 1128,85 Q1116,25 1104,85 Q1092,55 1080,85 Q1068,13 1056,85 Q1044,50 1032,85 Q1020,37 1008,85 Q996,35 984,85 Q972,17 960,85 Q948,60 936,85 Q924,27 912,85 Q900,45 888,85 Q876,20 864,85 Q852,53 840,85 Q828,30 816,85 Q804,40 792,85 Q780,15 768,85 Q756,57 744,85 Q732,23 720,85 Q708,47 696,85 Q684,28 672,85 Q660,44 648,85 Q636,21 624,85 Q612,52 600,85 Q588,29 576,85 Q564,39 552,85 Q540,14 528,85 Q516,56 504,85 Q492,19 480,85 Q468,49 456,85 Q444,33 432,85 Q420,43 408,85 Q396,25 384,85 Q372,55 360,85 Q348,13 336,85 Q324,50 312,85 Q300,37 288,85 Q276,35 264,85 Q252,17 240,85 Q228,60 216,85 Q204,27 192,85 Q180,45 168,85 Q156,20 144,85 Q132,53 120,85 Q108,30 96,85 Q84,40 72,85 Q60,15 48,85 Q36,57 24,85 Q12,23 0,85 Z"/>
@@ -975,7 +942,6 @@
         <a href="sponsors.html"><span class="en">Become a Sponsor</span><span class="es">S&#xE9; Patrocinador</span></a>
         <a href="contact.html"><span class="en">Contact Us</span><span class="es">Cont&#xE1;ctanos</span></a>
         <a href="coming-soon.html"><span class="en">Future Phases</span><span class="es">Fases Futuras</span></a>
-        <a href="login.html"><span class="en">Sign In</span><span class="es">Iniciar Sesi&#xF3;n</span></a>
       </div>
       <div class="footer-col">
         <h4><span class="en">About</span><span class="es">Acerca de</span></h4>
@@ -1052,7 +1018,6 @@
         'trash_rangers_photo','trash_rangers_alt',
         'hero_text_shadow_blur','hero_text_shadow_opacity',
         'hero_subtitle_en','hero_subtitle_es',
-        'hero_btn1_text','hero_btn1_url','hero_btn2_text','hero_btn2_url',
         'char_slot_hero','char_slot_strip','char_slot_footer'
       ]);
       if (data) {
@@ -1085,17 +1050,6 @@
         if (sub) {
           if (s.hero_subtitle_en) { const el = sub.querySelector('.en'); if (el) el.textContent = s.hero_subtitle_en; }
           if (s.hero_subtitle_es) { const el = sub.querySelector('.es'); if (el) el.textContent = s.hero_subtitle_es; }
-        }
-        // Buttons
-        const btn1 = document.querySelector('.hero-btn-learn');
-        const btn2 = document.querySelector('.hero-btn-signup');
-        if (btn1) {
-          if (s.hero_btn1_text) { const en = btn1.querySelector('.en'); if (en) en.textContent = s.hero_btn1_text; }
-          if (s.hero_btn1_url)  btn1.href = s.hero_btn1_url;
-        }
-        if (btn2) {
-          if (s.hero_btn2_text) { const en = btn2.querySelector('.en'); if (en) en.textContent = s.hero_btn2_text; }
-          if (s.hero_btn2_url)  btn2.href = s.hero_btn2_url;
         }
         // Trash Rangers character slots — show when admin has uploaded art
         [['char_slot_hero','char-slot-hero'],['char_slot_strip','char-slot-strip'],['char_slot_footer','char-slot-footer']].forEach(([key, id]) => {
@@ -1221,6 +1175,37 @@
   // Bilingual helper — reads body class at call time (not captured at load)
   function _t(en, es) { return document.body.classList.contains('spanish') ? es : en; }
 
+  function getSignupSource() {
+    const params = new URLSearchParams(window.location.search);
+    const fromQuery = params.get('src');
+    if (fromQuery) return fromQuery;
+    if (window.location.pathname.includes('/join') || window.location.pathname.includes('/signup')) return 'event';
+    return 'main';
+  }
+
+  async function insertSignupRecord(payload) {
+    try {
+      const { error } = await _sb.from('signups').insert([payload]);
+      if (error) throw error;
+      return { error: null };
+    } catch (error) {
+      const isMissingColumn = error?.message?.toLowerCase().includes('signup_source') || error?.message?.toLowerCase().includes('column') || error?.code === '42703';
+      if (!isMissingColumn) throw error;
+      const { error: fallbackError } = await _sb.from('signups').insert([{
+        full_name: payload.full_name,
+        email: payload.email,
+        zip_code: payload.zip_code,
+        language: payload.language,
+        phone: payload.phone,
+        age: payload.age,
+        referral_type: payload.referral_type,
+        referral_name: payload.referral_name,
+      }]);
+      if (fallbackError) throw fallbackError;
+      return { error: null };
+    }
+  }
+
   // Update referral dropdown text when language changes
   function _syncReferralLang() {
     const isEs = document.body.classList.contains('spanish');
@@ -1305,11 +1290,12 @@
     btn.disabled = true;
     btn.textContent = _t('Submitting…', 'Enviando…');
 
-    const { error } = await _sb.from('signups').insert([{
+    const { error } = await insertSignupRecord({
       full_name, email, zip_code, language, phone,
       age: age ? parseInt(age) : null,
       referral_type, referral_name,
-    }]);
+      signup_source: getSignupSource(),
+    });
 
     if (error) {
       console.error('Signup error:', error);
@@ -1463,6 +1449,13 @@
       if (b2.url) btn2El.href = b2.url;
       if (b2.color) btn2El.style.background = b2.color;
     }
+    document.querySelectorAll('[data-homepage-cta="signup"]').forEach(el => {
+      const enEl = el.querySelector('.en');
+      const esEl = el.querySelector('.es');
+      if (enEl && b2?.en) enEl.textContent = b2.en;
+      if (esEl && b2?.es) esEl.textContent = b2.es;
+      if (b2?.url) el.href = b2.url;
+    });
 
     // ── Button layout (stacked vs side-by-side) ────────────
     const btnsEl = document.querySelector('.hero-btns');
@@ -1653,6 +1646,7 @@
       const cfg = data?.[0]?.config;
       if (cfg) {
         applyHomepageConfig(cfg);
+        window.dispatchEvent(new CustomEvent('lpn-homepage-config'));
         localStorage.setItem('lpn-hpc', JSON.stringify({ c: cfg, t: Date.now() }));
       }
     } catch(e) {}
@@ -1664,6 +1658,7 @@
           const cfg = payload.new?.config;
           if (cfg) {
             applyHomepageConfig(cfg);
+            window.dispatchEvent(new CustomEvent('lpn-homepage-config'));
             try { localStorage.setItem('lpn-hpc', JSON.stringify({ c: cfg, t: Date.now() })); } catch(e) {}
           }
         })

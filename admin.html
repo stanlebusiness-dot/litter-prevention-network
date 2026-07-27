@@ -215,11 +215,16 @@
     <div class="tab-toolbar">
       <div class="tab-toolbar-left">
         <input class="search-input" placeholder="🔍 Search by name or email..." oninput="filterTable('body-signups', this.value, [1,2])" />
+        <select class="filter-select" onchange="filterByStatus('body-signups', this.value)">
+          <option value="">All sources</option>
+          <option value="main">Main Site QR</option>
+          <option value="event">Event / Booth QR</option>
+        </select>
       </div>
       <button class="btn-csv" onclick="exportCSV('body-signups', 'signups')">⬇ Export CSV</button>
     </div>
-    <table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Zip Code</th><th>Language</th><th>Date</th><th>Actions</th></tr></thead>
-    <tbody id="body-signups"><tr><td colspan="7" class="loading">Loading...</td></tr></tbody></table>
+    <table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Zip Code</th><th>Language</th><th>Date</th><th>Source</th><th>Actions</th></tr></thead>
+    <tbody id="body-signups"><tr><td colspan="8" class="loading">Loading...</td></tr></tbody></table>
   </div>
 
   <!-- Volunteers -->
@@ -765,7 +770,7 @@
         </div>
         <div class="pe-field">
           <label>Button 2 Text</label>
-          <input type="text" id="hero-btn2-text" placeholder="Sign Up Today!" />
+          <input type="text" id="hero-btn2-text" placeholder="Free Sign Up" />
         </div>
         <div class="pe-field">
           <label>Button 2 URL</label>
@@ -824,9 +829,9 @@
           <p class="pe-fg-label" style="margin-top:16px;">Button 2</p>
           <div class="pe-2col">
             <div class="pe-field"><label>Text (EN)</label>
-              <input type="text" id="hp-b2-en" placeholder="Sign Up Today!" oninput="hpPreview()" /></div>
+              <input type="text" id="hp-b2-en" placeholder="Free Sign Up" oninput="hpPreview()" /></div>
             <div class="pe-field"><label>Text (ES)</label>
-              <input type="text" id="hp-b2-es" placeholder="¡Regístrate Hoy!" oninput="hpPreview()" /></div>
+              <input type="text" id="hp-b2-es" placeholder="Registro Gratis" oninput="hpPreview()" /></div>
           </div>
           <div class="pe-field"><label>URL</label>
             <input type="text" id="hp-b2-url" placeholder="#signup" oninput="hpPreview()" /></div>
@@ -981,8 +986,9 @@
   <!-- 🖨️ Print Materials -->
   <div class="tab-content" id="tab-print">
     <div class="section-title">Print Materials & QR Codes</div>
-    <p style="font-size:13px;color:#888;margin-bottom:28px;">Download QR codes for banners, flyers, and print materials. All versions point to <strong>litterpreventionnetwork.org</strong> with error-correction level H (highest reliability on printed materials).</p>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;max-width:860px;">
+    <p style="font-size:13px;color:#888;margin-bottom:20px;">Download QR codes for banners, flyers, and print materials. All versions point to <strong>litterpreventionnetwork.org</strong> with error-correction level H (highest reliability on printed materials).</p>
+    <p class="pe-fg-label">Main Site QR</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;max-width:860px;margin-bottom:28px;">
       <div class="settings-card" style="text-align:center;">
         <img src="assets/qr/lpn-qr-black.png" alt="Black QR code" style="width:160px;height:160px;display:block;margin:0 auto 16px;image-rendering:crisp-edges;border:1px solid #eee;border-radius:8px;" />
         <h4 style="font-family:'Outfit',sans-serif;margin-bottom:6px;">Standard Black &amp; White</h4>
@@ -1002,6 +1008,30 @@
         <a href="assets/qr/lpn-qr.svg" download="lpn-qr.svg" style="display:inline-block;background:#0D2B4E;color:white;padding:10px 20px;border-radius:8px;font-weight:700;font-size:13px;text-decoration:none;">⬇ Download SVG</a>
       </div>
     </div>
+
+    <p class="pe-fg-label">Event / Booth QR <span style="font-weight:400;color:#888;text-transform:none;letter-spacing:0;">— links straight to the sign-up form and tags every sign-up with <code>src=event</code> so it's countable separately in the Sign-ups tab</span></p>
+    <p style="font-size:12px;color:#aaa;margin:-4px 0 12px;">Points to litterpreventionnetwork.org/join/?src=event</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;max-width:860px;">
+      <div class="settings-card" style="text-align:center;">
+        <img src="assets/qr/lpn-qr-event-black.png" alt="Black event QR code" style="width:160px;height:160px;display:block;margin:0 auto 16px;image-rendering:crisp-edges;border:1px solid #eee;border-radius:8px;" />
+        <h4 style="font-family:'Outfit',sans-serif;margin-bottom:6px;">Standard Black &amp; White</h4>
+        <p style="font-size:12px;color:#888;margin-bottom:16px;">2009×2009 px · Print-safe for any size · High contrast</p>
+        <a href="assets/qr/lpn-qr-event-black.png" download="lpn-qr-event-black.png" style="display:inline-block;background:#1D9E75;color:white;padding:10px 20px;border-radius:8px;font-weight:700;font-size:13px;text-decoration:none;">⬇ Download PNG</a>
+      </div>
+      <div class="settings-card" style="text-align:center;">
+        <img src="assets/qr/lpn-qr-event-green.png" alt="Green event QR code" style="width:160px;height:160px;display:block;margin:0 auto 16px;image-rendering:crisp-edges;border:1px solid #eee;border-radius:8px;" />
+        <h4 style="font-family:'Outfit',sans-serif;margin-bottom:6px;">LPN Dark Green</h4>
+        <p style="font-size:12px;color:#888;margin-bottom:16px;">2009×2009 px · Brand color #1A6B2F · For branded materials</p>
+        <a href="assets/qr/lpn-qr-event-green.png" download="lpn-qr-event-green.png" style="display:inline-block;background:#1A6B2F;color:white;padding:10px 20px;border-radius:8px;font-weight:700;font-size:13px;text-decoration:none;">⬇ Download PNG</a>
+      </div>
+      <div class="settings-card" style="text-align:center;">
+        <img src="assets/qr/lpn-qr-event.svg" alt="SVG event QR code" style="width:160px;height:160px;display:block;margin:0 auto 16px;image-rendering:crisp-edges;border:1px solid #eee;border-radius:8px;" />
+        <h4 style="font-family:'Outfit',sans-serif;margin-bottom:6px;">Vector SVG</h4>
+        <p style="font-size:12px;color:#888;margin-bottom:16px;">Infinitely scalable · For the print shop · Crisp at any size</p>
+        <a href="assets/qr/lpn-qr-event.svg" download="lpn-qr-event.svg" style="display:inline-block;background:#0D2B4E;color:white;padding:10px 20px;border-radius:8px;font-weight:700;font-size:13px;text-decoration:none;">⬇ Download SVG</a>
+      </div>
+    </div>
+
     <div class="settings-card" style="max-width:560px;margin-top:24px;">
       <h4 style="font-family:'Outfit',sans-serif;margin-bottom:8px;">Usage Notes</h4>
       <ul style="font-size:13px;color:#666;line-height:2;padding-left:20px;margin:0;">
@@ -1136,8 +1166,8 @@ async function loadAll() {
 
   document.getElementById('count-signups').textContent = s.data?.length || 0;
   document.getElementById('body-signups').innerHTML = s.data?.length
-    ? s.data.map(r => `<tr><td>#${r.member_number||'—'}</td><td>${r.full_name}</td><td>${r.email}</td><td>${r.zip_code||'—'}</td><td>${r.language||'—'}</td><td>${fmt(r.created_at)}</td><td><button class="btn-edit" onclick="openEditById('signups','${r.id}')">✏️ Edit</button><button class="btn-delete" onclick="deleteRow('signups','${r.id}','sign-up')">🗑 Delete</button></td></tr>`).join('')
-    : '<tr><td colspan="7" class="empty">No sign-ups yet.</td></tr>';
+    ? s.data.map(r => `<tr><td>#${r.member_number||'—'}</td><td>${r.full_name}</td><td>${r.email}</td><td>${r.zip_code||'—'}</td><td>${r.language||'—'}</td><td>${fmt(r.created_at)}</td><td>${r.signup_source === 'event' ? '🎪 Event' : '🌐 Main'}</td><td><button class="btn-edit" onclick="openEditById('signups','${r.id}')">✏️ Edit</button><button class="btn-delete" onclick="deleteRow('signups','${r.id}','sign-up')">🗑 Delete</button></td></tr>`).join('')
+    : '<tr><td colspan="8" class="empty">No sign-ups yet.</td></tr>';
 
   document.getElementById('count-volunteers').textContent = v.data?.length || 0;
   document.getElementById('body-volunteers').innerHTML = v.data?.length
@@ -1252,11 +1282,12 @@ async function deleteRow(table, id, label) {
 // ── EDIT MODAL ──
 const EDIT_FIELDS = {
   signups: [
-    { key: 'full_name',  label: 'Full Name',  type: 'text' },
-    { key: 'email',      label: 'Email',       type: 'email' },
-    { key: 'zip_code',   label: 'Zip Code',    type: 'text' },
-    { key: 'phone',      label: 'Phone',       type: 'text' },
-    { key: 'language',   label: 'Language',    type: 'select', options: ['English','Español'] },
+    { key: 'full_name',     label: 'Full Name',  type: 'text' },
+    { key: 'email',         label: 'Email',       type: 'email' },
+    { key: 'zip_code',      label: 'Zip Code',    type: 'text' },
+    { key: 'phone',         label: 'Phone',       type: 'text' },
+    { key: 'language',      label: 'Language',    type: 'select', options: ['English','Español'] },
+    { key: 'signup_source', label: 'Source',      type: 'select', options: ['main','event'] },
   ],
   volunteers: [
     { key: 'full_name',    label: 'Full Name',     type: 'text' },
@@ -2570,7 +2601,7 @@ function _defaultHpConfig() {
   return {
     buttons: {
       btn1: { en: 'Learn More',    es: 'Aprender Más',    url: 'about.html', color: '#0D2B4E', align: 'left', vOffset: 0 },
-      btn2: { en: 'Sign Up Today!', es: '¡Regístrate Hoy!', url: '#signup',   color: '#1A6B2F', align: 'left', vOffset: 0 }
+      btn2: { en: 'Free Sign Up', es: 'Registro Gratis', url: 'join/', color: '#1A6B2F', align: 'left', vOffset: 0 }
     },
     overlays: [],
     sections: Object.fromEntries(HP_SECTIONS.map(s => [s.key, true]))
@@ -2584,9 +2615,9 @@ function _populateHpControls(cfg) {
   document.getElementById('hp-b1-es').value    = b1.es    || 'Aprender Más';
   document.getElementById('hp-b1-url').value   = b1.url   || 'about.html';
   document.getElementById('hp-b1-color').value = b1.color || '#0D2B4E';
-  document.getElementById('hp-b2-en').value    = b2.en    || 'Sign Up Today!';
-  document.getElementById('hp-b2-es').value    = b2.es    || '¡Regístrate Hoy!';
-  document.getElementById('hp-b2-url').value   = b2.url   || '#signup';
+  document.getElementById('hp-b2-en').value    = b2.en    || 'Free Sign Up';
+  document.getElementById('hp-b2-es').value    = b2.es    || 'Registro Gratis';
+  document.getElementById('hp-b2-url').value   = b2.url   || 'join/';
   document.getElementById('hp-b2-color').value = b2.color || '#1A6B2F';
 
   _hpAlign = b1.align || 'left';
@@ -2701,9 +2732,9 @@ function _buildHpConfig() {
               es: document.getElementById('hp-b1-es').value.trim()  || 'Aprender Más',
               url: document.getElementById('hp-b1-url').value.trim() || 'about.html',
               color: document.getElementById('hp-b1-color').value, align: _hpAlign, btnLayout: _hpBtnLayout },
-      btn2: { en: document.getElementById('hp-b2-en').value.trim()  || 'Sign Up Today!',
-              es: document.getElementById('hp-b2-es').value.trim()  || '¡Regístrate Hoy!',
-              url: document.getElementById('hp-b2-url').value.trim() || '#signup',
+      btn2: { en: document.getElementById('hp-b2-en').value.trim()  || 'Free Sign Up',
+              es: document.getElementById('hp-b2-es').value.trim()  || 'Registro Gratis',
+              url: document.getElementById('hp-b2-url').value.trim() || 'join/',
               color: document.getElementById('hp-b2-color').value, align: _hpAlign, btnLayout: _hpBtnLayout }
     },
     joinUs: {
