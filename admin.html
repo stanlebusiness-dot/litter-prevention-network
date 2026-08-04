@@ -626,6 +626,12 @@
               <option value="parallax2">Parallax 2</option>
               <option value="parallax3">Parallax 3 / Footer</option>
             </select>
+            <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Side (auto-flips to face inward when on the left)</label>
+            <div style="display:flex;gap:6px;margin-bottom:8px;">
+              <button type="button" id="char-hero-side-left" onclick="setCharSide('hero','left')" style="flex:1;padding:6px;border-radius:6px;border:1px solid #ccc;background:#fff;color:#333;font-size:12px;cursor:pointer;">⬅ Left</button>
+              <button type="button" id="char-hero-side-right" onclick="setCharSide('hero','right')" style="flex:1;padding:6px;border-radius:6px;border:1px solid #ccc;background:#1D9E75;color:white;font-size:12px;cursor:pointer;">Right ➡</button>
+            </div>
+            <input type="hidden" id="char-hero-side" value="right" />
             <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Vertical peek (moves it up/down): <span id="char-hero-offset-val">50</span>%</label>
             <input type="range" id="char-hero-offset" min="0" max="100" value="50" oninput="document.getElementById('char-hero-offset-val').textContent=this.value; sendCharPreview()" style="width:100%;margin-bottom:8px;" />
             <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Size: <span id="char-hero-size-val">100</span>%</label>
@@ -647,6 +653,12 @@
               <option value="parallax2">Parallax 2</option>
               <option value="parallax3">Parallax 3 / Footer</option>
             </select>
+            <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Side (auto-flips to face inward when on the left)</label>
+            <div style="display:flex;gap:6px;margin-bottom:8px;">
+              <button type="button" id="char-strip-side-left" onclick="setCharSide('strip','left')" style="flex:1;padding:6px;border-radius:6px;border:1px solid #ccc;background:#fff;color:#333;font-size:12px;cursor:pointer;">⬅ Left</button>
+              <button type="button" id="char-strip-side-right" onclick="setCharSide('strip','right')" style="flex:1;padding:6px;border-radius:6px;border:1px solid #ccc;background:#1D9E75;color:white;font-size:12px;cursor:pointer;">Right ➡</button>
+            </div>
+            <input type="hidden" id="char-strip-side" value="right" />
             <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Vertical peek (moves it up/down): <span id="char-strip-offset-val">50</span>%</label>
             <input type="range" id="char-strip-offset" min="0" max="100" value="50" oninput="document.getElementById('char-strip-offset-val').textContent=this.value; sendCharPreview()" style="width:100%;margin-bottom:8px;" />
             <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Size: <span id="char-strip-size-val">100</span>%</label>
@@ -668,6 +680,12 @@
               <option value="parallax2">Parallax 2</option>
               <option value="parallax3" selected>Parallax 3 / Footer</option>
             </select>
+            <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Side (auto-flips to face inward when on the left)</label>
+            <div style="display:flex;gap:6px;margin-bottom:8px;">
+              <button type="button" id="char-footer-side-left" onclick="setCharSide('footer','left')" style="flex:1;padding:6px;border-radius:6px;border:1px solid #ccc;background:#fff;color:#333;font-size:12px;cursor:pointer;">⬅ Left</button>
+              <button type="button" id="char-footer-side-right" onclick="setCharSide('footer','right')" style="flex:1;padding:6px;border-radius:6px;border:1px solid #ccc;background:#1D9E75;color:white;font-size:12px;cursor:pointer;">Right ➡</button>
+            </div>
+            <input type="hidden" id="char-footer-side" value="right" />
             <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Vertical peek (moves it up/down): <span id="char-footer-offset-val">35</span>%</label>
             <input type="range" id="char-footer-offset" min="0" max="100" value="35" oninput="document.getElementById('char-footer-offset-val').textContent=this.value; sendCharPreview()" style="width:100%;margin-bottom:8px;" />
             <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Size: <span id="char-footer-size-val">100</span>%</label>
@@ -689,6 +707,12 @@
               <option value="parallax2" selected>Parallax 2</option>
               <option value="parallax3">Parallax 3 / Footer</option>
             </select>
+            <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Side (auto-flips to face inward when on the left)</label>
+            <div style="display:flex;gap:6px;margin-bottom:8px;">
+              <button type="button" id="char-4-side-left" onclick="setCharSide('4','left')" style="flex:1;padding:6px;border-radius:6px;border:1px solid #ccc;background:#1D9E75;color:white;font-size:12px;cursor:pointer;">⬅ Left</button>
+              <button type="button" id="char-4-side-right" onclick="setCharSide('4','right')" style="flex:1;padding:6px;border-radius:6px;border:1px solid #ccc;background:#fff;color:#333;font-size:12px;cursor:pointer;">Right ➡</button>
+            </div>
+            <input type="hidden" id="char-4-side" value="left" />
             <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Vertical peek (moves it up/down): <span id="char-4-offset-val">50</span>%</label>
             <input type="range" id="char-4-offset" min="0" max="100" value="50" oninput="document.getElementById('char-4-offset-val').textContent=this.value; sendCharPreview()" style="width:100%;margin-bottom:8px;" />
             <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Size: <span id="char-4-size-val">100</span>%</label>
@@ -2102,18 +2126,34 @@ async function saveBrandLogo() {
 }
 
 const _CHAR_SLOTS = {
-  hero:   { fileId: 'char-hero-file',   previewId: 'char-hero-preview',   msgId: 'char-hero-msg',   settingKey: 'char_slot_hero',   storagePath: 'characters/slot-hero',   anchorId: 'char-hero-anchor',   offsetId: 'char-hero-offset',   sizeId: 'char-hero-size' },
-  strip:  { fileId: 'char-strip-file',  previewId: 'char-strip-preview',  msgId: 'char-strip-msg',  settingKey: 'char_slot_strip',  storagePath: 'characters/slot-strip',  anchorId: 'char-strip-anchor',  offsetId: 'char-strip-offset',  sizeId: 'char-strip-size' },
-  footer: { fileId: 'char-footer-file', previewId: 'char-footer-preview', msgId: 'char-footer-msg', settingKey: 'char_slot_footer', storagePath: 'characters/slot-footer', anchorId: 'char-footer-anchor', offsetId: 'char-footer-offset', sizeId: 'char-footer-size' },
-  4:      { fileId: 'char-4-file',      previewId: 'char-4-preview',      msgId: 'char-4-msg',      settingKey: 'char_slot_4',      storagePath: 'characters/slot-4',      anchorId: 'char-4-anchor',      offsetId: 'char-4-offset',      sizeId: 'char-4-size' },
+  hero:   { fileId: 'char-hero-file',   previewId: 'char-hero-preview',   msgId: 'char-hero-msg',   settingKey: 'char_slot_hero',   storagePath: 'characters/slot-hero',   anchorId: 'char-hero-anchor',   offsetId: 'char-hero-offset',   sizeId: 'char-hero-size',   sideId: 'char-hero-side',   defaultSide: 'right' },
+  strip:  { fileId: 'char-strip-file',  previewId: 'char-strip-preview',  msgId: 'char-strip-msg',  settingKey: 'char_slot_strip',  storagePath: 'characters/slot-strip',  anchorId: 'char-strip-anchor',  offsetId: 'char-strip-offset',  sizeId: 'char-strip-size',  sideId: 'char-strip-side',  defaultSide: 'right' },
+  footer: { fileId: 'char-footer-file', previewId: 'char-footer-preview', msgId: 'char-footer-msg', settingKey: 'char_slot_footer', storagePath: 'characters/slot-footer', anchorId: 'char-footer-anchor', offsetId: 'char-footer-offset', sizeId: 'char-footer-size', sideId: 'char-footer-side', defaultSide: 'right' },
+  4:      { fileId: 'char-4-file',      previewId: 'char-4-preview',      msgId: 'char-4-msg',      settingKey: 'char_slot_4',      storagePath: 'characters/slot-4',      anchorId: 'char-4-anchor',      offsetId: 'char-4-offset',      sizeId: 'char-4-size',      sideId: 'char-4-side',      defaultSide: 'left'  },
 };
+
+// Sets which side a slot is on (drives the hidden field the Save button
+// reads, the button highlight, and — since index.html auto-flips anything
+// parked on the left to keep it facing inward — the live preview's flip).
+function setCharSide(slot, side) {
+  const cfg = _CHAR_SLOTS[slot];
+  if (!cfg) return;
+  const hidden = document.getElementById(cfg.sideId);
+  if (hidden) hidden.value = side;
+  const leftBtn  = document.getElementById(`char-${slot}-side-left`);
+  const rightBtn = document.getElementById(`char-${slot}-side-right`);
+  [leftBtn, rightBtn].forEach(b => { if (b) { b.style.background = '#fff'; b.style.color = '#333'; } });
+  const activeBtn = side === 'left' ? leftBtn : rightBtn;
+  if (activeBtn) { activeBtn.style.background = '#1D9E75'; activeBtn.style.color = 'white'; }
+  sendCharPreview();
+}
 
 // Pushes every slot's current (possibly unsaved) state into the live preview
 // iframe: file picked but not yet saved → local FileReader dataURL; nothing
 // picked yet → whatever URL is already showing (saved art from Supabase, or
-// blank). This is why picking a file, dragging a slider, or changing the
-// position dropdown all call this — the preview always reflects what's
-// currently in the form, not what's in the database.
+// blank). This is why picking a file, dragging a slider, changing the
+// position dropdown, or clicking a side button all call this — the preview
+// always reflects what's currently in the form, not what's in the database.
 function sendCharPreview() {
   const iframe = document.getElementById('char-iframe');
   if (!iframe || !iframe.contentWindow) return;
@@ -2125,6 +2165,7 @@ function sendCharPreview() {
       anchor: document.getElementById(cfg.anchorId)?.value,
       offset: document.getElementById(cfg.offsetId)?.value,
       size:   document.getElementById(cfg.sizeId)?.value,
+      side:   document.getElementById(cfg.sideId)?.value,
     };
   });
   iframe.contentWindow.postMessage({ type: 'lpn-char-preview', slots }, '*');
@@ -2172,6 +2213,7 @@ async function saveBrandChar(slot) {
   const anchorEl = document.getElementById(cfg.anchorId);
   const offsetEl = document.getElementById(cfg.offsetId);
   const sizeEl   = document.getElementById(cfg.sizeId);
+  const sideEl   = document.getElementById(cfg.sideId);
   msgEl.style.color = '#888';
   msgEl.textContent = 'Saving…';
   try {
@@ -2187,6 +2229,7 @@ async function saveBrandChar(slot) {
     if (anchorEl) rows.push({ key: `${cfg.settingKey}_anchor`, value: anchorEl.value });
     if (offsetEl) rows.push({ key: `${cfg.settingKey}_offset`, value: String(offsetEl.value) });
     if (sizeEl)   rows.push({ key: `${cfg.settingKey}_size`,   value: String(sizeEl.value) });
+    if (sideEl)   rows.push({ key: `${cfg.settingKey}_side`,   value: sideEl.value });
     await _sb.from('site_settings').upsert(rows, { onConflict: 'key' });
     if (file) document.getElementById(cfg.fileId).value = '';
     msgEl.style.color = '#0F6E56';
@@ -2407,9 +2450,11 @@ async function loadSettingsTab() {
     const anchorVal = s[`${cfg.settingKey}_anchor`];
     const offsetVal = s[`${cfg.settingKey}_offset`];
     const sizeVal = s[`${cfg.settingKey}_size`];
+    const sideVal = s[`${cfg.settingKey}_side`];
     if (anchorEl && anchorVal) anchorEl.value = anchorVal;
     if (offsetEl && offsetVal) { offsetEl.value = offsetVal; if (offsetValEl) offsetValEl.textContent = offsetVal; }
     if (sizeEl && sizeVal) { sizeEl.value = sizeVal; if (sizeValEl) sizeValEl.textContent = sizeVal; }
+    setCharSide(slot, sideVal === 'left' || sideVal === 'right' ? sideVal : cfg.defaultSide);
   });
   // Reflects the just-loaded saved state in the preview iframe, if it's
   // already open (e.g. Settings tab re-visited after Homepage tab).

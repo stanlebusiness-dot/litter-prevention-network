@@ -336,6 +336,13 @@
         calc(var(--char-pref) * var(--char-scale, 1)),
         calc(var(--char-max) * var(--char-scale, 1))
       );
+      /* Mirrors horizontally when parked on the left — the art is drawn
+         facing the direction appropriate for the right side, so moving a
+         slot to the left auto-flips it to keep the character facing inward
+         (toward the page content) instead of off the edge. Applied on the
+         wrap (not the img) so it doesn't collide with the float keyframe's
+         own transform on the img. */
+      transform: scaleX(var(--char-flip, 1));
     }
     .char-slot-wrap img {
       display: block; width: 100%; height: auto; object-fit: contain; opacity: 0;
@@ -367,10 +374,12 @@
       right: 40px; --char-min: 70px; --char-pref: 9vw; --char-max: 120px;
       --char-float-dur: 4.5s; --char-float-delay: 1.4s;
     }
-    /* 4th character — left side (default anchor/offset are admin-editable; see CHAR_SEAMS) */
+    /* 4th character — left side by default (side/anchor/offset/size are all
+       admin-editable; see CHAR_SEAM_DEFAULTS). --char-flip:-1 matches its
+       default left placement so there's no unflipped flash before JS runs. */
     #char-wrap-4 {
       left: 2%; --char-min: 80px; --char-pref: 11vw; --char-max: 150px;
-      --char-float-dur: 5.5s; --char-float-delay: 2.1s;
+      --char-float-dur: 5.5s; --char-float-delay: 2.1s; --char-flip: -1;
     }
     /* Mobile: shrink to ~45% instead of hiding — still peeking in, clear of text */
     @media (max-width: 600px) {
@@ -1147,10 +1156,10 @@
     parallax3: '#parallax-3',
   };
   const CHAR_SEAM_DEFAULTS = {
-    hero:   { anchor: 'hero',      straddle: 0.5,  straddleMobile: 0.3  }, // half in hero, half in feature strip
-    strip:  { anchor: 'strip',     straddle: 0.5,  straddleMobile: 0.12 }, // feature strip stacks tall on mobile (4 rows + support link) — keep the peek small so it clears that text
-    footer: { anchor: 'parallax3', straddle: 0.35, straddleMobile: 0.25 }, // mostly footer, peeking up over the grass seam
-    4:      { anchor: 'parallax2', straddle: 0.5,  straddleMobile: 0.25 },
+    hero:   { anchor: 'hero',      straddle: 0.5,  straddleMobile: 0.3,  side: 'right' }, // half in hero, half in feature strip
+    strip:  { anchor: 'strip',     straddle: 0.5,  straddleMobile: 0.12, side: 'right' }, // feature strip stacks tall on mobile (4 rows + support link) — keep the peek small so it clears that text
+    footer: { anchor: 'parallax3', straddle: 0.35, straddleMobile: 0.25, side: 'right' }, // mostly footer, peeking up over the grass seam
+    4:      { anchor: 'parallax2', straddle: 0.5,  straddleMobile: 0.25, side: 'left'  },
   };
   const CHAR_SEAMS = Object.keys(CHAR_SEAM_DEFAULTS).map(slot => ({
     slot, wrapId: `char-wrap-${slot}`, ...CHAR_SEAM_DEFAULTS[slot]
@@ -1166,7 +1175,28 @@
     wrap.style.setProperty('--char-scale', !isNaN(size) ? Math.max(0.3, Math.min(2, size / 100)) : 1);
   }
 
-  // Applies admin-configured anchor/offset/size overrides on top of the defaults above.
+  // Moves a slot to the given side and auto-flips it when parked on the
+  // left (see the --char-flip comment on .char-slot-wrap above). Only
+  // writes an inline left/right override when the side actually differs
+  // from that slot's own CSS-baked-in default — so a slot left at its
+  // default keeps its fine-tuned per-slot offset (2%, 0, 40px, ...)
+  // instead of being flattened to one generic value.
+  function applyCharSide(cfg) {
+    const wrap = document.getElementById(cfg.wrapId);
+    if (!wrap) return;
+    const defaultSide = CHAR_SEAM_DEFAULTS[cfg.slot].side;
+    if (cfg.side === defaultSide) {
+      wrap.style.left = '';
+      wrap.style.right = '';
+    } else if (cfg.side === 'left') {
+      wrap.style.left = '2%'; wrap.style.right = 'auto';
+    } else {
+      wrap.style.right = '2%'; wrap.style.left = 'auto';
+    }
+    wrap.style.setProperty('--char-flip', cfg.side === 'left' ? '-1' : '1');
+  }
+
+  // Applies admin-configured anchor/offset/size/side overrides on top of the defaults above.
   function applyCharPositions(s) {
     CHAR_SEAMS.forEach(cfg => {
       const anchorKey = s[`char_slot_${cfg.slot}_anchor`];
@@ -1176,7 +1206,10 @@
         cfg.straddle = Math.max(0, Math.min(1, offset / 100));
         cfg.straddleMobile = Math.max(0, Math.min(1, cfg.straddle * 0.5));
       }
+      const sideVal = s[`char_slot_${cfg.slot}_side`];
+      if (sideVal === 'left' || sideVal === 'right') cfg.side = sideVal;
       applyCharScale(cfg.wrapId, s[`char_slot_${cfg.slot}_size`]);
+      applyCharSide(cfg);
     });
   }
 
@@ -1227,7 +1260,9 @@
         cfg.straddle = Math.max(0, Math.min(1, offset / 100));
         cfg.straddleMobile = Math.max(0, Math.min(1, cfg.straddle * 0.5));
       }
+      if (data.side === 'left' || data.side === 'right') cfg.side = data.side;
       applyCharScale(cfg.wrapId, data.size);
+      applyCharSide(cfg);
     });
     positionCharLayer();
   }
@@ -1276,10 +1311,10 @@
     'hero_text_shadow_blur','hero_text_shadow_opacity',
     'hero_subtitle_en','hero_subtitle_es',
     'char_slot_hero','char_slot_strip','char_slot_footer','char_slot_4',
-    'char_slot_hero_anchor','char_slot_hero_offset','char_slot_hero_size',
-    'char_slot_strip_anchor','char_slot_strip_offset','char_slot_strip_size',
-    'char_slot_footer_anchor','char_slot_footer_offset','char_slot_footer_size',
-    'char_slot_4_anchor','char_slot_4_offset','char_slot_4_size',
+    'char_slot_hero_anchor','char_slot_hero_offset','char_slot_hero_size','char_slot_hero_side',
+    'char_slot_strip_anchor','char_slot_strip_offset','char_slot_strip_size','char_slot_strip_side',
+    'char_slot_footer_anchor','char_slot_footer_offset','char_slot_footer_size','char_slot_footer_side',
+    'char_slot_4_anchor','char_slot_4_offset','char_slot_4_size','char_slot_4_side',
     'grass_divider_url', 'porthole_mission_video_url', 'porthole_gallery_video_url'
   ];
 
