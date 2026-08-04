@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(git push *)",
-      "Bash(powershell -Command ' *)"
+      "Bash(powershell -Command ' *)",
+      "Bash(node \"C:\\\\Users\\\\Stanley\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-Stanley-Desktop-litter-prevention-network\\\\906692a4-33f0-45b7-b875-9cf59c0ba545\\\\scratchpad\\\\update_footer_signin_links.js\")",
+      "Bash(node -e ' *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }

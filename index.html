@@ -358,11 +358,17 @@
       right: 40px; width: clamp(70px, 9vw, 120px);
       --char-float-dur: 4.5s; --char-float-delay: 1.4s;
     }
+    /* 4th character — left side (default anchor/offset are admin-editable; see CHAR_SEAMS) */
+    #char-wrap-4 {
+      left: 2%; width: clamp(80px, 11vw, 150px);
+      --char-float-dur: 5.5s; --char-float-delay: 2.1s;
+    }
     /* Mobile: shrink to ~45% instead of hiding — still peeking in, clear of text */
     @media (max-width: 600px) {
       #char-wrap-hero   { right: 2%;  width: clamp(45px, 22vw, 90px); }
       #char-wrap-strip  { right: 4px; width: clamp(38px, 18vw, 65px); }
       #char-wrap-footer { right: 12px; width: clamp(32px, 15vw, 55px); }
+      #char-wrap-4      { left: 2%;   width: clamp(35px, 17vw, 70px); }
     }
 
     /* ── FOOTER GRASS DIVIDER ── */
@@ -447,6 +453,9 @@
     <div class="char-slot-wrap" id="char-wrap-footer">
       <img id="char-slot-footer" src="" alt="" loading="lazy" />
     </div>
+    <div class="char-slot-wrap" id="char-wrap-4">
+      <img id="char-slot-4" src="" alt="" loading="lazy" />
+    </div>
   </div>
 
   <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -498,7 +507,7 @@
           <a href="faq.html">FAQ</a>
         </div>
       </div>
-      <a href="login.html" class="nav-signin-btn" id="desktop-nav-auth">Sign In</a>
+      <a href="signin.html" class="nav-signin-btn" id="desktop-nav-auth">Sign In</a>
     </div>
   </nav>
 
@@ -1119,18 +1128,44 @@
   // visually crosses that seam regardless of how tall the section renders
   // (responsive hero height, admin-configured content, etc). Horizontal
   // position and size stay in plain CSS (see #char-wrap-* rules above).
-  const CHAR_SEAMS = [
-    { wrapId: 'char-wrap-hero',   anchor: '.hero',               straddle: 0.5,  straddleMobile: 0.3  }, // half in hero, half in feature strip
-    { wrapId: 'char-wrap-strip',  anchor: '.feature-strip-wrap',  straddle: 0.5,  straddleMobile: 0.12 }, // feature strip stacks tall on mobile (4 rows + support link) — keep the peek small so it clears that text
-    { wrapId: 'char-wrap-footer', anchor: '#parallax-3',          straddle: 0.35, straddleMobile: 0.25 }, // mostly footer, peeking up over the grass seam
-  ];
+  // Anchor + offset are admin-editable (Site Settings → Trash Rangers Character
+  // Art); CHAR_SEAM_DEFAULTS below are the fallback until settings load.
+  const CHAR_ANCHORS = {
+    hero:      '.hero',
+    strip:     '.feature-strip-wrap',
+    parallax1: '#parallax-1',
+    parallax2: '#parallax-2',
+    parallax3: '#parallax-3',
+  };
+  const CHAR_SEAM_DEFAULTS = {
+    hero:   { anchor: 'hero',      straddle: 0.5,  straddleMobile: 0.3  }, // half in hero, half in feature strip
+    strip:  { anchor: 'strip',     straddle: 0.5,  straddleMobile: 0.12 }, // feature strip stacks tall on mobile (4 rows + support link) — keep the peek small so it clears that text
+    footer: { anchor: 'parallax3', straddle: 0.35, straddleMobile: 0.25 }, // mostly footer, peeking up over the grass seam
+    4:      { anchor: 'parallax2', straddle: 0.5,  straddleMobile: 0.25 },
+  };
+  const CHAR_SEAMS = Object.keys(CHAR_SEAM_DEFAULTS).map(slot => ({
+    slot, wrapId: `char-wrap-${slot}`, ...CHAR_SEAM_DEFAULTS[slot]
+  }));
+
+  // Applies admin-configured anchor/offset overrides on top of the defaults above.
+  function applyCharPositions(s) {
+    CHAR_SEAMS.forEach(cfg => {
+      const anchorKey = s[`char_slot_${cfg.slot}_anchor`];
+      if (anchorKey && CHAR_ANCHORS[anchorKey]) cfg.anchor = anchorKey;
+      const offset = parseFloat(s[`char_slot_${cfg.slot}_offset`]);
+      if (!isNaN(offset)) {
+        cfg.straddle = Math.max(0, Math.min(1, offset / 100));
+        cfg.straddleMobile = Math.max(0, Math.min(1, cfg.straddle * 0.5));
+      }
+    });
+  }
 
   function positionCharLayer() {
     const scrollY = window.scrollY || document.documentElement.scrollTop || 0;
     const isMobile = window.innerWidth <= 600;
     CHAR_SEAMS.forEach(cfg => {
       const wrap = document.getElementById(cfg.wrapId);
-      const anchor = document.querySelector(cfg.anchor);
+      const anchor = document.querySelector(CHAR_ANCHORS[cfg.anchor] || cfg.anchor);
       if (!wrap || !anchor) return;
       const seamY = anchor.getBoundingClientRect().bottom + scrollY;
       const h = wrap.getBoundingClientRect().height || wrap.getBoundingClientRect().width;
@@ -1177,19 +1212,25 @@
 
   document.querySelectorAll('.video-porthole video').forEach(video => VIDEO_PORTHOLE_OBSERVER.observe(video));
 
-  // Load parallax background images from site settings
-  (async function() {
+  // Load parallax background images + character art from site settings.
+  // Named + idempotent so it can be re-run on every Realtime change, not just
+  // on first page load — every property it touches is a plain assignment
+  // (img.src, style.X, textContent), so calling it repeatedly is always safe.
+  const HOME_SETTINGS_KEYS = [
+    'parallax_1_img','parallax_2_img','parallax_3_img',
+    'trash_rangers_photo','trash_rangers_alt',
+    'hero_text_shadow_blur','hero_text_shadow_opacity',
+    'hero_subtitle_en','hero_subtitle_es',
+    'char_slot_hero','char_slot_strip','char_slot_footer','char_slot_4',
+    'char_slot_hero_anchor','char_slot_hero_offset',
+    'char_slot_strip_anchor','char_slot_strip_offset',
+    'char_slot_footer_anchor','char_slot_footer_offset',
+    'char_slot_4_anchor','char_slot_4_offset',
+    'grass_divider_url', 'porthole_mission_video_url', 'porthole_gallery_video_url'
+  ];
+
+  function applyHomeSiteSettings(s) {
     try {
-      const { data } = await _sb.from('site_settings').select('key,value').in('key', [
-        'parallax_1_img','parallax_2_img','parallax_3_img',
-        'trash_rangers_photo','trash_rangers_alt',
-        'hero_text_shadow_blur','hero_text_shadow_opacity',
-        'hero_subtitle_en','hero_subtitle_es',
-        'char_slot_hero','char_slot_strip','char_slot_footer',
-        'grass_divider_url', 'porthole_mission_video_url', 'porthole_gallery_video_url'
-      ]);
-      if (data) {
-        const s = Object.fromEntries(data.map(r => [r.key, r.value]));
         if (s.parallax_1_img) document.getElementById('parallax-1').style.backgroundImage = `url('${s.parallax_1_img}')`;
         if (s.parallax_2_img) document.getElementById('parallax-2').style.backgroundImage = `url('${s.parallax_2_img}')`;
         if (s.parallax_3_img) document.getElementById('parallax-3').style.backgroundImage = `url('${s.parallax_3_img}')`;
@@ -1223,15 +1264,43 @@
           if (s.hero_subtitle_es) { const el = sub.querySelector('.es'); if (el) el.textContent = s.hero_subtitle_es; }
         }
         // Trash Rangers character slots — show when admin has uploaded art
-        [['char_slot_hero','char-slot-hero'],['char_slot_strip','char-slot-strip'],['char_slot_footer','char-slot-footer']].forEach(([key, id]) => {
+        [['char_slot_hero','char-slot-hero'],['char_slot_strip','char-slot-strip'],['char_slot_footer','char-slot-footer'],['char_slot_4','char-slot-4']].forEach(([key, id]) => {
           if (!s[key]) return;
           const img = document.getElementById(id);
           if (!img) return;
           img.src = s[key];
           img.onload = () => { img.classList.add('loaded'); positionCharLayer(); };
         });
+        applyCharPositions(s);
+        positionCharLayer();
+    } catch(e) {}
+  }
+
+  // Fetch once on load, then keep pushing live changes via Supabase Realtime —
+  // any admin edit (parallax images, grass divider, videos, hero text, character
+  // art/position) appears on this page within moments, no refresh needed.
+  // _homeSettingsCache holds every known key so a single-row Realtime event can
+  // be merged and the *whole* set re-applied — applying just the changed row
+  // would otherwise reset every other setting back to its hardcoded default.
+  let _homeSettingsCache = {};
+  (async function() {
+    try {
+      const { data } = await _sb.from('site_settings').select('key,value').in('key', HOME_SETTINGS_KEYS);
+      if (data) {
+        _homeSettingsCache = Object.fromEntries(data.map(r => [r.key, r.value]));
+        applyHomeSiteSettings(_homeSettingsCache);
       }
     } catch(e) {}
+
+    _sb.channel('lpn-site-settings-live')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'site_settings' }, payload => {
+        const row = payload.new || payload.old;
+        if (!row || !HOME_SETTINGS_KEYS.includes(row.key)) return;
+        if (payload.eventType === 'DELETE') delete _homeSettingsCache[row.key];
+        else _homeSettingsCache[row.key] = row.value;
+        applyHomeSiteSettings(_homeSettingsCache);
+      })
+      .subscribe();
   })();
 
   // Before & After gallery — fetch approved sets only

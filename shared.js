@@ -93,18 +93,11 @@ function getPageKey() {
   return map[path] || null;
 }
 
-(async function applySiteSettings() {
+// Applies the full site_settings row set to the current page. Named + kept
+// idempotent (reuses/updates existing DOM nodes rather than re-creating them)
+// so it can be called again on every Realtime push, not just once on load.
+function lpnApplySiteSettings(s) {
   try {
-    const SUPABASE_URL = 'https://elgzfppmlsrrmskgloeo.supabase.co';
-    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc';
-    const res = await fetch(SUPABASE_URL+'/rest/v1/site_settings?select=key,value', {
-      headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer '+SUPABASE_ANON }
-    });
-    const rows = await res.json();
-    if (!Array.isArray(rows)) return;
-    const s = {};
-    rows.forEach(function(r){ s[r.key]=r.value; });
-
     const primary   = s.primary_color   || '#1D9E75';
     const secondary = s.secondary_color || '#0F6E56';
     const tintBg    = hexToRgba(primary, 0.07);
@@ -212,40 +205,50 @@ function getPageKey() {
       '#lpn-announcement{background:'+secondary+'!important}',
     ].join('\n');
 
-    const style = document.createElement('style');
-    style.id = 'lpn-theme';
+    // Reuse a single <style> tag — repeated (Realtime-triggered) calls just
+    // replace its contents instead of piling up duplicate stylesheets.
+    let style = document.getElementById('lpn-theme');
+    if (!style) {
+      style = document.createElement('style');
+      style.id = 'lpn-theme';
+      document.head.appendChild(style);
+    }
     style.textContent = css;
-    document.head.appendChild(style);
 
     // ── APPLY HERO IMAGE ──
     const heroEl = document.querySelector('.hero, .page-hero, .dash-hero, .points-banner');
     if (heroImageUrl && heroEl) {
-      // Wrap content in overlay div
       const overlayColor = hexToRgba(secondary, overlayOpacity);
-      const inner = document.createElement('div');
-      inner.style.cssText = 'position:relative;z-index:2;width:100%;';
-      while (heroEl.firstChild) inner.appendChild(heroEl.firstChild);
+      let imgLayer   = heroEl.querySelector(':scope > .lpn-hero-imglayer');
+      let colorLayer = heroEl.querySelector(':scope > .lpn-hero-colorlayer');
+      if (!imgLayer) {
+        // First run on this page — wrap the existing content once so repeated
+        // calls (Realtime updates) update the layers in place instead of
+        // re-wrapping already-wrapped content.
+        const inner = document.createElement('div');
+        inner.className = 'lpn-hero-inner';
+        inner.style.cssText = 'position:relative;z-index:2;width:100%;';
+        while (heroEl.firstChild) inner.appendChild(heroEl.firstChild);
 
-      // Image layer with zoom
-      const imgLayer = document.createElement('div');
-      imgLayer.style.cssText = [
-        'position:absolute;inset:0;',
-        'background-image:url('+heroImageUrl+');',
-        'background-size:'+heroZoom+'%;',
-        'background-position:'+heroPosition+';',
-        'animation:lpn-hero-zoom 6s ease-out forwards;',
-        'z-index:0;',
-      ].join('');
+        imgLayer = document.createElement('div');
+        imgLayer.className = 'lpn-hero-imglayer';
+        imgLayer.style.cssText = 'position:absolute;inset:0;z-index:0;';
 
-      // Color overlay
-      const colorLayer = document.createElement('div');
-      colorLayer.style.cssText = 'position:absolute;inset:0;background:'+overlayColor+';z-index:1;';
+        colorLayer = document.createElement('div');
+        colorLayer.className = 'lpn-hero-colorlayer';
+        colorLayer.style.cssText = 'position:absolute;inset:0;z-index:1;';
 
-      heroEl.style.cssText += ';position:relative;overflow:hidden;background:none!important;';
-      heroEl.appendChild(imgLayer);
-      heroEl.appendChild(colorLayer);
-      heroEl.appendChild(inner);
-    } else if (heroEl) {
+        heroEl.style.cssText += ';position:relative;overflow:hidden;background:none!important;';
+        heroEl.appendChild(imgLayer);
+        heroEl.appendChild(colorLayer);
+        heroEl.appendChild(inner);
+      }
+      imgLayer.style.backgroundImage = 'url('+heroImageUrl+')';
+      imgLayer.style.backgroundSize = heroZoom+'%';
+      imgLayer.style.backgroundPosition = heroPosition;
+      imgLayer.style.animation = 'lpn-hero-zoom 6s ease-out forwards';
+      colorLayer.style.background = overlayColor;
+    } else if (heroEl && !heroEl.querySelector(':scope > .lpn-hero-imglayer')) {
       const currentBg = window.getComputedStyle(heroEl).backgroundImage;
       if (!currentBg || currentBg === 'none') {
         heroEl.style.background = 'linear-gradient(135deg,'+primary+' 0%,'+secondary+' 100%)';
@@ -253,13 +256,52 @@ function getPageKey() {
     }
 
     // ── ANNOUNCEMENT BAR ──
+    let bar = document.getElementById('lpn-announcement');
     if (s.announcement_active === 'true' && s.announcement_text) {
-      const bar = document.createElement('div');
-      bar.id = 'lpn-announcement';
+      if (!bar) {
+        bar = document.createElement('div');
+        bar.id = 'lpn-announcement';
+        document.body.insertBefore(bar, document.body.firstChild);
+      }
       bar.style.cssText = 'background:'+secondary+';color:white;text-align:center;padding:10px 40px 10px 20px;font-size:14px;font-weight:600;font-family:Segoe UI,sans-serif;position:relative;z-index:500;line-height:1.5;';
       bar.innerHTML = s.announcement_text+' <button onclick="this.parentElement.remove()" style="background:none;border:none;color:white;font-size:20px;cursor:pointer;position:absolute;right:16px;top:50%;transform:translateY(-50%);opacity:0.8;">&#x2715;</button>';
-      document.body.insertBefore(bar, document.body.firstChild);
+    } else if (bar) {
+      bar.remove();
     }
+  } catch(e) {}
+}
+
+// Fetch once (fast raw REST call, no library needed) so settings paint
+// immediately, then lazy-load supabase-js and subscribe to Realtime so any
+// admin edit — colors, hero images, announcement bar, and everything else
+// read from site_settings — pushes to every open tab within moments.
+window._lpnSiteSettingsCache = window._lpnSiteSettingsCache || {};
+(async function() {
+  const SUPABASE_URL = 'https://elgzfppmlsrrmskgloeo.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc';
+  try {
+    const res = await fetch(SUPABASE_URL+'/rest/v1/site_settings?select=key,value', {
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer '+SUPABASE_ANON }
+    });
+    const rows = await res.json();
+    if (Array.isArray(rows)) {
+      rows.forEach(function(r){ window._lpnSiteSettingsCache[r.key] = r.value; });
+      lpnApplySiteSettings(window._lpnSiteSettingsCache);
+    }
+  } catch(e) {}
+
+  try {
+    const sb = await getLpnSupabase();
+    if (!sb) return;
+    sb.channel('lpn-site-settings-live-shared')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'site_settings' }, payload => {
+        const row = payload.new || payload.old;
+        if (!row) return;
+        if (payload.eventType === 'DELETE') delete window._lpnSiteSettingsCache[row.key];
+        else window._lpnSiteSettingsCache[row.key] = row.value;
+        lpnApplySiteSettings(window._lpnSiteSettingsCache);
+      })
+      .subscribe();
   } catch(e) {}
 })();
 
