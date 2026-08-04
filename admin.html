@@ -202,7 +202,7 @@
     <button class="tab" onclick="showTab('news', this)">📰 News Posts</button>
     <button class="tab" onclick="showTab('pages', this)">🖼️ Pages</button>
     <button class="tab" onclick="showTab('photos', this)">📷 Photos</button>
-    <button class="tab" onclick="showTab('settings', this)">⚙️ Site Settings</button>
+    <button class="tab" onclick="showTab('settings', this); initCharPreview()">⚙️ Site Settings</button>
     <button class="tab" onclick="showTab('homepage', this); initHomepageTab()">🏠 Homepage</button>
     <button class="tab" onclick="showTab('leadership', this); initLeadershipTab()">👥 Leadership</button>
     <button class="tab" onclick="showTab('print', this)">🖨️ Print Materials</button>
@@ -601,7 +601,16 @@
       <!-- Trash Rangers character slots -->
       <div>
         <p style="font-size:13px;font-weight:700;color:#333;margin-bottom:4px;">Trash Rangers Character Art</p>
-        <p style="font-size:12px;color:#aaa;margin-bottom:16px;">Four decorative positions on the homepage. Leave blank to hide a slot. Pick which section each one straddles and how far it peeks — changes go live on the homepage within moments, no reload needed.</p>
+        <p style="font-size:12px;color:#aaa;margin-bottom:16px;">Four decorative positions on the homepage. Leave blank to hide a slot. Pick which section each one straddles, how far it peeks, and how big it renders — every change updates the preview below instantly, and goes live on the homepage the moment you hit Save.</p>
+
+        <div class="pe-preview-label">Live Preview</div>
+        <div class="hp-preview-box" id="char-preview-box" style="margin-bottom:20px;max-width:640px;">
+          <div class="hp-preview-scale-wrap" id="char-scale-wrap">
+            <iframe id="char-iframe" src="about:blank" height="800"></iframe>
+          </div>
+          <div class="hp-preview-overlay" id="char-preview-overlay">Loading preview…</div>
+        </div>
+
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;">
           <div id="char-card-hero" class="settings-card" style="padding:16px;">
             <p style="font-size:12px;font-weight:700;color:#555;margin-bottom:8px;">Slot 1 — Hero (right side)</p>
@@ -610,15 +619,17 @@
             </div>
             <input type="file" id="char-hero-file" accept="image/*" onchange="previewBrandAsset('char-hero-preview', this)" style="font-size:12px;margin-bottom:8px;display:block;" />
             <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Position (which section it straddles)</label>
-            <select id="char-hero-anchor" style="font-size:12px;width:100%;margin-bottom:8px;padding:5px;border-radius:4px;border:1px solid #ccc;">
+            <select id="char-hero-anchor" onchange="sendCharPreview()" style="font-size:12px;width:100%;margin-bottom:8px;padding:5px;border-radius:4px;border:1px solid #ccc;">
               <option value="hero" selected>Hero</option>
               <option value="strip">Feature Strip</option>
               <option value="parallax1">Parallax 1</option>
               <option value="parallax2">Parallax 2</option>
               <option value="parallax3">Parallax 3 / Footer</option>
             </select>
-            <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Vertical peek: <span id="char-hero-offset-val">50</span>%</label>
-            <input type="range" id="char-hero-offset" min="0" max="100" value="50" oninput="document.getElementById('char-hero-offset-val').textContent=this.value" style="width:100%;margin-bottom:8px;" />
+            <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Vertical peek (moves it up/down): <span id="char-hero-offset-val">50</span>%</label>
+            <input type="range" id="char-hero-offset" min="0" max="100" value="50" oninput="document.getElementById('char-hero-offset-val').textContent=this.value; sendCharPreview()" style="width:100%;margin-bottom:8px;" />
+            <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Size: <span id="char-hero-size-val">100</span>%</label>
+            <input type="range" id="char-hero-size" min="50" max="150" value="100" oninput="document.getElementById('char-hero-size-val').textContent=this.value; sendCharPreview()" style="width:100%;margin-bottom:8px;" />
             <button onclick="saveBrandChar('hero')" style="background:#1D9E75;color:white;border:none;padding:7px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">Save</button>
             <span class="settings-msg" id="char-hero-msg" style="font-size:11px;margin-left:6px;"></span>
           </div>
@@ -629,15 +640,17 @@
             </div>
             <input type="file" id="char-strip-file" accept="image/*" onchange="previewBrandAsset('char-strip-preview', this)" style="font-size:12px;margin-bottom:8px;display:block;" />
             <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Position (which section it straddles)</label>
-            <select id="char-strip-anchor" style="font-size:12px;width:100%;margin-bottom:8px;padding:5px;border-radius:4px;border:1px solid #ccc;">
+            <select id="char-strip-anchor" onchange="sendCharPreview()" style="font-size:12px;width:100%;margin-bottom:8px;padding:5px;border-radius:4px;border:1px solid #ccc;">
               <option value="hero">Hero</option>
               <option value="strip" selected>Feature Strip</option>
               <option value="parallax1">Parallax 1</option>
               <option value="parallax2">Parallax 2</option>
               <option value="parallax3">Parallax 3 / Footer</option>
             </select>
-            <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Vertical peek: <span id="char-strip-offset-val">50</span>%</label>
-            <input type="range" id="char-strip-offset" min="0" max="100" value="50" oninput="document.getElementById('char-strip-offset-val').textContent=this.value" style="width:100%;margin-bottom:8px;" />
+            <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Vertical peek (moves it up/down): <span id="char-strip-offset-val">50</span>%</label>
+            <input type="range" id="char-strip-offset" min="0" max="100" value="50" oninput="document.getElementById('char-strip-offset-val').textContent=this.value; sendCharPreview()" style="width:100%;margin-bottom:8px;" />
+            <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Size: <span id="char-strip-size-val">100</span>%</label>
+            <input type="range" id="char-strip-size" min="50" max="150" value="100" oninput="document.getElementById('char-strip-size-val').textContent=this.value; sendCharPreview()" style="width:100%;margin-bottom:8px;" />
             <button onclick="saveBrandChar('strip')" style="background:#1D9E75;color:white;border:none;padding:7px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">Save</button>
             <span class="settings-msg" id="char-strip-msg" style="font-size:11px;margin-left:6px;"></span>
           </div>
@@ -648,15 +661,17 @@
             </div>
             <input type="file" id="char-footer-file" accept="image/*" onchange="previewBrandAsset('char-footer-preview', this)" style="font-size:12px;margin-bottom:8px;display:block;" />
             <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Position (which section it straddles)</label>
-            <select id="char-footer-anchor" style="font-size:12px;width:100%;margin-bottom:8px;padding:5px;border-radius:4px;border:1px solid #ccc;">
+            <select id="char-footer-anchor" onchange="sendCharPreview()" style="font-size:12px;width:100%;margin-bottom:8px;padding:5px;border-radius:4px;border:1px solid #ccc;">
               <option value="hero">Hero</option>
               <option value="strip">Feature Strip</option>
               <option value="parallax1">Parallax 1</option>
               <option value="parallax2">Parallax 2</option>
               <option value="parallax3" selected>Parallax 3 / Footer</option>
             </select>
-            <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Vertical peek: <span id="char-footer-offset-val">35</span>%</label>
-            <input type="range" id="char-footer-offset" min="0" max="100" value="35" oninput="document.getElementById('char-footer-offset-val').textContent=this.value" style="width:100%;margin-bottom:8px;" />
+            <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Vertical peek (moves it up/down): <span id="char-footer-offset-val">35</span>%</label>
+            <input type="range" id="char-footer-offset" min="0" max="100" value="35" oninput="document.getElementById('char-footer-offset-val').textContent=this.value; sendCharPreview()" style="width:100%;margin-bottom:8px;" />
+            <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Size: <span id="char-footer-size-val">100</span>%</label>
+            <input type="range" id="char-footer-size" min="50" max="150" value="100" oninput="document.getElementById('char-footer-size-val').textContent=this.value; sendCharPreview()" style="width:100%;margin-bottom:8px;" />
             <button onclick="saveBrandChar('footer')" style="background:#1D9E75;color:white;border:none;padding:7px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">Save</button>
             <span class="settings-msg" id="char-footer-msg" style="font-size:11px;margin-left:6px;"></span>
           </div>
@@ -667,15 +682,17 @@
             </div>
             <input type="file" id="char-4-file" accept="image/*" onchange="previewBrandAsset('char-4-preview', this)" style="font-size:12px;margin-bottom:8px;display:block;" />
             <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Position (which section it straddles)</label>
-            <select id="char-4-anchor" style="font-size:12px;width:100%;margin-bottom:8px;padding:5px;border-radius:4px;border:1px solid #ccc;">
+            <select id="char-4-anchor" onchange="sendCharPreview()" style="font-size:12px;width:100%;margin-bottom:8px;padding:5px;border-radius:4px;border:1px solid #ccc;">
               <option value="hero">Hero</option>
               <option value="strip">Feature Strip</option>
               <option value="parallax1">Parallax 1</option>
               <option value="parallax2" selected>Parallax 2</option>
               <option value="parallax3">Parallax 3 / Footer</option>
             </select>
-            <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Vertical peek: <span id="char-4-offset-val">50</span>%</label>
-            <input type="range" id="char-4-offset" min="0" max="100" value="50" oninput="document.getElementById('char-4-offset-val').textContent=this.value" style="width:100%;margin-bottom:8px;" />
+            <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Vertical peek (moves it up/down): <span id="char-4-offset-val">50</span>%</label>
+            <input type="range" id="char-4-offset" min="0" max="100" value="50" oninput="document.getElementById('char-4-offset-val').textContent=this.value; sendCharPreview()" style="width:100%;margin-bottom:8px;" />
+            <label style="font-size:11px;color:#888;display:block;margin-bottom:2px;">Size: <span id="char-4-size-val">100</span>%</label>
+            <input type="range" id="char-4-size" min="50" max="150" value="100" oninput="document.getElementById('char-4-size-val').textContent=this.value; sendCharPreview()" style="width:100%;margin-bottom:8px;" />
             <button onclick="saveBrandChar('4')" style="background:#1D9E75;color:white;border:none;padding:7px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;">Save</button>
             <span class="settings-msg" id="char-4-msg" style="font-size:11px;margin-left:6px;"></span>
           </div>
@@ -2051,6 +2068,9 @@ function previewBrandAsset(previewId, input) {
   reader.onload = e => {
     const img = document.getElementById(previewId);
     if (img) img.src = e.target.result;
+    // Harmless no-op for non-character assets (logo, grass divider) — only
+    // the character slots' preview IDs are read by sendCharPreview().
+    if (typeof sendCharPreview === 'function') sendCharPreview();
   };
   reader.readAsDataURL(file);
 }
@@ -2082,11 +2102,64 @@ async function saveBrandLogo() {
 }
 
 const _CHAR_SLOTS = {
-  hero:   { fileId: 'char-hero-file',   msgId: 'char-hero-msg',   settingKey: 'char_slot_hero',   storagePath: 'characters/slot-hero',   anchorId: 'char-hero-anchor',   offsetId: 'char-hero-offset' },
-  strip:  { fileId: 'char-strip-file',  msgId: 'char-strip-msg',  settingKey: 'char_slot_strip',  storagePath: 'characters/slot-strip',  anchorId: 'char-strip-anchor',  offsetId: 'char-strip-offset' },
-  footer: { fileId: 'char-footer-file', msgId: 'char-footer-msg', settingKey: 'char_slot_footer', storagePath: 'characters/slot-footer', anchorId: 'char-footer-anchor', offsetId: 'char-footer-offset' },
-  4:      { fileId: 'char-4-file',      msgId: 'char-4-msg',      settingKey: 'char_slot_4',      storagePath: 'characters/slot-4',      anchorId: 'char-4-anchor',      offsetId: 'char-4-offset' },
+  hero:   { fileId: 'char-hero-file',   previewId: 'char-hero-preview',   msgId: 'char-hero-msg',   settingKey: 'char_slot_hero',   storagePath: 'characters/slot-hero',   anchorId: 'char-hero-anchor',   offsetId: 'char-hero-offset',   sizeId: 'char-hero-size' },
+  strip:  { fileId: 'char-strip-file',  previewId: 'char-strip-preview',  msgId: 'char-strip-msg',  settingKey: 'char_slot_strip',  storagePath: 'characters/slot-strip',  anchorId: 'char-strip-anchor',  offsetId: 'char-strip-offset',  sizeId: 'char-strip-size' },
+  footer: { fileId: 'char-footer-file', previewId: 'char-footer-preview', msgId: 'char-footer-msg', settingKey: 'char_slot_footer', storagePath: 'characters/slot-footer', anchorId: 'char-footer-anchor', offsetId: 'char-footer-offset', sizeId: 'char-footer-size' },
+  4:      { fileId: 'char-4-file',      previewId: 'char-4-preview',      msgId: 'char-4-msg',      settingKey: 'char_slot_4',      storagePath: 'characters/slot-4',      anchorId: 'char-4-anchor',      offsetId: 'char-4-offset',      sizeId: 'char-4-size' },
 };
+
+// Pushes every slot's current (possibly unsaved) state into the live preview
+// iframe: file picked but not yet saved → local FileReader dataURL; nothing
+// picked yet → whatever URL is already showing (saved art from Supabase, or
+// blank). This is why picking a file, dragging a slider, or changing the
+// position dropdown all call this — the preview always reflects what's
+// currently in the form, not what's in the database.
+function sendCharPreview() {
+  const iframe = document.getElementById('char-iframe');
+  if (!iframe || !iframe.contentWindow) return;
+  const slots = {};
+  Object.keys(_CHAR_SLOTS).forEach(slot => {
+    const cfg = _CHAR_SLOTS[slot];
+    slots[slot] = {
+      src:    document.getElementById(cfg.previewId)?.src || '',
+      anchor: document.getElementById(cfg.anchorId)?.value,
+      offset: document.getElementById(cfg.offsetId)?.value,
+      size:   document.getElementById(cfg.sizeId)?.value,
+    };
+  });
+  iframe.contentWindow.postMessage({ type: 'lpn-char-preview', slots }, '*');
+}
+
+// Lazily loads the preview iframe the first time the Site Settings tab is
+// opened (mirrors initHomepageTab()'s pattern for the Homepage tab's iframe).
+let _charIfReady = false;
+function initCharPreview() {
+  const iframe = document.getElementById('char-iframe');
+  if (!iframe) return;
+  if (_charIfReady) { sendCharPreview(); return; }
+  iframe.onload = () => {
+    _charIfReady = true;
+    const overlay = document.getElementById('char-preview-overlay');
+    if (overlay) overlay.style.display = 'none';
+    updateCharPreviewScale();
+    sendCharPreview();
+  };
+  iframe.src = 'index.html?admin-preview=1';
+  window.addEventListener('resize', updateCharPreviewScale);
+}
+
+function updateCharPreviewScale() {
+  const box    = document.getElementById('char-preview-box');
+  const wrap   = document.getElementById('char-scale-wrap');
+  const iframe = document.getElementById('char-iframe');
+  if (!box || !wrap || !iframe) return;
+  const containerW = box.clientWidth || 600;
+  const scale       = containerW / 1280;
+  const iframeH     = 800;
+  iframe.style.transform = `scale(${scale})`;
+  iframe.style.height    = iframeH + 'px';
+  wrap.style.height       = Math.round(iframeH * scale) + 'px';
+}
 
 // Saves the image (if a new one was picked) and the position (anchor + peek
 // offset) together — the Realtime subscription in shared.js/index.html
@@ -2098,6 +2171,7 @@ async function saveBrandChar(slot) {
   const file     = document.getElementById(cfg.fileId).files[0];
   const anchorEl = document.getElementById(cfg.anchorId);
   const offsetEl = document.getElementById(cfg.offsetId);
+  const sizeEl   = document.getElementById(cfg.sizeId);
   msgEl.style.color = '#888';
   msgEl.textContent = 'Saving…';
   try {
@@ -2112,6 +2186,7 @@ async function saveBrandChar(slot) {
     }
     if (anchorEl) rows.push({ key: `${cfg.settingKey}_anchor`, value: anchorEl.value });
     if (offsetEl) rows.push({ key: `${cfg.settingKey}_offset`, value: String(offsetEl.value) });
+    if (sizeEl)   rows.push({ key: `${cfg.settingKey}_size`,   value: String(sizeEl.value) });
     await _sb.from('site_settings').upsert(rows, { onConflict: 'key' });
     if (file) document.getElementById(cfg.fileId).value = '';
     msgEl.style.color = '#0F6E56';
@@ -2327,11 +2402,18 @@ async function loadSettingsTab() {
     const anchorEl = document.getElementById(cfg.anchorId);
     const offsetEl = document.getElementById(cfg.offsetId);
     const offsetValEl = document.getElementById(`${cfg.offsetId}-val`);
+    const sizeEl = document.getElementById(cfg.sizeId);
+    const sizeValEl = document.getElementById(`${cfg.sizeId}-val`);
     const anchorVal = s[`${cfg.settingKey}_anchor`];
     const offsetVal = s[`${cfg.settingKey}_offset`];
+    const sizeVal = s[`${cfg.settingKey}_size`];
     if (anchorEl && anchorVal) anchorEl.value = anchorVal;
     if (offsetEl && offsetVal) { offsetEl.value = offsetVal; if (offsetValEl) offsetValEl.textContent = offsetVal; }
+    if (sizeEl && sizeVal) { sizeEl.value = sizeVal; if (sizeValEl) sizeValEl.textContent = sizeVal; }
   });
+  // Reflects the just-loaded saved state in the preview iframe, if it's
+  // already open (e.g. Settings tab re-visited after Homepage tab).
+  if (typeof sendCharPreview === 'function') sendCharPreview();
   if (s.grass_divider_url) { const img = document.getElementById('grass-divider-preview'); if (img) img.src = s.grass_divider_url; }
   if (s.porthole_mission_video_url) { const v = document.getElementById('porthole-mission-preview'); if (v) { v.src = s.porthole_mission_video_url; v.play().catch(() => {}); } }
   if (s.porthole_gallery_video_url) { const v = document.getElementById('porthole-gallery-preview'); if (v) { v.src = s.porthole_gallery_video_url; v.play().catch(() => {}); } }

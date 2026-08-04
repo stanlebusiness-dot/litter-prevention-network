@@ -327,6 +327,15 @@
     }
     .char-slot-wrap {
       position: absolute; pointer-events: none; overflow: visible;
+      /* Width is built from --char-min/pref/max × --char-scale so a single
+         admin-editable scale (0.3–2, default 1 = 100%) resizes the character
+         without duplicating the clamp() formula in the mobile media query
+         below — mobile only overrides the three base vars. */
+      width: clamp(
+        calc(var(--char-min) * var(--char-scale, 1)),
+        calc(var(--char-pref) * var(--char-scale, 1)),
+        calc(var(--char-max) * var(--char-scale, 1))
+      );
     }
     .char-slot-wrap img {
       display: block; width: 100%; height: auto; object-fit: contain; opacity: 0;
@@ -345,30 +354,30 @@
     }
     /* Hero character — straddles the hero/feature-strip seam, right side */
     #char-wrap-hero {
-      right: 2%; width: clamp(100px, 15vw, 200px);
+      right: 2%; --char-min: 100px; --char-pref: 15vw; --char-max: 200px;
       --char-float-dur: 5s; --char-float-delay: 0s;
     }
     /* Feature strip character — straddles the feature-strip/parallax-1 seam */
     #char-wrap-strip {
-      right: 0; width: clamp(80px, 10vw, 140px);
+      right: 0; --char-min: 80px; --char-pref: 10vw; --char-max: 140px;
       --char-float-dur: 6s; --char-float-delay: 0.7s;
     }
     /* Footer character — straddles the parallax-3/footer (grass) seam */
     #char-wrap-footer {
-      right: 40px; width: clamp(70px, 9vw, 120px);
+      right: 40px; --char-min: 70px; --char-pref: 9vw; --char-max: 120px;
       --char-float-dur: 4.5s; --char-float-delay: 1.4s;
     }
     /* 4th character — left side (default anchor/offset are admin-editable; see CHAR_SEAMS) */
     #char-wrap-4 {
-      left: 2%; width: clamp(80px, 11vw, 150px);
+      left: 2%; --char-min: 80px; --char-pref: 11vw; --char-max: 150px;
       --char-float-dur: 5.5s; --char-float-delay: 2.1s;
     }
     /* Mobile: shrink to ~45% instead of hiding — still peeking in, clear of text */
     @media (max-width: 600px) {
-      #char-wrap-hero   { right: 2%;  width: clamp(45px, 22vw, 90px); }
-      #char-wrap-strip  { right: 4px; width: clamp(38px, 18vw, 65px); }
-      #char-wrap-footer { right: 12px; width: clamp(32px, 15vw, 55px); }
-      #char-wrap-4      { left: 2%;   width: clamp(35px, 17vw, 70px); }
+      #char-wrap-hero   { right: 2%;  --char-min: 45px; --char-pref: 22vw; --char-max: 90px; }
+      #char-wrap-strip  { right: 4px; --char-min: 38px; --char-pref: 18vw; --char-max: 65px; }
+      #char-wrap-footer { right: 12px; --char-min: 32px; --char-pref: 15vw; --char-max: 55px; }
+      #char-wrap-4      { left: 2%;   --char-min: 35px; --char-pref: 17vw; --char-max: 70px; }
     }
 
     /* ── FOOTER GRASS DIVIDER ── */
@@ -1147,7 +1156,17 @@
     slot, wrapId: `char-wrap-${slot}`, ...CHAR_SEAM_DEFAULTS[slot]
   }));
 
-  // Applies admin-configured anchor/offset overrides on top of the defaults above.
+  // Sets the --char-scale custom property the CSS width clamp() reads (see
+  // #char-layer CSS) — size is an admin-editable 50–150% (clamped 30–200%
+  // defensively), default 100% (scale 1) when unset.
+  function applyCharScale(wrapId, sizePct) {
+    const wrap = document.getElementById(wrapId);
+    if (!wrap) return;
+    const size = parseFloat(sizePct);
+    wrap.style.setProperty('--char-scale', !isNaN(size) ? Math.max(0.3, Math.min(2, size / 100)) : 1);
+  }
+
+  // Applies admin-configured anchor/offset/size overrides on top of the defaults above.
   function applyCharPositions(s) {
     CHAR_SEAMS.forEach(cfg => {
       const anchorKey = s[`char_slot_${cfg.slot}_anchor`];
@@ -1157,6 +1176,7 @@
         cfg.straddle = Math.max(0, Math.min(1, offset / 100));
         cfg.straddleMobile = Math.max(0, Math.min(1, cfg.straddle * 0.5));
       }
+      applyCharScale(cfg.wrapId, s[`char_slot_${cfg.slot}_size`]);
     });
   }
 
@@ -1180,6 +1200,40 @@
   });
   document.addEventListener('lpn-homepage-config', () => setTimeout(positionCharLayer, 250));
   positionCharLayer();
+
+  // ── Character live preview (admin.html iframe, unsaved-state) ──
+  // admin.html's Trash Rangers card posts this on every slider drag/anchor
+  // pick/file choice — even before Save — so the admin sees the real
+  // section-seam layout update instantly. slots: { <slot>: { src, anchor,
+  // offset, size } }. Not gated to the admin-preview iframe (like the
+  // homepage-config 'lpn-preview' message above it isn't either) since no
+  // other page ever sends this message.
+  function applyCharPreviewData(slots) {
+    if (!slots) return;
+    Object.keys(slots).forEach(slot => {
+      const data = slots[slot];
+      const cfg = CHAR_SEAMS.find(c => c.slot === slot);
+      const img = document.getElementById(`char-slot-${slot}`);
+      if (!cfg || !img) return;
+      if (data.src && img.src !== data.src) {
+        img.src = data.src;
+        img.onload = () => { img.classList.add('loaded'); positionCharLayer(); };
+      } else if (data.src) {
+        img.classList.add('loaded');
+      }
+      if (data.anchor && CHAR_ANCHORS[data.anchor]) cfg.anchor = data.anchor;
+      const offset = parseFloat(data.offset);
+      if (!isNaN(offset)) {
+        cfg.straddle = Math.max(0, Math.min(1, offset / 100));
+        cfg.straddleMobile = Math.max(0, Math.min(1, cfg.straddle * 0.5));
+      }
+      applyCharScale(cfg.wrapId, data.size);
+    });
+    positionCharLayer();
+  }
+  window.addEventListener('message', (e) => {
+    if (e.data?.type === 'lpn-char-preview') applyCharPreviewData(e.data.slots);
+  });
 
   // ── Video portholes — circular looping-clip component ──
   // Sources are admin-editable (Site Settings → Video Portholes, uploads to
@@ -1222,10 +1276,10 @@
     'hero_text_shadow_blur','hero_text_shadow_opacity',
     'hero_subtitle_en','hero_subtitle_es',
     'char_slot_hero','char_slot_strip','char_slot_footer','char_slot_4',
-    'char_slot_hero_anchor','char_slot_hero_offset',
-    'char_slot_strip_anchor','char_slot_strip_offset',
-    'char_slot_footer_anchor','char_slot_footer_offset',
-    'char_slot_4_anchor','char_slot_4_offset',
+    'char_slot_hero_anchor','char_slot_hero_offset','char_slot_hero_size',
+    'char_slot_strip_anchor','char_slot_strip_offset','char_slot_strip_size',
+    'char_slot_footer_anchor','char_slot_footer_offset','char_slot_footer_size',
+    'char_slot_4_anchor','char_slot_4_offset','char_slot_4_size',
     'grass_divider_url', 'porthole_mission_video_url', 'porthole_gallery_video_url'
   ];
 
