@@ -558,6 +558,24 @@ async function getLpnSupabase() {
   );
 }
 
+async function lpnSendWelcomeConfirmation(sb, { email, fullName, language }) {
+  try {
+    const randomBytes = crypto.getRandomValues(new Uint8Array(24));
+    const password = Array.from(randomBytes, b => b.toString(16).padStart(2, '0')).join('');
+    const { error } = await sb.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { full_name: fullName, lang: language, source: 'welcome_email' },
+        emailRedirectTo: 'https://litterpreventionnetwork.org/dashboard.html'
+      }
+    });
+    if (error) console.error('[LPN] welcome confirmation signUp failed:', error.message);
+  } catch (e) {
+    console.error('[LPN] welcome confirmation signUp threw:', e);
+  }
+}
+
 async function getSignedInUser() {
   const sb = await getLpnSupabase();
   if (!sb) return null;

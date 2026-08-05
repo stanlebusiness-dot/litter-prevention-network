@@ -326,6 +326,7 @@
           signup_source: getSignupSource(),
         });
         if (error) throw error;
+        lpnSendWelcomeConfirmation(_sb, { email, fullName, language }); // fire-and-forget — must not block the success UI
         form.innerHTML = `
           <div style="text-align:center;padding:20px 10px;">
             <div style="font-size:54px;margin-bottom:12px;">🎉</div>
@@ -339,7 +340,15 @@
         await refreshCount();
       } catch (error) {
         console.error(error);
-        alert(_t('Something went wrong — please try again in a moment.', 'Algo salió mal — por favor intenta de nuevo en un momento.'));
+        const isDupe = error.message?.toLowerCase().includes('duplicate') ||
+                       error.message?.toLowerCase().includes('unique') ||
+                       error.code === '23505';
+        alert(isDupe
+          ? _t('That email is already registered. Try signing in instead.',
+               'Ese correo ya está registrado. Intenta iniciar sesión.')
+          : _t('Something went wrong — please try again in a moment.',
+               'Algo salió mal — por favor intenta de nuevo en un momento.')
+        );
         submitBtn.disabled = false;
         submitBtn.innerHTML = _t('Create My Account', 'Crear Mi Cuenta');
       }

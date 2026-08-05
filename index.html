@@ -1642,6 +1642,7 @@
              'Algo salió mal — por favor intenta de nuevo en un momento.')
       );
     } else {
+      lpnSendWelcomeConfirmation(_sb, { email, fullName: full_name, language }); // fire-and-forget — must not block the success UI
       document.querySelector('.signup').innerHTML = `
         <div style="text-align:center;padding:40px 20px">
           <div style="font-size:64px;margin-bottom:16px">🎉</div>

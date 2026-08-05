@@ -1,0 +1,54 @@
+<!--
+  Source-of-truth copy for Supabase Dashboard → Authentication → Email Templates → "Confirm signup".
+  Supabase does NOT read this file automatically — paste the <body> content below into the
+  dashboard's template editor manually, and set the Subject field as noted underneath.
+
+  Subject:
+    Welcome to the Litter Prevention Network! / ¡Bienvenido a la Red de Prevención de Basura!
+
+  Supabase template variables used: {{ .ConfirmationURL }}
+  (Per-user language isn't reliably available inside native Supabase templates, so both
+  English and Spanish are always shown, stacked — see plan notes for why.)
+-->
+<div style="max-width:560px;margin:0 auto;padding:32px 24px;font-family:Arial,Helvetica,sans-serif;color:#222;">
+
+  <div style="text-align:center;margin-bottom:24px;">
+    <img src="https://litterpreventionnetwork.org/logo_500x500.svg" alt="Litter Prevention Network" width="72" height="72" style="display:inline-block;" />
+  </div>
+
+  <!-- English -->
+  <h1 style="font-size:22px;color:#1D9E75;margin:0 0 12px;">Welcome to the Litter Prevention Network!</h1>
+  <p style="font-size:15px;line-height:1.6;margin:0 0 20px;">
+    You're officially a member — thanks for joining us in keeping Willis, TX litter-free.
+    Please confirm your email to finish setting up your account.
+  </p>
+  <div style="text-align:center;margin:0 0 28px;">
+    <a href="{{ .ConfirmationURL }}" style="display:inline-block;background:#1D9E75;color:#ffffff;padding:12px 28px;border-radius:8px;font-weight:bold;text-decoration:none;font-size:15px;">
+      Confirm My Email
+    </a>
+  </div>
+
+  <hr style="border:none;border-top:1px solid #e5e5e5;margin:0 0 28px;" />
+
+  <!-- Español -->
+  <h1 style="font-size:22px;color:#1D9E75;margin:0 0 12px;">¡Bienvenido a la Red de Prevención de Basura!</h1>
+  <p style="font-size:15px;line-height:1.6;margin:0 0 20px;">
+    Ya eres parte de nuestra comunidad — gracias por unirte para mantener Willis, TX libre de basura.
+    Por favor confirma tu correo para terminar de configurar tu cuenta.
+  </p>
+  <div style="text-align:center;margin:0 0 28px;">
+    <a href="{{ .ConfirmationURL }}" style="display:inline-block;background:#1D9E75;color:#ffffff;padding:12px 28px;border-radius:8px;font-weight:bold;text-decoration:none;font-size:15px;">
+      Confirmar Mi Correo
+    </a>
+  </div>
+
+  <hr style="border:none;border-top:1px solid #e5e5e5;margin:0 0 20px;" />
+
+  <p style="text-align:center;font-size:13px;color:#888;line-height:1.6;margin:0;">
+    Litter Prevention Network · Willis, TX<br />
+    <a href="https://litterpreventionnetwork.org/" style="color:#1D9E75;text-decoration:none;">litterpreventionnetwork.org</a>
+    &nbsp;·&nbsp;
+    <a href="mailto:stanley@litterpreventionnetwork.org" style="color:#1D9E75;text-decoration:none;">stanley@litterpreventionnetwork.org</a>
+  </p>
+
+</div>
