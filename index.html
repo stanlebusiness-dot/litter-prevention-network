@@ -131,6 +131,8 @@
       padding: 10px 14px;
       border-radius: 10px;
       backdrop-filter: blur(2px);
+      /* height is intentionally content-driven — grows/shrinks with tagline length */
+      overflow-wrap: anywhere;
     }
     .hero-btns { display: flex; flex-direction: row; gap: 14px; flex-wrap: wrap; }
     .hero-cta-group {
