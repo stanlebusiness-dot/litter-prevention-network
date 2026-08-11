@@ -1599,7 +1599,8 @@ async function declineSponsor(id) {
 }
 
 async function markMessageRead(id) {
-  await _sb.from('contact_messages').update({ status: 'read' }).eq('id', id);
+  const { error } = await _sb.from('contact_messages').update({ status: 'read' }).eq('id', id);
+  if (error) { alert('Error marking message as read: ' + error.message); return; }
   loadAll();
 }
 
@@ -2173,7 +2174,7 @@ async function saveBrandLogo() {
   try {
     if (!file) { msgEl.textContent = 'No file selected.'; return; }
     const ext = file.name.split('.').pop().toLowerCase();
-    const path = `logo/lpn-logo.${ext}`;
+    const path = `logo/lpn-logo-${Date.now()}.${ext}`;
     const { error: upErr } = await _sb.storage.from('site-images').upload(path, file, { upsert: true });
     if (upErr) throw upErr;
     const { data: { publicUrl } } = _sb.storage.from('site-images').getPublicUrl(path);

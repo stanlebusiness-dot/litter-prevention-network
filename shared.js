@@ -98,6 +98,13 @@ function getPageKey() {
 // so it can be called again on every Realtime push, not just once on load.
 function lpnApplySiteSettings(s) {
   try {
+    // ── LOGO (live updates via the same site_settings Realtime subscription) ──
+    if (s.logo_url) {
+      document.querySelectorAll('.nav-logo img, .footer-logo-img').forEach(img => { img.src = s.logo_url; });
+      const fav = document.querySelector('link[rel="icon"]');
+      if (fav) fav.href = s.logo_url;
+    }
+
     const primary   = s.primary_color   || '#1D9E75';
     const secondary = s.secondary_color || '#0F6E56';
     const tintBg    = hexToRgba(primary, 0.07);
