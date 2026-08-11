@@ -269,6 +269,7 @@
     .no-events { text-align: center; padding: 48px 24px; background: #f9f9f7; border-radius: 16px; border: 2px dashed #ddd; }
     .no-events h3 { font-size: 20px; font-weight: 800; color: #0F2318; margin-bottom: 8px; font-family: 'Outfit', sans-serif; }
     .no-events p { font-size: 15px; color: #888; line-height: 1.6; }
+    @media (max-width: 700px) { .contact-wrap-hp { grid-template-columns: 1fr !important; } }
     .mission h2 { font-size: 32px; margin-bottom: 20px; font-family: 'Outfit', sans-serif; }
     .mission p { font-size: 17px; color: #555; line-height: 1.8; }
     .mission .sub-tag { font-size: 14px; color: #0F6E56; font-style: italic; margin-top: 16px; font-weight: 600; }
@@ -511,26 +512,17 @@
       <span></span><span></span><span></span>
     </button>
         <div class="nav-links-desktop">
-      <a href="index.html#about">About Us</a>
-      <a href="our-work.html">Trash Rangers</a>
-      <div class="nav-dropdown">
-        <button class="nav-drop-btn">Resources <span class="nav-drop-arrow">&#9662;</span></button>
-        <div class="nav-drop-menu">
-          <a href="coming-soon.html">Schools</a>
-          <a href="index.html#events">Events</a>
-          <a href="index.html#faq">FAQ</a>
-        </div>
-      </div>
+      <a href="index.html">Home</a>
+      <a href="our-work.html">Trash Rangers / Schools</a>
       <div class="nav-dropdown">
         <button class="nav-drop-btn">Get Involved <span class="nav-drop-arrow">&#9662;</span></button>
         <div class="nav-drop-menu">
           <a href="index.html#help">How You Can Help</a>
           <a href="donate.html">Donate</a>
-          <a href="sponsors.html">Become a Sponsor</a>
-          <a href="coming-soon.html">Future Phases</a>
+          <a href="index.html#sponsor">Become a Sponsor</a>
+          <a href="index.html#contact">Contact</a>
         </div>
       </div>
-      <a href="contact.html">Contact</a>
       <a href="signin.html" class="nav-signin-btn" id="desktop-nav-auth">Sign In</a>
     </div>
   </nav>
@@ -755,7 +747,7 @@
         <h3><span class="en">Learn &amp; Prevent</span><span class="es">Aprende y Previene</span></h3>
         <p><span class="en">Discover how litter enters our community and what simple habits stop it — secure loads, covered bins, picking up one piece a day.</span><span class="es">Descubre cómo llega la basura a nuestra comunidad y qué hábitos simples la detienen — cargas aseguradas, contenedores tapados, recoger una pieza al día.</span></p>
       </a>
-      <a href="contact.html" class="step">
+      <a href="index.html#contact" class="step">
         <div class="step-num">3</div>
         <h3><span class="en">Spread the Word</span><span class="es">Corre la Voz</span></h3>
         <p><span class="en">Share prevention tips with neighbors, post on social media, or talk to your kids' school about starting an LPN chapter.</span><span class="es">Comparte consejos de prevención con vecinos, publica en redes sociales o habla con la escuela de tus hijos sobre iniciar un capítulo LPN.</span></p>
@@ -1043,7 +1035,129 @@
     <div style="background:#f9f9f7;border-radius:16px;padding:40px;text-align:center;margin-top:32px;border:1px solid #eee;">
       <h3 style="font-size:22px;font-weight:800;font-family:'Outfit',sans-serif;color:#0F2318;margin-bottom:10px;"><span class="en">Still have questions?</span><span class="es">¿Todavía tienes preguntas?</span></h3>
       <p style="color:#666;font-size:15px;margin-bottom:24px;line-height:1.7;"><span class="en">We're happy to help. Reach out to us directly and we'll get back to you as soon as possible.</span><span class="es">Estamos felices de ayudar. Contáctanos directamente y te responderemos lo antes posible.</span></p>
-      <a href="contact.html" class="btn-green"><span class="en">Contact Us</span><span class="es">Contáctanos</span></a>
+      <a href="#contact" class="btn-green"><span class="en">Contact Us</span><span class="es">Contáctanos</span></a>
+    </div>
+  </section>
+
+  <!-- ══ SPONSOR ══ -->
+  <section id="sponsor" style="max-width:900px;margin:0 auto;padding:56px 40px;">
+    <span class="section-tag"><span class="en">Get Involved</span><span class="es">Participa</span></span>
+    <h2 style="font-size:30px;font-family:'Outfit',sans-serif;margin:12px 0 20px;"><span class="en">Become a Sponsor</span><span class="es">Conviértete en Patrocinador</span></h2>
+    <p style="font-size:16px;color:#555;line-height:1.8;margin-bottom:32px;"><span class="en">The Litter Prevention Network is built on community partnerships. By becoming a sponsor, your business or organization helps fund educational programs, community outreach, and litter prevention initiatives.</span><span class="es">La Red de Prevención de Basura está construida sobre alianzas comunitarias. Al convertirte en patrocinador, tu empresa ayuda a financiar programas educativos y de divulgación comunitaria.</span></p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;margin-bottom:40px;">
+      <div style="background:#f9f9f7;border-radius:12px;padding:22px 18px;border:1px solid #e8f0eb;">
+        <div style="font-size:26px;margin-bottom:8px;">🏆</div>
+        <h4 style="font-size:14px;font-weight:700;font-family:'Outfit',sans-serif;margin-bottom:6px;"><span class="en">Community Pride</span><span class="es">Orgullo Comunitario</span></h4>
+        <p style="font-size:13px;color:#666;line-height:1.6;"><span class="en">Your brand is associated with community pride and environmental responsibility.</span><span class="es">Tu marca se asocia con el orgullo comunitario y la responsabilidad ambiental.</span></p>
+      </div>
+      <div style="background:#f9f9f7;border-radius:12px;padding:22px 18px;border:1px solid #e8f0eb;">
+        <div style="font-size:26px;margin-bottom:8px;">🎯</div>
+        <h4 style="font-size:14px;font-weight:700;font-family:'Outfit',sans-serif;margin-bottom:6px;"><span class="en">Community Reach</span><span class="es">Alcance Comunitario</span></h4>
+        <p style="font-size:13px;color:#666;line-height:1.6;"><span class="en">Reach families, schools, businesses, and community leaders across Willis.</span><span class="es">Llega a familias, escuelas, empresas y líderes comunitarios en Willis.</span></p>
+      </div>
+      <div style="background:#f9f9f7;border-radius:12px;padding:22px 18px;border:1px solid #e8f0eb;">
+        <div style="font-size:26px;margin-bottom:8px;">📣</div>
+        <h4 style="font-size:14px;font-weight:700;font-family:'Outfit',sans-serif;margin-bottom:6px;"><span class="en">Broad Recognition</span><span class="es">Reconocimiento Amplio</span></h4>
+        <p style="font-size:13px;color:#666;line-height:1.6;"><span class="en">Be recognized on our website, social media, and at community events.</span><span class="es">Sé reconocido en nuestro sitio web, redes sociales y eventos comunitarios.</span></p>
+      </div>
+      <div style="background:#f9f9f7;border-radius:12px;padding:22px 18px;border:1px solid #e8f0eb;">
+        <div style="font-size:26px;margin-bottom:8px;">⭐</div>
+        <h4 style="font-size:14px;font-weight:700;font-family:'Outfit',sans-serif;margin-bottom:6px;"><span class="en">Support Youth Programs</span><span class="es">Apoya Programas Juveniles</span></h4>
+        <p style="font-size:13px;color:#666;line-height:1.6;"><span class="en">Support programs like Trash Rangers that directly impact local schools.</span><span class="es">Apoya programas como Trash Rangers que impactan a las escuelas locales.</span></p>
+      </div>
+    </div>
+
+    <div style="background:#f9f9f7;border-radius:16px;padding:36px;border:1px solid #eee;max-width:560px;margin:0 auto;">
+      <h3 style="font-size:20px;font-weight:800;font-family:'Outfit',sans-serif;color:#0F2318;margin-bottom:20px;text-align:left;"><span class="en">Sponsor Interest Form</span><span class="es">Formulario de Interés</span></h3>
+      <div id="sponsor-form">
+        <div class="form-group">
+          <label><span class="en">Company / Organization Name</span><span class="es">Nombre de la Empresa</span></label>
+          <input type="text" id="sp-company" placeholder="Acme Co." />
+        </div>
+        <div class="form-group">
+          <label><span class="en">Contact Name</span><span class="es">Nombre de Contacto</span></label>
+          <input type="text" id="sp-contact" placeholder="Jane Smith" />
+        </div>
+        <div class="form-group">
+          <label><span class="en">Contact Email</span><span class="es">Correo de Contacto</span></label>
+          <input type="email" id="sp-email" placeholder="you@company.com" />
+        </div>
+        <div class="form-group">
+          <label><span class="en">Phone (optional)</span><span class="es">Teléfono (opcional)</span></label>
+          <input type="tel" id="sp-phone" placeholder="xxx-xxx-xxxx" />
+        </div>
+        <div class="form-group">
+          <label><span class="en">Website (optional)</span><span class="es">Sitio Web (opcional)</span></label>
+          <input type="text" id="sp-website" placeholder="https://" />
+        </div>
+        <div class="form-group">
+          <label><span class="en">Sponsorship Type</span><span class="es">Tipo de Patrocinio</span></label>
+          <select id="sp-type">
+            <option value="Community Partner"><span class="en">Community Partner</span></option>
+            <option value="Program Sponsor"><span class="en">Program Sponsor</span></option>
+            <option value="Event Sponsor"><span class="en">Event Sponsor</span></option>
+            <option value="Corporate Partner"><span class="en">Corporate Partner</span></option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label><span class="en">Message</span><span class="es">Mensaje</span></label>
+          <textarea id="sp-message" rows="4" placeholder="Tell us about your interest..."></textarea>
+        </div>
+        <button class="btn-submit" id="sp-btn"><span class="en">Send My Interest</span><span class="es">Enviar Mi Interés</span></button>
+        <div id="sp-msg" style="display:none;margin-top:16px;padding:14px;border-radius:8px;font-size:14px;text-align:center;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ CONTACT ══ -->
+  <section id="contact" style="max-width:900px;margin:0 auto;padding:56px 40px;background:#f9f9f7;">
+    <span class="section-tag"><span class="en">Get Involved</span><span class="es">Participa</span></span>
+    <h2 style="font-size:30px;font-family:'Outfit',sans-serif;margin:12px 0 32px;"><span class="en">Contact Us</span><span class="es">Contáctanos</span></h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;" class="contact-wrap-hp">
+      <div>
+        <p style="font-size:15px;color:#555;line-height:1.8;margin-bottom:28px;"><span class="en">Whether you have a question, want to get involved, or are interested in sponsoring — we're here and happy to help.</span><span class="es">Ya sea que tengas una pregunta, quieras involucrarte o estés interesado en patrocinar, estamos aquí para ayudar.</span></p>
+        <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;">
+          <div style="font-size:22px;">📍</div>
+          <div><h4 style="font-size:13px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Location</h4><p style="margin:0;">Willis, TX 77378</p></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;">
+          <div style="font-size:22px;">📞</div>
+          <div><h4 style="font-size:13px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Phone</h4><p style="margin:0;"><a href="tel:2819359097" style="color:#1D9E75;font-weight:600;">(281) 935-9097</a></p></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:20px;">
+          <div style="font-size:22px;">📧</div>
+          <div><h4 style="font-size:13px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Email</h4><p style="margin:0;"><a href="mailto:stanley@litterpreventionnetwork.org" style="color:#1D9E75;font-weight:600;">stanley@litterpreventionnetwork.org</a></p></div>
+        </div>
+      </div>
+      <div style="background:white;border-radius:16px;padding:32px;border:1px solid #eee;">
+        <div id="contact-form">
+          <div class="form-group">
+            <label><span class="en">Your Name</span><span class="es">Tu Nombre</span></label>
+            <input type="text" id="ct-name" placeholder="Jane Smith" />
+          </div>
+          <div class="form-group">
+            <label><span class="en">Email Address</span><span class="es">Correo Electrónico</span></label>
+            <input type="email" id="ct-email" placeholder="you@email.com" />
+          </div>
+          <div class="form-group">
+            <label><span class="en">Subject</span><span class="es">Asunto</span></label>
+            <select id="ct-subject">
+              <option value="general"><span class="en">General Question</span></option>
+              <option value="sponsor"><span class="en">Sponsorship / Partnership</span></option>
+              <option value="school"><span class="en">School Outreach</span></option>
+              <option value="media"><span class="en">Media / Press</span></option>
+              <option value="other"><span class="en">Other</span></option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label><span class="en">Message</span><span class="es">Mensaje</span></label>
+            <textarea id="ct-message" rows="4" placeholder="How can we help you?"></textarea>
+          </div>
+          <button class="btn-submit" id="ct-btn"><span class="en">Send Message</span><span class="es">Enviar Mensaje</span></button>
+          <div id="ct-msg" style="display:none;margin-top:16px;padding:14px;border-radius:8px;font-size:14px;text-align:center;"></div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1072,7 +1186,7 @@
     <div class="ba-grid" id="before-after-grid">
       <div class="ba-placeholder-msg"><span class="en">Loading photos…</span><span class="es">Cargando fotos…</span></div>
     </div>
-    <a href="contact.html" style="display:inline-block;background:#1D9E75;color:white;font-family:'Outfit',sans-serif;font-weight:700;font-size:15px;padding:13px 30px;border-radius:8px;text-decoration:none;"><span class="en">Submit Your Photos</span><span class="es">Envía Tus Fotos</span></a>
+    <a href="index.html#contact" style="display:inline-block;background:#1D9E75;color:white;font-family:'Outfit',sans-serif;font-weight:700;font-size:15px;padding:13px 30px;border-radius:8px;text-decoration:none;"><span class="en">Submit Your Photos</span><span class="es">Envía Tus Fotos</span></a>
   </section>
 
   <!-- Parallax 2: between help and signup -->
@@ -1268,14 +1382,14 @@
         <h4><span class="en">Get Involved</span><span class="es">Participa</span></h4>
         <a href="index.html#help"><span class="en">How You Can Help</span><span class="es">Cómo Puedes Ayudar</span></a>
         <a href="donate.html"><span class="en">Donate</span><span class="es">Donar</span></a>
-        <a href="sponsors.html"><span class="en">Become a Sponsor</span><span class="es">S&#xE9; Patrocinador</span></a>
+        <a href="index.html#sponsor"><span class="en">Become a Sponsor</span><span class="es">S&#xE9; Patrocinador</span></a>
         <a href="coming-soon.html"><span class="en">Future Phases</span><span class="es">Fases Futuras</span></a>
       </div>
       <div class="footer-col">
         <h4><span class="en">About</span><span class="es">Acerca de</span></h4>
         <a href="index.html#about"><span class="en">Our Mission</span><span class="es">Nuestra Misión</span></a>
         <a href="index.html#faq">FAQ</a>
-        <a href="contact.html"><span class="en">Contact Us</span><span class="es">Contáctanos</span></a>
+        <a href="index.html#contact"><span class="en">Contact Us</span><span class="es">Contáctanos</span></a>
       </div>
     </div>
       <div class="footer-col">
@@ -1292,7 +1406,7 @@
       <div style="display:flex;gap:20px;flex-wrap:wrap;">
         <a href="index.html#faq">FAQ</a>
         <a href="index.html#about"><span class="en">About</span><span class="es">Acerca de</span></a>
-        <a href="contact.html"><span class="en">Contact</span><span class="es">Contacto</span></a>
+        <a href="index.html#contact"><span class="en">Contact</span><span class="es">Contacto</span></a>
         <a href="privacy.html"><span class="en">Privacy</span><span class="es">Privacidad</span></a>
       </div>
     </div>
@@ -1427,6 +1541,63 @@
         <h3 style="font-size:22px;margin-bottom:10px;color:#1D9E75;font-family:'Outfit',sans-serif;">Thank you for volunteering!</h3>
         <p style="color:#555;font-size:15px;line-height:1.7">We'll reach out soon with opportunities to get involved.</p>
       </div>`;
+  });
+
+  // ── Sponsor interest form (merged from the former sponsors.html) ──
+  document.getElementById('sp-btn').addEventListener('click', async () => {
+    const company_name = document.getElementById('sp-company').value.trim();
+    const contact_name = document.getElementById('sp-contact').value.trim();
+    const contact_email = document.getElementById('sp-email').value.trim();
+    const contact_phone = document.getElementById('sp-phone').value.trim();
+    const website = document.getElementById('sp-website').value.trim();
+    const sponsorship_type = document.getElementById('sp-type').value;
+    const message = document.getElementById('sp-message').value.trim();
+    if (!company_name || !contact_email) { alert('Please enter your company name and email.'); return; }
+    const btn = document.getElementById('sp-btn');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    const { error } = await _sb.from('sponsors').insert([{
+      company_name, contact_name, contact_email, contact_phone, website, sponsorship_type, message, status: 'pending'
+    }]);
+    const msg = document.getElementById('sp-msg');
+    msg.style.display = 'block';
+    if (error) {
+      msg.style.background = '#FDECEA'; msg.style.color = '#c0392b';
+      msg.textContent = 'Something went wrong. Please try again.';
+      btn.disabled = false;
+      btn.innerHTML = '<span class="en">Send My Interest</span><span class="es">Enviar Mi Interés</span>';
+      console.error(error);
+    } else {
+      msg.style.background = '#E1F5EE'; msg.style.color = '#0F6E56';
+      msg.textContent = "✅ Thank you! We'll be in touch within 2-3 business days.";
+      btn.style.display = 'none';
+    }
+  });
+
+  // ── Contact form (merged from the former contact.html) ──
+  document.getElementById('ct-btn').addEventListener('click', async () => {
+    const name = document.getElementById('ct-name').value.trim();
+    const email = document.getElementById('ct-email').value.trim();
+    const subject = document.getElementById('ct-subject').value;
+    const message = document.getElementById('ct-message').value.trim();
+    if (!name || !email || !message) { alert('Please fill out your name, email, and message.'); return; }
+    const btn = document.getElementById('ct-btn');
+    btn.disabled = true;
+    btn.textContent = 'Sending...';
+    const { error } = await _sb.from('contact_messages').insert([{ name, email, subject, message, status: 'unread' }]);
+    const msg = document.getElementById('ct-msg');
+    msg.style.display = 'block';
+    if (error) {
+      msg.style.background = '#FDECEA'; msg.style.color = '#c0392b';
+      msg.textContent = 'Something went wrong. Please try again.';
+      btn.disabled = false;
+      btn.innerHTML = '<span class="en">Send Message</span><span class="es">Enviar Mensaje</span>';
+      console.error(error);
+    } else {
+      msg.style.background = '#E1F5EE'; msg.style.color = '#0F6E56';
+      msg.textContent = "✅ Message sent! We'll get back to you within 1-2 business days.";
+      btn.style.display = 'none';
+    }
   });
 
   // ── Trash Rangers character layer — straddles section seams ──

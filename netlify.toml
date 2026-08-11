@@ -77,3 +77,23 @@
   from = "/volunteer"
   to = "/#help"
   status = 301
+
+# Nav trimmed to 3 top-level items — Contact and Sponsor pages
+# absorbed into homepage sections.
+[[redirects]]
+  from = "/contact.html"
+  to = "/#contact"
+  status = 301
+[[redirects]]
+  from = "/contact"
+  to = "/#contact"
+  status = 301
+
+[[redirects]]
+  from = "/sponsors.html"
+  to = "/#sponsor"
+  status = 301
+[[redirects]]
+  from = "/sponsors"
+  to = "/#sponsor"
+  status = 301

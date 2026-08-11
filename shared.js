@@ -87,8 +87,7 @@ function getPageKey() {
     'index':'index','':'index',
     'rewards':'rewards',
     'report-litter':'report','submit-proof':'submit',
-    'prize-portal':'prize','sponsors':'sponsors',
-    'contact':'contact'
+    'prize-portal':'prize'
   };
   return map[path] || null;
 }
@@ -353,31 +352,20 @@ function buildNav() {
   // Determine active page key
   const page = (window.location.pathname.split('/').pop().replace('.html', '').toLowerCase()) || 'index';
 
-  // Nav structure matching the design mockup
+  // Nav structure — trimmed to exactly 3 top-level items for SEO consolidation.
   const NAV_ITEMS = [
-    { label: 'Home',          href: 'index.html',        pages: ['index', ''] },
-    { label: 'About Us',      href: 'index.html#about',  pages: [] },
-    { label: 'Trash Rangers', href: 'our-work.html',     pages: ['our-work'] },
-    {
-      label: 'Resources',
-      pages: ['coming-soon'],
-      dropdown: [
-        { label: 'Schools', href: 'coming-soon.html' },
-        { label: 'Events',  href: 'index.html#events' },
-        { label: 'FAQ',     href: 'index.html#faq' },
-      ]
-    },
+    { label: 'Home',                    href: 'index.html',    pages: ['index', ''] },
+    { label: 'Trash Rangers / Schools',  href: 'our-work.html', pages: ['our-work'] },
     {
       label: 'Get Involved',
-      pages: ['donate', 'sponsors'],
+      pages: ['donate'],
       dropdown: [
         { label: 'How You Can Help', href: 'index.html#help' },
         { label: 'Donate',           href: 'donate.html' },
-        { label: 'Become a Sponsor', href: 'sponsors.html' },
-        { label: 'Future Phases',    href: 'coming-soon.html' },
+        { label: 'Become a Sponsor', href: 'index.html#sponsor' },
+        { label: 'Contact',          href: 'index.html#contact' },
       ]
     },
-    { label: 'Contact', href: 'contact.html', pages: ['contact'] },
   ];
 
   function active(pages) {
