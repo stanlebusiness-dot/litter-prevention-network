@@ -251,6 +251,24 @@
     .ba-placeholder-msg { grid-column: 1 / -1; padding: 40px 20px; color: #888; font-size: 15px; background: #f9f9f7; border-radius: 12px; }
     .mission { max-width: 760px; margin: 0 auto; padding: 64px 40px; text-align: center; }
     .section-tag { display: inline-block; background: #E1F5EE; color: #0F6E56; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 6px 14px; border-radius: 20px; margin-bottom: 20px; }
+    /* FAQ accordion (ported from faq.html) */
+    .faq-category { margin-bottom: 40px; }
+    .faq-cat-h { font-size: 18px; font-weight: 800; font-family: 'Outfit', sans-serif; color: #0F6E56; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #E1F5EE; }
+    .faq-item { margin-bottom: 12px; border-radius: 12px; overflow: hidden; border: 1px solid #eee; }
+    .faq-question { width: 100%; background: white; border: none; padding: 16px 20px; text-align: left; font-size: 15px; font-weight: 700; color: #0F2318; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-family: 'Outfit', sans-serif; transition: background 0.2s; }
+    .faq-question:hover { background: #f0fdf8; }
+    .faq-question.open { background: #f0fdf8; color: #0F6E56; }
+    .faq-arrow { font-size: 18px; transition: transform 0.3s; }
+    .faq-question.open .faq-arrow { transform: rotate(180deg); }
+    .faq-answer { display: none; padding: 0 20px 18px; background: #f0fdf8; font-size: 15px; color: #555; line-height: 1.8; }
+    .faq-answer.open { display: block; }
+    .faq-answer a { color: #1D9E75; text-decoration: none; font-weight: 600; }
+    .faq-answer a:hover { text-decoration: underline; }
+    /* Events (ported from events.html) */
+    .event-points { display: inline-block; background: #E1F5EE; color: #0F6E56; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-top: 8px; }
+    .no-events { text-align: center; padding: 48px 24px; background: #f9f9f7; border-radius: 16px; border: 2px dashed #ddd; }
+    .no-events h3 { font-size: 20px; font-weight: 800; color: #0F2318; margin-bottom: 8px; font-family: 'Outfit', sans-serif; }
+    .no-events p { font-size: 15px; color: #888; line-height: 1.6; }
     .mission h2 { font-size: 32px; margin-bottom: 20px; font-family: 'Outfit', sans-serif; }
     .mission p { font-size: 17px; color: #555; line-height: 1.8; }
     .mission .sub-tag { font-size: 14px; color: #0F6E56; font-style: italic; margin-top: 16px; font-weight: 600; }
@@ -493,21 +511,14 @@
       <span></span><span></span><span></span>
     </button>
         <div class="nav-links-desktop">
+      <a href="index.html#about">About Us</a>
+      <a href="our-work.html">Trash Rangers</a>
       <div class="nav-dropdown">
-        <button class="nav-drop-btn">What We Do <span class="nav-drop-arrow">&#9662;</span></button>
+        <button class="nav-drop-btn">Resources <span class="nav-drop-arrow">&#9662;</span></button>
         <div class="nav-drop-menu">
-          <a href="our-work.html">Our Work</a>
-          <a href="our-impact.html">Our Impact</a>
-          <a href="emergencies.html">Emergencies</a>
-        </div>
-      </div>
-      <div class="nav-dropdown">
-        <button class="nav-drop-btn">About Us <span class="nav-drop-arrow">&#9662;</span></button>
-        <div class="nav-drop-menu">
-          <a href="about.html">Our Mission</a>
-          <a href="about.html#our-story">Our Story</a>
-          <a href="news.html">Blog &amp; News</a>
-          <a href="faq.html">FAQ</a>
+          <a href="coming-soon.html">Schools</a>
+          <a href="index.html#events">Events</a>
+          <a href="index.html#faq">FAQ</a>
         </div>
       </div>
       <div class="nav-dropdown">
@@ -519,46 +530,10 @@
           <a href="coming-soon.html">Future Phases</a>
         </div>
       </div>
-      <div class="nav-dropdown">
-        <button class="nav-drop-btn">Contact <span class="nav-drop-arrow">&#9662;</span></button>
-        <div class="nav-drop-menu">
-          <a href="contact.html">Contact Us</a>
-          <a href="sponsors.html">Become a Sponsor</a>
-          <a href="faq.html">FAQ</a>
-        </div>
-      </div>
+      <a href="contact.html">Contact</a>
       <a href="signin.html" class="nav-signin-btn" id="desktop-nav-auth">Sign In</a>
     </div>
   </nav>
-
-  <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
-  <div class="drawer" id="drawer">
-    <div class="drawer-header">
-      <div class="drawer-logo" style="font-family:'Outfit',sans-serif;">Litter Prevention Network</div>
-      <button class="drawer-close" onclick="closeDrawer()" aria-label="Close menu">&#x2715;</button>
-    </div>
-    <div class="drawer-nav">
-      <a href="index.html"><span class="nav-icon">&#x1F3E0;</span><span class="en">Home</span><span class="es">Inicio</span></a>
-      <div class="drawer-divider"></div>
-      <a href="our-work.html"><span class="nav-icon">&#x1F6E0;&#xFE0F;</span><span class="en">Our Work</span><span class="es">Nuestro Trabajo</span></a>
-      <a href="our-impact.html"><span class="nav-icon">&#x1F4C8;</span><span class="en">Our Impact</span><span class="es">Nuestro Impacto</span></a>
-      <a href="emergencies.html"><span class="nav-icon">&#x1F6A8;</span><span class="en">Emergencies</span><span class="es">Emergencias</span></a>
-      <div class="drawer-divider"></div>
-      <a href="about.html"><span class="nav-icon">&#x2139;&#xFE0F;</span><span class="en">Our Mission</span><span class="es">Nuestra Misi&#xF3;n</span></a>
-      <a href="about.html#our-story"><span class="nav-icon">&#x1F4D6;</span><span class="en">Our Story</span><span class="es">Nuestra Historia</span></a>
-      <a href="news.html"><span class="nav-icon">&#x1F4F0;</span><span class="en">Blog &amp; News</span><span class="es">Blog y Noticias</span></a>
-      <a href="faq.html"><span class="nav-icon">&#x2753;</span>FAQ</a>
-      <div class="drawer-divider"></div>
-      <a href="index.html#help"><span class="nav-icon">&#x1F4A1;</span><span class="en">How You Can Help</span><span class="es">C&#xF3;mo Puedes Ayudar</span></a>
-      <a href="donate.html"><span class="nav-icon">&#x1F49A;</span><span class="en">Donate</span><span class="es">Donar</span></a>
-      <a href="sponsors.html"><span class="nav-icon">&#x1F91D;</span><span class="en">Sponsors</span><span class="es">Patrocinadores</span></a>
-      <a href="coming-soon.html"><span class="nav-icon">&#x1F680;</span><span class="en">Future Phases</span><span class="es">Fases Futuras</span></a>
-      <div class="drawer-divider"></div>
-      <a href="contact.html"><span class="nav-icon">&#x1F4EC;</span><span class="en">Contact Us</span><span class="es">Cont&#xE1;ctanos</span></a>
-      <a href="faq.html"><span class="nav-icon">&#x2753;</span>FAQ</a>
-    </div>
-    <div class="drawer-footer-note">&#xA9; 2026 Litter Prevention Network &middot; Willis, TX</div>
-  </div>
 
   <!-- ══ HERO ══ -->
   <section class="hero" id="main-content">
@@ -577,7 +552,7 @@
           <span class="es">Trabajando juntos para mantener nuestras calles, vías fluviales y vida silvestre limpias y seguras para todos.</span>
         </p>
         <div class="hero-btns" data-hp-drag="btns">
-          <a href="about.html" class="hero-btn-learn"><span class="en">Learn More</span><span class="es">Aprender Más</span></a>
+          <a href="index.html#about" class="hero-btn-learn"><span class="en">Learn More</span><span class="es">Aprender Más</span></a>
           <a href="join/" data-homepage-cta="signup" class="hero-btn-signup"><span class="en">Free Sign Up</span><span class="es">Registro Gratis</span></a>
         </div>
         <p class="hero-member-badge">
@@ -657,7 +632,7 @@
     <div class="parallax-content">
       <h2><span class="en">Prevention Starts Here</span><span class="es">La Prevención Empieza Aquí</span></h2>
       <p><span class="en">Small daily habits — a secured load, a covered bin, picking up one piece — add up to a cleaner Willis for everyone.</span><span class="es">Pequeños hábitos diarios — una carga asegurada, un contenedor tapado, recoger una pieza — se suman a un Willis más limpio para todos.</span></p>
-      <a href="about.html"><span class="en">Learn About LPN</span><span class="es">Conoce LPN</span></a>
+      <a href="index.html#about"><span class="en">Learn About LPN</span><span class="es">Conoce LPN</span></a>
     </div>
     <div class="grass-divider grass-bottom"></div>
   </div>
@@ -686,16 +661,7 @@
     </div>
   </section>
 
-  <section class="news-cta" id="news-cta">
-    <h3><span class="en">Need news? Start here.</span><span class="es">¿Buscas noticias? Empieza aquí.</span></h3>
-    <p>
-      <span class="en">The latest updates, event announcements, and volunteer stories are all in the News section. Tap in to see what’s happening in Willis.</span>
-      <span class="es">Las últimas actualizaciones, anuncios de eventos e historias de voluntarios están en la sección de Noticias. Entra para ver qué pasa en Willis.</span>
-    </p>
-    <a href="news.html"><span class="en">Read the News</span><span class="es">Leer Noticias</span></a>
-  </section>
-
-  <section class="mission">
+  <section class="mission" id="about">
     <span class="section-tag"><span class="en">Our Mission</span><span class="es">Nuestra Misión</span></span>
     <h2><span class="en">Stop litter before it starts</span><span class="es">Detén la basura antes de que empiece</span></h2>
     <p>
@@ -703,6 +669,34 @@
       <span class="es">Educamos, conectamos y empoderamos a los vecinos de Willis para prevenir la basura desde la fuente — construyendo hábitos comunitarios que mantienen nuestras calles limpias.</span>
     </p>
     <p class="sub-tag"><span class="en">Prevention over cleanup. Always.</span><span class="es">Prevención sobre limpieza. Siempre.</span></p>
+
+    <div class="about-story" style="max-width:760px;margin:40px auto 0;text-align:left;">
+      <h3 style="font-size:22px;font-weight:800;font-family:'Outfit',sans-serif;color:#0F2318;margin-bottom:14px;">Our Story</h3>
+      <p style="font-size:16px;color:#555;line-height:1.9;margin-bottom:14px;">The Litter Prevention Network was founded by people who believed that litter is not something we should simply accept as a part of everyday life.</p>
+      <p style="font-size:16px;color:#555;line-height:1.9;margin-bottom:14px;">Like many others, we grew tired of seeing trash scattered along our roads, highways, neighborhoods, parks, and public spaces. We often heard people complain about the problem, but we rarely saw efforts focused on preventing litter before it happened. Instead of accepting litter as normal, we chose to take action.</p>
+      <p style="font-size:16px;color:#555;line-height:1.9;margin-bottom:14px;">What began as conversations and brainstorming sessions soon evolved into a shared vision: creating a culture where litter prevention becomes a way of life. We believe that cleaner communities begin with personal responsibility, community pride, and a commitment to protecting the places we live, work, and play.</p>
+      <p style="font-size:16px;color:#555;line-height:1.9;margin-bottom:14px;">At the heart of our mission is the belief that lasting change begins with education. By reaching children at an early age and reinforcing positive habits throughout life, we can help create future generations that view litter prevention as a normal and expected part of being a responsible citizen.</p>
+      <p style="font-size:16px;color:#555;line-height:1.9;margin-bottom:14px;">Through educational programs, community partnerships, public awareness campaigns, volunteer initiatives, and practical litter-prevention solutions, we are working to address the root causes of litter and inspire positive action. Programs such as Trash Rangers empower young people to become leaders in environmental stewardship while helping spread our message throughout their families and communities.</p>
+      <p style="font-size:16px;color:#555;line-height:1.9;margin-bottom:14px;">We believe that everyone has a role to play. Whether it is properly containing trash, securing vehicle loads, reporting illegal dumping, picking up litter when it is safe to do so, or simply leading by example, small actions can create meaningful change when multiplied across an entire community.</p>
+      <p style="font-size:16px;color:#555;line-height:1.9;margin-bottom:14px;">The Litter Prevention Network is built on a simple idea: if we can change habits, we can change communities. If we can change communities, we can change future generations.</p>
+      <p style="font-size:16px;color:#555;line-height:1.9;margin-bottom:14px;">We are not waiting for someone else to solve the problem. We are choosing action over complaints, responsibility over excuses, and prevention over acceptance.</p>
+      <p style="font-size:16px;color:#555;line-height:1.9;margin-bottom:14px;">Together, we can create cleaner roads, cleaner neighborhoods, and a lasting culture of environmental stewardship.</p>
+      <p style="font-style:italic;color:#0F6E56;font-weight:600;font-size:16px;">Every movement begins with a decision to act.</p>
+    </div>
+  </section>
+
+  <section id="impact" style="padding:64px 40px;background:#f9f9f7;text-align:center;">
+    <span class="section-tag"><span class="en">Our Impact</span><span class="es">Nuestro Impacto</span></span>
+    <h2 style="font-size:32px;font-family:'Outfit',sans-serif;margin:16px 0 12px;"><span class="en">Building the Foundation</span><span class="es">Construyendo la Base</span></h2>
+    <p style="font-size:16px;color:#666;max-width:560px;margin:0 auto 28px;line-height:1.8;">
+      <span class="en">As LPN grows, we're tracking real numbers — litter prevented, events held, members active, and neighborhoods improved across Willis. Right now we're focused on building the foundation that makes those numbers possible. Here's what's real today:</span>
+      <span class="es">A medida que LPN crece, estamos rastreando números reales — basura prevenida, eventos realizados, miembros activos y vecindarios mejorados en Willis. Ahora mismo nos enfocamos en construir la base que hace posibles esos números. Esto es lo real hoy:</span>
+    </p>
+    <div style="display:inline-flex;align-items:center;gap:10px;background:white;border-radius:999px;padding:14px 28px;box-shadow:0 4px 20px rgba(15,110,86,0.1);">
+      <span style="font-size:22px;">🧑‍🤝‍🧑</span>
+      <strong id="impact-member-count" style="font-size:22px;color:#0F6E56;font-family:'Outfit',sans-serif;">—</strong>
+      <span style="font-size:14px;color:#555;font-weight:600;"><span class="en">neighbors already joined</span><span class="es">vecinos ya se unieron</span></span>
+    </div>
   </section>
 
   <!-- ══ VIDEO PORTHOLE #1 ══ -->
@@ -722,13 +716,13 @@
     </div>
   </section>
 
-  <!-- ══ LEADERSHIP TEASER ══ -->
+  <!-- ══ LEADERSHIP ══ -->
   <section id="leadership-teaser" style="background:var(--cream,#F5F0E6);">
     <div class="leadership-section" style="padding-top:56px;padding-bottom:56px;">
       <h2><span class="en">Our Leadership</span><span class="es">Nuestra Directiva</span></h2>
       <p class="leadership-intro">
-        <span class="en">Meet the people driving LPN's mission in Willis, TX.</span>
-        <span class="es">Conoce a las personas que impulsan la misión de LPN en Willis, TX.</span>
+        <span class="en">The Litter Prevention Network is led by people who live and work in Willis, TX and are personally committed to building a cleaner, healthier community for everyone.</span>
+        <span class="es">La Red de Prevención de Basura está dirigida por personas que viven y trabajan en Willis, TX y están comprometidas personalmente con construir una comunidad más limpia y saludable para todos.</span>
       </p>
       <div class="leadership-grid" id="hp-leadership-grid">
         <!-- Loaded from Supabase -->
@@ -742,13 +736,8 @@
           <div class="leader-photo-wrap"><span class="leader-photo-placeholder">👤</span></div>
           <div class="leader-name">Adán Juárez</div>
           <div class="leader-title"><span class="en">Vice President</span><span class="es">Vicepresidente</span></div>
-          <p class="leader-bio"><span class="en">Adán brings operational expertise and community relationships that help LPN grow its reach and impact. He champions bilingual outreach so every neighbor can participate.</span><span class="es">Adán aporta experiencia operativa y relaciones comunitarias que ayudan a LPN a ampliar su alcance. Defiende la divulgación bilingüe para que cada vecino pueda participar.</span></p>
+          <p class="leader-bio"><span class="en">Adán brings operational expertise and community relationships that help LPN grow its reach and impact. He champions bilingual outreach so every neighbor can participate in building a litter-free Willis.</span><span class="es">Adán aporta experiencia operativa y relaciones comunitarias que ayudan a LPN a ampliar su alcance. Defiende la divulgación bilingüe para que cada vecino pueda participar en la construcción de un Willis libre de basura.</span></p>
         </div>
-      </div>
-      <div style="text-align:center;margin-top:32px;">
-        <a href="about.html#leadership" style="display:inline-block;background:#0D2B4E;color:white;padding:12px 28px;border-radius:50px;font-family:'Outfit',sans-serif;font-weight:700;font-size:14px;text-decoration:none;transition:background 0.2s;">
-          <span class="en">Meet the Full Team</span><span class="es">Conoce al Equipo Completo</span>
-        </a>
       </div>
     </div>
   </section>
@@ -761,7 +750,7 @@
         <h3><span class="en">Join the Network</span><span class="es">Únete a la Red</span></h3>
         <p><span class="en">Sign up free and connect with Willis neighbors who care about a cleaner community.</span><span class="es">Regístrate gratis y conéctate con vecinos de Willis que se preocupan por una comunidad más limpia.</span></p>
       </a>
-      <a href="about.html" class="step">
+      <a href="index.html#about" class="step">
         <div class="step-num">2</div>
         <h3><span class="en">Learn &amp; Prevent</span><span class="es">Aprende y Previene</span></h3>
         <p><span class="en">Discover how litter enters our community and what simple habits stop it — secure loads, covered bins, picking up one piece a day.</span><span class="es">Descubre cómo llega la basura a nuestra comunidad y qué hábitos simples la detienen — cargas aseguradas, contenedores tapados, recoger una pieza al día.</span></p>
@@ -771,7 +760,7 @@
         <h3><span class="en">Spread the Word</span><span class="es">Corre la Voz</span></h3>
         <p><span class="en">Share prevention tips with neighbors, post on social media, or talk to your kids' school about starting an LPN chapter.</span><span class="es">Comparte consejos de prevención con vecinos, publica en redes sociales o habla con la escuela de tus hijos sobre iniciar un capítulo LPN.</span></p>
       </a>
-      <a href="about.html" class="step">
+      <a href="index.html#about" class="step">
         <div class="step-num">4</div>
         <h3><span class="en">Grow the Network</span><span class="es">Haz Crecer la Red</span></h3>
         <p><span class="en">The bigger our community, the louder our voice. Invite a neighbor, share on social media, or talk to your kids' school about bringing LPN in.</span><span class="es">Cuanto más grande sea nuestra comunidad, más fuerte será nuestra voz. Invita a un vecino, comparte en redes o habla con la escuela de tus hijos sobre traer LPN.</span></p>
@@ -850,6 +839,212 @@
     <p style="margin-top:40px;font-size:15px;color:#666;">
       <a href="join/" data-homepage-cta="signup" style="color:#1A6B2F;font-weight:700;text-decoration:underline;"><span class="en">Free Sign Up →</span><span class="es">Registro Gratis →</span></a>
     </p>
+
+    <div id="volunteer-form-wrap" style="max-width:560px;margin:56px auto 0;text-align:left;border-top:1px solid #e4ede8;padding-top:40px;">
+      <span class="section-tag"><span class="en">Volunteer</span><span class="es">Voluntariado</span></span>
+      <h3 style="font-size:24px;font-weight:800;font-family:'Outfit',sans-serif;color:#0F2318;margin:12px 0 20px;"><span class="en">Want to do more?</span><span class="es">¿Quieres hacer más?</span></h3>
+      <div class="form-group">
+        <label><span class="en">Full Name</span><span class="es">Nombre Completo</span></label>
+        <input type="text" id="vol-name" placeholder="Your name" />
+      </div>
+      <div class="form-group">
+        <label><span class="en">Email Address</span><span class="es">Correo Electrónico</span></label>
+        <input type="email" id="vol-email" placeholder="you@email.com" />
+      </div>
+      <div class="form-group">
+        <label><span class="en">Phone Number (optional)</span><span class="es">Número de Teléfono (opcional)</span></label>
+        <input type="tel" id="vol-phone" placeholder="xxx-xxx-xxxx" />
+      </div>
+      <div class="form-group">
+        <label><span class="en">How would you like to help?</span><span class="es">¿Cómo te gustaría ayudar?</span></label>
+        <select id="vol-help">
+          <option value="Volunteer at an event"><span class="en">Volunteer at an event</span></option>
+          <option value="Help run/own an event"><span class="en">Help run/own an event</span></option>
+          <option value="Help at an organized event"><span class="en">Help at an organized event</span></option>
+          <option value="Social media / outreach"><span class="en">Social media / outreach</span></option>
+          <option value="Pass the word in my community"><span class="en">Pass the word in my community</span></option>
+          <option value="Car trash can distribution"><span class="en">Help distribute car trash cans</span></option>
+          <option value="Other"><span class="en">Other</span></option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label><span class="en">Availability</span><span class="es">Disponibilidad</span></label>
+        <select id="vol-availability">
+          <option>Weekends</option>
+          <option>Weekdays</option>
+          <option>Evenings</option>
+          <option>Flexible</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label><span class="en">Anything else you'd like us to know?</span><span class="es">¿Algo más que quieras que sepamos?</span></label>
+        <textarea id="vol-notes" rows="3" placeholder="Optional notes..."></textarea>
+      </div>
+      <button class="btn-submit" id="vol-btn"><span class="en">Submit</span><span class="es">Enviar</span></button>
+    </div>
+  </section>
+
+  <!-- ══ EVENTS ══ -->
+  <section id="events" style="max-width:860px;margin:0 auto;padding:56px 40px;">
+    <span class="section-tag"><span class="en">Events</span><span class="es">Eventos</span></span>
+    <h2 style="font-size:30px;font-family:'Outfit',sans-serif;margin:12px 0 24px;"><span class="en">Upcoming Events</span><span class="es">Próximos Eventos</span></h2>
+    <div id="hp-upcoming-events"><div style="text-align:center;padding:32px;color:#999;">Loading...</div></div>
+    <div style="background:linear-gradient(135deg, #1D9E75 0%, #0F6E56 100%);border-radius:16px;padding:40px;text-align:center;color:white;margin-top:32px;">
+      <h3 style="font-size:22px;font-weight:800;margin-bottom:12px;font-family:'Outfit',sans-serif;"><span class="en">Host Your Own Cleanup</span><span class="es">Organiza Tu Propia Limpieza</span></h3>
+      <p style="font-size:15px;opacity:0.9;margin-bottom:24px;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.7;"><span class="en">You don't have to wait for an LPN event. Organize your own cleanup solo or with friends, submit before and after photos, and earn 75 points. Safety first — always work in safe, visible areas.</span><span class="es">No tienes que esperar un evento de LPN. Organiza tu propia limpieza solo o con amigos, envía fotos antes y después, y gana 75 puntos.</span></p>
+      <a href="submit-proof.html" style="background:white;color:#1D9E75;padding:12px 28px;border-radius:8px;font-weight:700;font-size:15px;text-decoration:none;display:inline-block;"><span class="en">Submit Your Cleanup →</span><span class="es">Enviar Tu Limpieza →</span></a>
+    </div>
+  </section>
+
+  <!-- ══ FAQ ══ -->
+  <section id="faq" style="max-width:760px;margin:0 auto;padding:56px 40px;">
+    <span class="section-tag"><span class="en">FAQ</span><span class="es">Preguntas Frecuentes</span></span>
+    <h2 style="font-size:30px;font-family:'Outfit',sans-serif;margin:12px 0 32px;"><span class="en">Frequently Asked Questions</span><span class="es">Preguntas Frecuentes</span></h2>
+
+    <div class="faq-category">
+      <h3 class="faq-cat-h"><span class="en">General</span><span class="es">General</span></h3>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="en">What is the Litter Prevention Network?</span>
+          <span class="es">¿Qué es la Red de Prevención de Basura?</span>
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-answer">
+          <span class="en">The Litter Prevention Network (LPN) is a community-led organization based in Willis, TX focused on preventing litter before it starts — through education, awareness, and building better habits across the community.</span>
+          <span class="es">La Red de Prevención de Basura (LPN) es una organización comunitaria con sede en Willis, TX enfocada en prevenir la basura antes de que empiece — a través de la educación, la conciencia y la construcción de mejores hábitos en la comunidad.</span>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="en">Is it free to join?</span>
+          <span class="es">¿Es gratis unirse?</span>
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-answer">
+          <span class="en">Yes! Joining the Litter Prevention Network is completely free. There are no fees, no subscriptions, and no costs to get involved.</span>
+          <span class="es">¡Sí! Unirse a la Red de Prevención de Basura es completamente gratis. No hay tarifas, suscripciones ni costos para participar.</span>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="en">Do I have to live in Willis, Texas to join?</span>
+          <span class="es">¿Tengo que vivir en Willis, TX para unirme?</span>
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-answer">
+          <span class="en">No. While Willis, Texas is the birthplace of the Litter Prevention Network and Trash Rangers, our mission extends far beyond our hometown. Anyone who believes in creating cleaner communities and preventing litter is welcome to join our movement, regardless of where they live. We encourage individuals, families, schools, businesses, organizations, and community leaders across Texas and throughout the United States to get involved. We are also seeking passionate individuals and community partners who are interested in bringing our programs and initiatives to their own cities and towns. By working together and sharing successful ideas, we can create a network of communities committed to litter prevention, environmental stewardship, and community pride. What starts in one community can inspire change in many others. <em>"Born in Willis. Built by Communities. Growing Across America."</em></span>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="en">Can kids participate?</span>
+          <span class="es">¿Pueden participar los niños?</span>
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-answer">
+          <span class="en">Absolutely! In fact, children are one of the most important parts of our mission. We strongly encourage kids to participate because the habits and values they learn today can last a lifetime. By teaching children the importance of litter prevention, personal responsibility, community pride, and environmental stewardship at an early age, we help create future generations that naturally care for the places where they live, learn, work, and play. Through programs such as Trash Rangers, we make learning fun, interactive, and meaningful while helping children become leaders and role models within their families and communities. The habits and values children learn today can shape the communities they help create tomorrow.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-category">
+      <h3 class="faq-cat-h"><span class="en">Getting Involved</span><span class="es">Cómo Participar</span></h3>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="en">What should I bring to a cleanup?</span>
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-answer">
+          <p style="margin:0 0 12px;">At this time, the Litter Prevention Network does not have any organized cleanup events scheduled. However, we may host community cleanup events in the future. In the meantime, we encourage individuals, families, schools, businesses, and community groups to organize their own cleanup activities when it is safe to do so.</p>
+          <p style="margin:0 0 10px;">If you plan to participate in a cleanup, consider bringing:</p>
+          <ul style="margin:0 0 14px;padding-left:22px;line-height:2;">
+            <li>Work gloves or litter pickup tools</li>
+            <li>Trash bags</li>
+            <li>Closed-toe shoes</li>
+            <li>Comfortable clothing appropriate for the weather</li>
+            <li>Sunscreen, a hat, and other sun protection</li>
+            <li>Drinking water to stay hydrated</li>
+            <li>A fully charged phone to take before-and-after photos and share your impact</li>
+          </ul>
+          <p style="margin:0;">Most importantly, always put safety first. Avoid hazardous materials, sharp objects, busy roadways, private property, and any area that may present a risk. Children should always be supervised by a responsible adult. Remember: no amount of litter is worth risking your safety. If an area appears unsafe, report the issue to the appropriate authority rather than attempting to clean it yourself.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="en">What can I do right now to help?</span>
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-answer">
+          <ul style="margin:0;padding-left:22px;line-height:2.2;">
+            <li>Keep all trash inside your vehicle until it can be properly disposed of</li>
+            <li>Do not place loose trash in the bed of your pickup truck — wind can carry it onto roads</li>
+            <li>Use a vehicle trash container or bag to keep trash contained</li>
+            <li>Secure every load on every trip using cargo nets, tarps, or straps</li>
+            <li>Remove temporary signs when they are no longer needed</li>
+            <li>Dispose of chewing gum properly — wrap it and place it in a trash can</li>
+            <li>Take your trash with you when attending events, parks, and public gatherings</li>
+            <li>If you smoke, use a small bottle with water as a portable ashtray for cigarette butts — "Bottle it, don't litter it"</li>
+            <li>Lead by example every day</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-category">
+      <h3 class="faq-cat-h"><span class="en">Why It Matters</span><span class="es">Por Qué Importa</span></h3>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="en">Why does litter matter?</span>
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-answer">
+          Litter does more than create an eyesore. Wind and rain carry litter into storm drains, creeks, rivers, lakes, and eventually oceans. Wildlife can become entangled in plastic debris or mistake litter for food. Chemicals from discarded waste can contaminate soil and water. Litter creates safety hazards — debris that falls from vehicles can cause accidents and damage property. Cities and counties spend millions of dollars each year cleaning litter from roadsides, parks, and public spaces. The good news is that litter is one of the most preventable environmental problems. Small actions taken by many people can create a tremendous impact.
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-category">
+      <h3 class="faq-cat-h"><span class="en">Account &amp; Privacy</span><span class="es">Cuenta y Privacidad</span></h3>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="en">How do I create an account?</span>
+          <span class="es">¿Cómo creo una cuenta?</span>
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-answer">
+          <span class="en">You can sign up right on this page or through the <a href="signin.html">sign-in page</a>. You'll need a valid email address and a password to create your account.</span>
+          <span class="es">Puedes registrarte en esta página o a través de la <a href="signin.html">página de inicio de sesión</a>. Necesitarás una dirección de correo electrónico válida y una contraseña para crear tu cuenta.</span>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="en">Is my information safe?</span>
+          <span class="es">¿Está segura mi información?</span>
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-answer">
+          <span class="en">Yes. We take privacy seriously. Your information is stored securely and is never sold or shared with third parties. A full Privacy Policy is coming soon.</span>
+          <span class="es">Sí. Nos tomamos la privacidad en serio. Tu información se almacena de forma segura y nunca se vende ni se comparte con terceros. Próximamente habrá una Política de Privacidad completa.</span>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span class="en">How do I request my data be deleted?</span>
+          <span class="es">¿Cómo solicito que se eliminen mis datos?</span>
+          <span class="faq-arrow">▾</span>
+        </button>
+        <div class="faq-answer">
+          <span class="en">To request deletion of your account and data, please contact us at <a href="mailto:stanley@litterpreventionnetwork.org">stanley@litterpreventionnetwork.org</a> with the subject line "Data Deletion Request".</span>
+          <span class="es">Para solicitar la eliminación de tu cuenta y datos, contáctanos en <a href="mailto:stanley@litterpreventionnetwork.org">stanley@litterpreventionnetwork.org</a> con el asunto "Solicitud de Eliminación de Datos".</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#f9f9f7;border-radius:16px;padding:40px;text-align:center;margin-top:32px;border:1px solid #eee;">
+      <h3 style="font-size:22px;font-weight:800;font-family:'Outfit',sans-serif;color:#0F2318;margin-bottom:10px;"><span class="en">Still have questions?</span><span class="es">¿Todavía tienes preguntas?</span></h3>
+      <p style="color:#666;font-size:15px;margin-bottom:24px;line-height:1.7;"><span class="en">We're happy to help. Reach out to us directly and we'll get back to you as soon as possible.</span><span class="es">Estamos felices de ayudar. Contáctanos directamente y te responderemos lo antes posible.</span></p>
+      <a href="contact.html" class="btn-green"><span class="en">Contact Us</span><span class="es">Contáctanos</span></a>
+    </div>
   </section>
 
   <!-- Before & After gallery — managed via admin portal, only approved sets display -->
@@ -1066,19 +1261,20 @@
         <h4><span class="en">Navigate</span><span class="es">Navegar</span></h4>
         <a href="index.html"><span class="en">Home</span><span class="es">Inicio</span></a>
         <a href="our-work.html"><span class="en">Our Work</span><span class="es">Nuestro Trabajo</span></a>
-        <a href="our-impact.html"><span class="en">Our Impact</span><span class="es">Nuestro Impacto</span></a>
-        <a href="news.html"><span class="en">Blog &amp; News</span><span class="es">Blog y Noticias</span></a>
+        <a href="index.html#impact"><span class="en">Our Impact</span><span class="es">Nuestro Impacto</span></a>
+        <a href="index.html#events"><span class="en">Events</span><span class="es">Eventos</span></a>
       </div>
       <div class="footer-col">
         <h4><span class="en">Get Involved</span><span class="es">Participa</span></h4>
+        <a href="index.html#help"><span class="en">How You Can Help</span><span class="es">Cómo Puedes Ayudar</span></a>
+        <a href="donate.html"><span class="en">Donate</span><span class="es">Donar</span></a>
         <a href="sponsors.html"><span class="en">Become a Sponsor</span><span class="es">S&#xE9; Patrocinador</span></a>
-        <a href="contact.html"><span class="en">Contact Us</span><span class="es">Cont&#xE1;ctanos</span></a>
         <a href="coming-soon.html"><span class="en">Future Phases</span><span class="es">Fases Futuras</span></a>
       </div>
       <div class="footer-col">
         <h4><span class="en">About</span><span class="es">Acerca de</span></h4>
-        <a href="about.html"><span class="en">Our Mission</span><span class="es">Nuestra Misión</span></a>
-        <a href="faq.html">FAQ</a>
+        <a href="index.html#about"><span class="en">Our Mission</span><span class="es">Nuestra Misión</span></a>
+        <a href="index.html#faq">FAQ</a>
         <a href="contact.html"><span class="en">Contact Us</span><span class="es">Contáctanos</span></a>
       </div>
     </div>
@@ -1094,8 +1290,8 @@
     <div class="footer-bottom">
       <span>© 2026 Litter Prevention Network · Willis, TX</span>
       <div style="display:flex;gap:20px;flex-wrap:wrap;">
-        <a href="faq.html">FAQ</a>
-        <a href="about.html"><span class="en">About</span><span class="es">Acerca de</span></a>
+        <a href="index.html#faq">FAQ</a>
+        <a href="index.html#about"><span class="en">About</span><span class="es">Acerca de</span></a>
         <a href="contact.html"><span class="en">Contact</span><span class="es">Contacto</span></a>
         <a href="privacy.html"><span class="en">Privacy</span><span class="es">Privacidad</span></a>
       </div>
@@ -1114,10 +1310,12 @@
   function _renderMemberCount(n) {
     const statEl = document.getElementById('member-count');
     const heroEl = document.getElementById('hero-member-count');
+    const impactEl = document.getElementById('impact-member-count');
     const proof  = document.getElementById('signup-social-proof');
     const str = n.toLocaleString();
     if (statEl) statEl.textContent = str;
     if (heroEl) heroEl.textContent = str;
+    if (impactEl) impactEl.textContent = str;
     if (proof && n > 0) {
       proof.innerHTML =
         `<span class="en">Join ${str} neighbors already signed up!</span>` +
@@ -1157,6 +1355,79 @@
     .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'signups' }, () => _bumpMemberCount(1))
     .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'signups' }, () => _bumpMemberCount(-1))
     .subscribe();
+
+  // ── FAQ accordion ──
+  function toggleFaq(btn) {
+    const answer = btn.nextElementSibling;
+    const isOpen = btn.classList.contains('open');
+    document.querySelectorAll('.faq-question').forEach(q => q.classList.remove('open'));
+    document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
+    if (!isOpen) {
+      btn.classList.add('open');
+      answer.classList.add('open');
+    }
+  }
+
+  // ── Upcoming events (homepage — upcoming only, no past-events archive) ──
+  (async function loadHomepageEvents() {
+    const el = document.getElementById('hp-upcoming-events');
+    if (!el) return;
+    const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    function fmtEventDate(d) {
+      const date = new Date(d + 'T12:00:00');
+      return `${MONTHS[date.getMonth()]}<br/>${date.getDate()}`;
+    }
+    function fmtEventTime(start, end) {
+      if (!start) return '';
+      return end ? `${start} – ${end}` : start;
+    }
+    try {
+      const { data, error } = await _sb.from('events').select('*').order('date', { ascending: true });
+      if (error) throw error;
+      const today = new Date().toISOString().slice(0, 10);
+      const upcoming = (data || []).filter(e => e.date >= today && e.status !== 'past');
+      if (upcoming.length) {
+        el.innerHTML = upcoming.map(e => `
+          <div class="event-card">
+            <div class="event-date">${fmtEventDate(e.date)}</div>
+            <div class="event-info">
+              <h3>${e.title}</h3>
+              <p>${fmtEventTime(e.time_start, e.time_end)}${e.location ? ' · ' + e.location : ''}${e.description ? ' · ' + e.description : ''}</p>
+              <span class="event-points">+${e.points || 50} pts</span>
+            </div>
+            <a href="#signup" class="btn-green"><span class="en">Sign Up</span><span class="es">Registrarse</span></a>
+          </div>`).join('');
+      } else {
+        el.innerHTML = `
+          <div class="no-events">
+            <div style="font-size:48px;margin-bottom:12px;">📅</div>
+            <h3><span class="en">No Upcoming Events Right Now</span><span class="es">No Hay Eventos Próximos Ahora</span></h3>
+            <p><span class="en">Follow us on social media for smaller happenings, and check back here for the next big one.</span><span class="es">Síguenos en redes sociales para eventos más pequeños, y vuelve aquí para el próximo evento grande.</span></p>
+          </div>`;
+      }
+    } catch (e) {
+      el.innerHTML = '';
+    }
+  })();
+
+  // ── Volunteer signup (merged from the former volunteer.html) ──
+  document.getElementById('vol-btn').addEventListener('click', async () => {
+    const full_name = document.getElementById('vol-name').value.trim();
+    const email = document.getElementById('vol-email').value.trim();
+    const phone = document.getElementById('vol-phone').value.trim();
+    const help_type = document.getElementById('vol-help').value;
+    const availability = document.getElementById('vol-availability').value;
+    const notes = document.getElementById('vol-notes').value.trim();
+    if (!full_name || !email) { alert('Please enter your name and email.'); return; }
+    const { error } = await _sb.from('volunteers').insert([{ full_name, email, phone, help_type, availability, notes }]);
+    if (error) { alert('Something went wrong. Please try again.'); console.error(error); return; }
+    document.getElementById('volunteer-form-wrap').innerHTML = `
+      <div style="text-align:center;padding:20px 0">
+        <div style="font-size:48px;margin-bottom:12px">🙌</div>
+        <h3 style="font-size:22px;margin-bottom:10px;color:#1D9E75;font-family:'Outfit',sans-serif;">Thank you for volunteering!</h3>
+        <p style="color:#555;font-size:15px;line-height:1.7">We'll reach out soon with opportunities to get involved.</p>
+      </div>`;
+  });
 
   // ── Trash Rangers character layer — straddles section seams ──
   // Each character's vertical (top) position is computed in document

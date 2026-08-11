@@ -85,10 +85,10 @@ function getPageKey() {
   const path = window.location.pathname.split('/').pop().replace('.html','') || 'index';
   const map = {
     'index':'index','':'index',
-    'events':'events','rewards':'rewards','volunteer':'volunteer',
+    'rewards':'rewards',
     'report-litter':'report','submit-proof':'submit',
-    'prize-portal':'prize','map':'map','sponsors':'sponsors',
-    'about':'about','faq':'faq','contact':'contact','news':'news'
+    'prize-portal':'prize','sponsors':'sponsors',
+    'contact':'contact'
   };
   return map[path] || null;
 }
@@ -312,25 +312,6 @@ window._lpnSiteSettingsCache = window._lpnSiteSettingsCache || {};
   } catch(e) {}
 })();
 
-function injectNewsNavLink() {
-  const nav = document.querySelector('.drawer-nav');
-  if (!nav || nav.querySelector('a[href="news.html"]')) return;
-
-  const link = document.createElement('a');
-  link.href = 'news.html';
-  link.innerHTML = '<span class="nav-icon">📰</span><span class="en">News</span><span class="es">Noticias</span>';
-  if (window.location.pathname.endsWith('news.html')) {
-    link.classList.add('active');
-  }
-
-  const anchor = nav.querySelector('a[href="events.html"]');
-  if (anchor) {
-    nav.insertBefore(link, anchor.nextSibling);
-  } else {
-    nav.appendChild(link);
-  }
-}
-
 function getHomepageCtaConfig() {
   try {
     const cached = localStorage.getItem('lpn-hpc');
@@ -375,29 +356,25 @@ function buildNav() {
   // Nav structure matching the design mockup
   const NAV_ITEMS = [
     { label: 'Home',          href: 'index.html',        pages: ['index', ''] },
-    { label: 'About Us',      href: 'about.html',        pages: ['about'] },
+    { label: 'About Us',      href: 'index.html#about',  pages: [] },
     { label: 'Trash Rangers', href: 'our-work.html',     pages: ['our-work'] },
-    { label: 'Schools',       href: 'coming-soon.html',  pages: ['coming-soon'] },
     {
       label: 'Resources',
-      pages: ['our-impact', 'faq', 'map', 'news', 'emergencies'],
+      pages: ['coming-soon'],
       dropdown: [
-        { label: 'Our Impact',  href: 'our-impact.html' },
-        { label: 'News & Blog', href: 'news.html' },
-        { label: 'FAQ',         href: 'faq.html' },
-        { label: 'Map',         href: 'map.html' },
-        { label: 'Emergencies', href: 'emergencies.html' },
+        { label: 'Schools', href: 'coming-soon.html' },
+        { label: 'Events',  href: 'index.html#events' },
+        { label: 'FAQ',     href: 'index.html#faq' },
       ]
     },
     {
       label: 'Get Involved',
-      pages: ['donate', 'volunteer', 'sponsors', 'events'],
+      pages: ['donate', 'sponsors'],
       dropdown: [
         { label: 'How You Can Help', href: 'index.html#help' },
         { label: 'Donate',           href: 'donate.html' },
-        { label: 'Volunteer',        href: 'volunteer.html' },
         { label: 'Become a Sponsor', href: 'sponsors.html' },
-        { label: 'Events',           href: 'events.html' },
+        { label: 'Future Phases',    href: 'coming-soon.html' },
       ]
     },
     { label: 'Contact', href: 'contact.html', pages: ['contact'] },

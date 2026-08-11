@@ -3,3 +3,77 @@
 
 [functions]
   directory = "netlify/functions"
+
+# SEO consolidation — pages deleted, content absorbed into the homepage.
+# 301s pass ranking signal to the new destination and prevent 404s.
+[[redirects]]
+  from = "/map.html"
+  to = "/"
+  status = 301
+[[redirects]]
+  from = "/map"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/events.html"
+  to = "/#events"
+  status = 301
+[[redirects]]
+  from = "/events"
+  to = "/#events"
+  status = 301
+
+[[redirects]]
+  from = "/news.html"
+  to = "/"
+  status = 301
+[[redirects]]
+  from = "/news"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/emergencies.html"
+  to = "/"
+  status = 301
+[[redirects]]
+  from = "/emergencies"
+  to = "/"
+  status = 301
+
+[[redirects]]
+  from = "/faq.html"
+  to = "/#faq"
+  status = 301
+[[redirects]]
+  from = "/faq"
+  to = "/#faq"
+  status = 301
+
+[[redirects]]
+  from = "/about.html"
+  to = "/#about"
+  status = 301
+[[redirects]]
+  from = "/about"
+  to = "/#about"
+  status = 301
+
+[[redirects]]
+  from = "/our-impact.html"
+  to = "/#impact"
+  status = 301
+[[redirects]]
+  from = "/our-impact"
+  to = "/#impact"
+  status = 301
+
+[[redirects]]
+  from = "/volunteer.html"
+  to = "/#help"
+  status = 301
+[[redirects]]
+  from = "/volunteer"
+  to = "/#help"
+  status = 301

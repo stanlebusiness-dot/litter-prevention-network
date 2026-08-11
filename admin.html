@@ -918,7 +918,7 @@
         </div>
         <div class="pe-field">
           <label>Button 1 URL</label>
-          <input type="text" id="hero-btn1-url" placeholder="about.html" />
+          <input type="text" id="hero-btn1-url" placeholder="index.html#about" />
         </div>
         <div class="pe-field">
           <label>Button 2 Text</label>
@@ -973,7 +973,7 @@
               <input type="text" id="hp-b1-es" placeholder="Aprender Más" oninput="hpPreview()" /></div>
           </div>
           <div class="pe-field"><label>URL</label>
-            <input type="text" id="hp-b1-url" placeholder="about.html" oninput="hpPreview()" /></div>
+            <input type="text" id="hp-b1-url" placeholder="index.html#about" oninput="hpPreview()" /></div>
           <div class="pe-field"><label>Button Color</label>
             <input type="color" id="hp-b1-color" value="#0D2B4E" oninput="hpPreview()"
               style="height:36px;padding:3px 6px;border:1px solid #ddd;border-radius:6px;cursor:pointer;width:72px;" /></div>
@@ -1020,7 +1020,7 @@
               <input type="text" id="ju-es" placeholder="Únete" oninput="hpPreview()" /></div>
           </div>
           <div class="pe-field"><label>URL / Destination</label>
-            <input type="text" id="ju-url" placeholder="volunteer.html" oninput="hpPreview()" /></div>
+            <input type="text" id="ju-url" placeholder="index.html#help" oninput="hpPreview()" /></div>
           <div class="pe-field" style="display:flex;align-items:center;gap:12px;margin-top:8px;">
             <label class="toggle"><input type="checkbox" id="ju-visible" checked onchange="hpPreview()" /><span class="toggle-slider"></span></label>
             <span style="font-size:13px;font-weight:600;color:#444;">Show in nav</span>
@@ -1720,16 +1720,11 @@ async function deleteNewsPost(id) {
 // ── PAGE HERO IMAGES ──
 const PAGE_LIST = [
   { key: 'index',    label: '🏠 Home',          title: 'Change Starts Here.' },
-  { key: 'events',   label: '📅 Events',         title: 'Events' },
   { key: 'rewards',  label: '🏆 Rewards',        title: 'Earn Rewards' },
-  { key: 'volunteer',label: '🙌 Volunteer',      title: 'Volunteer' },
   { key: 'report',   label: '📍 Report Litter',  title: 'Report Litter' },
   { key: 'submit',   label: '📸 Submit Proof',   title: 'Submit Proof' },
   { key: 'prize',    label: '🎁 Prize Portal',   title: 'Prize Portal' },
-  { key: 'map',      label: '🗺️ Litter Map',     title: 'Litter Map' },
   { key: 'sponsors', label: '🤝 Sponsors',       title: 'Sponsors' },
-  { key: 'about',    label: 'ℹ️ About',           title: 'About Us' },
-  { key: 'faq',      label: '❓ FAQ',             title: 'FAQ' },
   { key: 'contact',  label: '📬 Contact',        title: 'Contact Us' },
 ];
 
@@ -3000,7 +2995,7 @@ async function loadHpConfig() {
 function _defaultHpConfig() {
   return {
     buttons: {
-      btn1: { en: 'Learn More',    es: 'Aprender Más',    url: 'about.html', color: '#0D2B4E', align: 'left', vOffset: 0 },
+      btn1: { en: 'Learn More',    es: 'Aprender Más',    url: 'index.html#about', color: '#0D2B4E', align: 'left', vOffset: 0 },
       btn2: { en: 'Free Sign Up', es: 'Registro Gratis', url: 'join/', color: '#1A6B2F', align: 'left', vOffset: 0 }
     },
     overlays: [],
@@ -3013,7 +3008,7 @@ function _populateHpControls(cfg) {
   const b2 = cfg.buttons?.btn2 || {};
   document.getElementById('hp-b1-en').value    = b1.en    || 'Learn More';
   document.getElementById('hp-b1-es').value    = b1.es    || 'Aprender Más';
-  document.getElementById('hp-b1-url').value   = b1.url   || 'about.html';
+  document.getElementById('hp-b1-url').value   = b1.url   || 'index.html#about';
   document.getElementById('hp-b1-color').value = b1.color || '#0D2B4E';
   document.getElementById('hp-b2-en').value    = b2.en    || 'Free Sign Up';
   document.getElementById('hp-b2-es').value    = b2.es    || 'Registro Gratis';
@@ -3042,7 +3037,7 @@ function _populateHpControls(cfg) {
   const juHVis= document.getElementById('ju-hero-visible');
   if (juEn)  juEn.value    = ju.en   || 'Join Us';
   if (juEs)  juEs.value    = ju.es   || 'Únete';
-  if (juUrl) juUrl.value   = ju.url  || 'volunteer.html';
+  if (juUrl) juUrl.value   = ju.url  || 'index.html#help';
   if (juVis) juVis.checked = ju.visible !== false;
   if (juHVis) juHVis.checked = ju.heroVisible !== false;
 
@@ -3130,7 +3125,7 @@ function _buildHpConfig() {
       btnLayout: _hpBtnLayout,
       btn1: { en: document.getElementById('hp-b1-en').value.trim()  || 'Learn More',
               es: document.getElementById('hp-b1-es').value.trim()  || 'Aprender Más',
-              url: document.getElementById('hp-b1-url').value.trim() || 'about.html',
+              url: document.getElementById('hp-b1-url').value.trim() || 'index.html#about',
               color: document.getElementById('hp-b1-color').value, align: _hpAlign, btnLayout: _hpBtnLayout },
       btn2: { en: document.getElementById('hp-b2-en').value.trim()  || 'Free Sign Up',
               es: document.getElementById('hp-b2-es').value.trim()  || 'Registro Gratis',
@@ -3140,7 +3135,7 @@ function _buildHpConfig() {
     joinUs: {
       en:          document.getElementById('ju-en')?.value.trim()          || 'Join Us',
       es:          document.getElementById('ju-es')?.value.trim()          || 'Únete',
-      url:         document.getElementById('ju-url')?.value.trim()         || 'volunteer.html',
+      url:         document.getElementById('ju-url')?.value.trim()         || 'index.html#help',
       visible:     document.getElementById('ju-visible')?.checked   !== false,
       heroVisible: document.getElementById('ju-hero-visible')?.checked !== false,
     },
