@@ -1844,6 +1844,19 @@ function renderPageEditor(key) {
         <div class="settings-card pe-panel">
           <h3 style="margin-bottom:16px;">${p.label}</h3>
 
+          <div class="hp-drop-zone" id="pe-drop-${key}"
+            onclick="document.getElementById('pe-file-${key}').click()"
+            ondragover="event.preventDefault();this.classList.add('drag-over')"
+            ondragleave="this.classList.remove('drag-over')"
+            ondrop="event.preventDefault();this.classList.remove('drag-over');uploadPageHeroImage('${key}', event.dataTransfer.files)">
+            <div style="font-size:20px;margin-bottom:2px;">📁</div>
+            <div style="font-size:12px;font-weight:600;color:#555;">Drag &amp; drop an image, or click to browse</div>
+            <div style="font-size:11px;color:#aaa;margin-top:2px;">JPG, PNG, or WEBP — max 5MB</div>
+          </div>
+          <input type="file" id="pe-file-${key}" accept="image/jpeg,image/png,image/webp" style="display:none"
+            onchange="uploadPageHeroImage('${key}', this.files)" />
+          <span class="settings-msg" id="pe-upload-msg-${key}" style="display:block;margin:2px 0 10px;"></span>
+
           <div class="pe-field">
             <label>Hero Image URL</label>
             <input type="text" id="pe-img-${key}" value="${imgVal}" placeholder="Paste image URL..." oninput="livePreview('${key}')" />
@@ -1952,6 +1965,29 @@ function updateBottomPreview(key) {
   }
 }
 
+async function uploadPageHeroImage(key, files) {
+  const file = files && files[0];
+  const msgEl = document.getElementById('pe-upload-msg-' + key);
+  if (!file) return;
+  if (!file.type.startsWith('image/')) {
+    if (msgEl) msgEl.textContent = '❌ Please drop an image file (JPG, PNG, or WEBP).';
+    return;
+  }
+  const sizeErr = validateImageSize(file);
+  if (sizeErr) { if (msgEl) msgEl.textContent = '❌ ' + sizeErr; return; }
+  if (msgEl) msgEl.textContent = 'Uploading…';
+  try {
+    const { url } = await uploadPhoto(file, 'page-hero/' + key);
+    const input = document.getElementById('pe-img-' + key);
+    if (input) input.value = url;
+    livePreview(key);
+    if (msgEl) msgEl.textContent = '✅ Uploaded — click Save Changes to publish.';
+    setTimeout(() => { if (msgEl) msgEl.textContent = ''; }, 5000);
+  } catch (e) {
+    if (msgEl) msgEl.textContent = '❌ ' + (e.message || 'Upload failed.');
+  }
+}
+
 async function savePageEditor(key) {
   const p = PAGE_LIST.find(x => x.key === key);
   if (!p) return;
@@ -2046,9 +2082,22 @@ function compressImage(file, maxDim = 1920, quality = 0.82) {
   });
 }
 
+function slugifyFilename(name) {
+  const dot = name.lastIndexOf('.');
+  const base = dot > -1 ? name.slice(0, dot) : name;
+  const slug = base
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
+    .replace(/[^a-zA-Z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .toLowerCase()
+    .slice(0, 60);
+  return slug || 'image';
+}
+
 async function uploadPhoto(file, folder) {
   const compressed = await compressImage(file);
-  const fileName = `${folder}/${Date.now()}-${file.name.replace(/\.[^.]+$/, '')}.jpg`;
+  const unique = Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+  const fileName = `${folder}/${unique}-${slugifyFilename(file.name)}.jpg`;
   const { error } = await _sb.storage.from(PHOTOS_BUCKET).upload(fileName, compressed, { contentType: 'image/jpeg' });
   if (error) throw error;
   const { data } = _sb.storage.from(PHOTOS_BUCKET).getPublicUrl(fileName);
