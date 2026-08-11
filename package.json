@@ -1,0 +1,7 @@
+{
+  "name": "litter-prevention-network",
+  "private": true,
+  "dependencies": {
+    "@supabase/supabase-js": "^2"
+  }
+}

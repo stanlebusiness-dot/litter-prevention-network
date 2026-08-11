@@ -1108,10 +1108,28 @@
   );
 
   // Live member counter
+  let _memberCount = null;
+  function _renderMemberCount(n) {
+    const statEl = document.getElementById('member-count');
+    const heroEl = document.getElementById('hero-member-count');
+    const proof  = document.getElementById('signup-social-proof');
+    const str = n.toLocaleString();
+    if (statEl) statEl.textContent = str;
+    if (heroEl) heroEl.textContent = str;
+    if (proof && n > 0) {
+      proof.innerHTML =
+        `<span class="en">Join ${str} neighbors already signed up!</span>` +
+        `<span class="es">¡Únete a ${str} vecinos que ya se registraron!</span>`;
+    }
+  }
+  function _bumpMemberCount(delta) {
+    if (_memberCount == null) return;
+    _memberCount = Math.max(0, _memberCount + delta);
+    _renderMemberCount(_memberCount);
+  }
   (async function() {
     const statEl  = document.getElementById('member-count');
     const heroEl  = document.getElementById('hero-member-count');
-    const proof   = document.getElementById('signup-social-proof');
     try {
       const { count } = await _sb.from('signups').select('*', { count: 'exact', head: true });
       if (count == null) return;
@@ -1126,19 +1144,17 @@
         if (heroEl) heroEl.textContent = str;
         if (pct < 1) requestAnimationFrame(tick);
         else {
-          const final = target.toLocaleString();
-          if (statEl) statEl.textContent = final;
-          if (heroEl) heroEl.textContent = final;
+          _memberCount = target;
+          _renderMemberCount(target);
         }
       }
       requestAnimationFrame(tick);
-      if (proof && target > 0) {
-        proof.innerHTML =
-          `<span class="en">Join ${target.toLocaleString()} neighbors already signed up!</span>` +
-          `<span class="es">¡Únete a ${target.toLocaleString()} vecinos que ya se registraron!</span>`;
-      }
     } catch(e) { /* non-critical — leave placeholder */ }
   })();
+  _sb.channel('lpn-signups-live')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'signups' }, () => _bumpMemberCount(1))
+    .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'signups' }, () => _bumpMemberCount(-1))
+    .subscribe();
 
   // ── Trash Rangers character layer — straddles section seams ──
   // Each character's vertical (top) position is computed in document

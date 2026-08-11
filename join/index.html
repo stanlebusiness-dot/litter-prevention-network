@@ -251,6 +251,11 @@
       }
     }
 
+    _sb.channel('lpn-signups-live')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'signups' }, refreshCount)
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'signups' }, refreshCount)
+      .subscribe();
+
     async function insertSignupRecord(payload) {
       try {
         const { error } = await _sb.from('signups').insert([payload]);

@@ -1436,9 +1436,32 @@ async function loadAll() {
 
 async function deleteRow(table, id, label) {
   if (!confirm(`Delete this ${label}? This cannot be undone.`)) return;
+  if (table === 'signups') { await deleteMember(id); return; }
   const { error } = await _sb.from(table).delete().eq('id', id);
   if (error) { alert('Error deleting record: ' + error.message); return; }
   loadAll();
+}
+
+async function deleteMember(id) {
+  const { data: row, error: lookupError } = await _sb.from('signups').select('email').eq('id', id).single();
+  if (lookupError && lookupError.code !== 'PGRST116') {
+    alert('Error looking up member: ' + lookupError.message);
+    return;
+  }
+  const password = prompt('This removes both the sign-up record AND their account (if any). Re-enter admin password to confirm:');
+  if (!password) return;
+  try {
+    const res = await fetch('/.netlify/functions/delete-member', {
+      method: 'POST',
+      body: JSON.stringify({ signupId: id, email: row?.email, password }),
+    });
+    const result = await res.json();
+    if (!res.ok || !result.success) throw new Error(result.error || `Request failed (${res.status})`);
+    alert(`Member deleted — sign-up: ${result.deletedSignup ? 'removed' : 'not found'}, account: ${result.deletedAuthUser ? 'removed' : 'not found'}.`);
+    loadAll();
+  } catch (e) {
+    alert('Error deleting member: ' + e.message);
+  }
 }
 
 // ── EDIT MODAL ──
