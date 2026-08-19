@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lpn-cache-v18';
+const CACHE_NAME = 'lpn-cache-v19';
 const ASSETS_TO_CACHE = [
   '/shared.css?v=20260715',
   '/shared.js?v=20260715',
@@ -24,11 +24,19 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-  if (event.request.mode === 'navigate' || event.request.url.endsWith('.html')) {
-    event.respondWith(fetch(event.request));
+  if (event.request.method !== 'GET') {
     return;
   }
+
   event.respondWith(
-    caches.match(event.request).then(response => response || fetch(event.request))
+    fetch(event.request)
+      .then(response => {
+        if (response.ok && new URL(event.request.url).origin === self.location.origin) {
+          const responseCopy = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, responseCopy));
+        }
+        return response;
+      })
+      .catch(() => caches.match(event.request))
   );
 });
