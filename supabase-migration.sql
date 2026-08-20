@@ -93,12 +93,12 @@ CREATE POLICY "lpn_ls_delete" ON storage.objects FOR DELETE
 -- Seed: founding leadership
 INSERT INTO public.leadership (name, title_en, title_es, bio_en, bio_es, sort_order)
 VALUES
-  ('Vanessa Manners', 'President', 'Presidenta',
-   'Vanessa co-founded the Litter Prevention Network to turn her passion for a cleaner community into lasting change. She leads LPN''s programs and community outreach efforts in Willis, TX.',
-   'Vanessa cofundó la Red de Prevención de Basura para convertir su pasión por una comunidad más limpia en un cambio duradero. Lidera los programas y los esfuerzos de divulgación comunitaria de LPN en Willis, TX.',
+  ('Vanessa Manners', 'Founder & President', 'Fundadora y Presidenta',
+   'Vanessa founded the Litter Prevention Network to turn her passion for a cleaner community into lasting change. She leads LPN''s programs and community outreach across Willis, TX, guiding the organization''s mission to prevent litter before it starts.',
+   'Vanessa fundó la Red de Prevención de Basura para convertir su pasión por una comunidad más limpia en un cambio duradero. Lidera los programas y los esfuerzos de divulgación comunitaria de LPN en todo Willis, TX, guiando la misión de la organización de prevenir la basura antes de que ocurra.',
    1),
-  ('Adán Juárez', 'Vice President', 'Vicepresidente',
-   'Adán brings operational expertise and community relationships that help LPN grow its reach and impact. He champions bilingual outreach to ensure every neighbor can participate in building a litter-free Willis.',
-   'Adán aporta experiencia operativa y relaciones comunitarias que ayudan a LPN a ampliar su alcance e impacto. Defiende la divulgación bilingüe para garantizar que cada vecino pueda participar en la construcción de un Willis libre de basura.',
+  ('Adán Juárez', 'Co-Founder & Vice President', 'Cofundador y Vicepresidente',
+   'Adán brings the operational expertise and community relationships that help LPN grow its reach and impact. He champions bilingual outreach to ensure every neighbor — in English and Spanish — can take part in building a litter-free Willis.',
+   'Adán aporta la experiencia operativa y las relaciones comunitarias que ayudan a LPN a ampliar su alcance e impacto. Defiende la divulgación bilingüe para garantizar que cada vecino —en inglés y en español— pueda participar en la construcción de un Willis libre de basura.',
    2)
 ON CONFLICT DO NOTHING;
