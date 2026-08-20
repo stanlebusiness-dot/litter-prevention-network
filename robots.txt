@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /dashboard.html
+Disallow: /login.html
+Disallow: /signin.html
+Disallow: /reset-password.html
+Disallow: /submit-proof.html
+Disallow: /prize-portal.html
+
+Sitemap: https://litterpreventionnetwork.org/sitemap.xml
