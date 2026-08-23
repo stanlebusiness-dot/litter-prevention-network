@@ -180,6 +180,13 @@ CREATE TABLE IF NOT EXISTS public.children (
   --   2. COPPA verifiable-parental-consent has been implemented — turning
   --      this on creates a child-directed account, which is a separate
   --      compliance obligation from the parent/guardian consent above.
+  --
+  -- The CHILD DASHBOARD (the UI a child would eventually log into) is a
+  -- separate, equally-deferred piece — see the comment block at the end
+  -- of dashboard.html's "Add a Child" section. It would be a distinct,
+  -- stripped-down page (not a mode of the parent dashboard), scoped by
+  -- parent_user_id the same way this table already is, and must never
+  -- collect more than what the parent already consented to here.
   child_login_enabled BOOLEAN     NOT NULL DEFAULT false,
   created_at          TIMESTAMPTZ NOT NULL DEFAULT now()
 );

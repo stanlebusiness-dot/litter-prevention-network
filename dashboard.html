@@ -314,13 +314,31 @@
   }
   // ── End Add a Child ──────────────────────────────────────────
   //
-  // CHILD LOGIN — INTENTIONALLY NOT BUILT HERE.
-  // The `children` table has a `child_login_enabled` column (defaults to
-  // false) reserved for this, but nothing in this file reads or sets it,
-  // and there is no child login screen. Do not add one until (1) there's
-  // real child-facing dashboard content to show, and (2) COPPA
-  // verifiable-parental-consent is implemented — see supabase-migration.sql
-  // for the full reasoning next to that column.
+  // TWO SEPARATE THINGS ARE INTENTIONALLY NOT BUILT YET:
+  //
+  // 1. CHILD LOGIN (the auth mechanism). The `children` table has a
+  //    `child_login_enabled` column (defaults to false) reserved for
+  //    this, but nothing in this file reads or sets it, and there is no
+  //    child login screen. Do not add one until (1) there's real
+  //    child-facing dashboard content to show (see #2 below), and (2)
+  //    COPPA verifiable-parental-consent is implemented — see
+  //    supabase-migration.sql for the full reasoning next to that column.
+  //
+  // 2. CHILD DASHBOARD (the content a logged-in child would see). THIS
+  //    file (dashboard.html) is the PARENT/adult dashboard only — a child
+  //    view must be a separate, stripped-down, age-appropriate page
+  //    (e.g. a future child-dashboard.html), not a mode of this one. When
+  //    it's eventually built, it must collect zero data beyond what the
+  //    parent has already consented to via the child's profile (no new
+  //    forms, no free-text input, no location/photo capture, etc. without
+  //    a deliberate, separate consent decision), and must only ever show
+  //    data already scoped to that one child (parent_user_id ownership,
+  //    same RLS pattern as the `children` table). Not built now because
+  //    there is no dashboard content at all yet for anyone — see the
+  //    "Add a Child" section above, which is deliberately just an account/
+  //    profile framework (parent account, account type, child profiles)
+  //    for future features like tracking, rewards, or games, not a
+  //    feature set in itself.
   function copyInviteLink() {
     const link = document.getElementById('invite-link').value;
     navigator.clipboard.writeText(link).then(() => {
