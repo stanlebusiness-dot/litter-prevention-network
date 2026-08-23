@@ -107,11 +107,32 @@
 
     <div class="section-title en">Quick Links</div>
     <div class="section-title es">Enlaces Rápidos</div>
-    <div class="dash-actions" style="margin-bottom:0;">
+    <div class="dash-actions" style="margin-bottom:36px;">
       <a href="index.html#about"><span class="en">🌿 Our Mission</span><span class="es">🌿 Nuestra Misión</span></a>
       <a href="index.html#faq"><span class="en">❓ FAQ</span><span class="es">❓ Preguntas Frecuentes</span></a>
 
       <a href="index.html#contact"><span class="en">📬 Contact Us</span><span class="es">📬 Contáctanos</span></a>
+    </div>
+
+    <!-- Add a Child — parent/guardian accounts only (profiles.account_type
+         = 'parent_guardian'). Children are profiles OWNED by this account,
+         not separate login accounts: see supabase-migration.sql "children"
+         table for the parent_user_id-scoped RLS that enforces this. -->
+    <div id="children-section" style="display:none;background:white;border-radius:14px;padding:28px;margin-bottom:36px;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+      <div class="section-title en" style="margin-bottom:8px;">👨‍👩‍👧 My Children</div>
+      <div class="section-title es" style="margin-bottom:8px;">👨‍👩‍👧 Mis Hijos</div>
+      <p style="font-size:13px;color:#777;margin-bottom:18px;line-height:1.6;max-width:520px;">
+        <span class="en">Add a profile for each child so you can track their involvement. These are not separate login accounts — only you can see and manage them, and no login is created for your child.</span>
+        <span class="es">Añade un perfil para cada hijo para llevar seguimiento de su participación. No son cuentas de acceso independientes — solo tú puedes verlos y administrarlos, y no se crea ningún inicio de sesión para tu hijo.</span>
+      </p>
+      <div id="children-list" style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px;"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <input id="child-name-input" type="text" placeholder="First name or nickname" maxlength="60" style="flex:1;min-width:160px;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:inherit;" />
+        <input id="child-age-input" type="text" placeholder="Age or grade (optional)" maxlength="30" style="width:180px;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:inherit;" />
+        <button id="add-child-btn" style="background:#1D9E75;color:white;border:none;padding:10px 20px;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;font-family:'Outfit',sans-serif;white-space:nowrap;">
+          <span class="en">Add Child</span><span class="es">Añadir Hijo</span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -182,7 +203,124 @@
     document.getElementById('user-name').textContent = name;
     document.getElementById('user-name-es').textContent = name;
     document.getElementById('invite-link').value = `https://litterpreventionnetwork.org/signin.html?ref=${btoa(user.email)}`;
+    initChildren(user);
   }
+
+  // ── Add a Child ──────────────────────────────────────────────
+  // Visible only to parent/guardian accounts (profiles.account_type) —
+  // plain "adult" accounts never see this, since they told us at signup
+  // they aren't adding children. Every child row is owned by this user
+  // (children.parent_user_id) and RLS only lets this session see its own.
+  let _childrenUser = null;
+
+  async function initChildren(user) {
+    _childrenUser = user;
+    const { data: profile } = await _sb.from('profiles').select('account_type').eq('id', user.id).single();
+    if (profile?.account_type !== 'parent_guardian') return;
+    document.getElementById('children-section').style.display = 'block';
+    await loadChildren();
+    document.getElementById('add-child-btn').addEventListener('click', addChild);
+  }
+
+  async function loadChildren() {
+    const { data, error } = await _sb.from('children')
+      .select('id, display_name, age_or_grade')
+      .eq('parent_user_id', _childrenUser.id)
+      .order('created_at', { ascending: true });
+    if (error) { console.error('[LPN] loadChildren failed:', error.message); return; }
+    renderChildren(data || []);
+  }
+
+  function renderChildren(children) {
+    const list = document.getElementById('children-list');
+    if (!children.length) {
+      list.innerHTML = `<p style="font-size:13px;color:#aaa;"><span class="en">No children added yet.</span><span class="es">Aún no has añadido hijos.</span></p>`;
+      return;
+    }
+    list.innerHTML = children.map(c => `
+      <div class="child-row" data-id="${c.id}" data-name="${escapeHtml(c.display_name)}" data-age="${escapeHtml(c.age_or_grade || '')}" style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:#fafaf8;border-radius:10px;border:1px solid #eee;">
+        <span class="child-name-display" style="flex:1;font-size:14px;font-weight:700;color:#0F2318;">${escapeHtml(c.display_name)}</span>
+        <span class="child-age-display" style="font-size:13px;color:#777;">${c.age_or_grade ? escapeHtml(c.age_or_grade) : ''}</span>
+        <button class="child-edit-btn" style="background:none;border:1px solid #ddd;padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;">
+          <span class="en">Edit</span><span class="es">Editar</span>
+        </button>
+        <button class="child-remove-btn" style="background:none;border:1px solid #f0c0c0;color:#c0392b;padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;">
+          <span class="en">Remove</span><span class="es">Eliminar</span>
+        </button>
+      </div>`).join('');
+    list.querySelectorAll('.child-edit-btn').forEach(btn => {
+      btn.addEventListener('click', () => startEditChild(btn.closest('.child-row')));
+    });
+    list.querySelectorAll('.child-remove-btn').forEach(btn => {
+      btn.addEventListener('click', () => removeChild(btn.closest('.child-row').dataset.id));
+    });
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  async function addChild() {
+    const nameInput = document.getElementById('child-name-input');
+    const ageInput = document.getElementById('child-age-input');
+    const display_name = nameInput.value.trim();
+    const age_or_grade = ageInput.value.trim();
+    if (!display_name) { nameInput.focus(); return; }
+    const btn = document.getElementById('add-child-btn');
+    btn.disabled = true;
+    const { error } = await _sb.from('children').insert([{
+      parent_user_id: _childrenUser.id,
+      display_name,
+      age_or_grade: age_or_grade || null,
+    }]);
+    btn.disabled = false;
+    if (error) { console.error('[LPN] addChild failed:', error.message); alert('Something went wrong adding your child — please try again.'); return; }
+    nameInput.value = '';
+    ageInput.value = '';
+    await loadChildren();
+  }
+
+  function startEditChild(row) {
+    const id = row.dataset.id;
+    const currentName = row.dataset.name;
+    const currentAge = row.dataset.age;
+    row.innerHTML = `
+      <input class="edit-name-input" type="text" value="${escapeHtml(currentName)}" maxlength="60" style="flex:1;padding:8px 10px;border:1px solid #ddd;border-radius:6px;font-size:14px;font-family:inherit;" />
+      <input class="edit-age-input" type="text" value="${escapeHtml(currentAge)}" maxlength="30" style="width:140px;padding:8px 10px;border:1px solid #ddd;border-radius:6px;font-size:14px;font-family:inherit;" />
+      <button class="child-save-btn" style="background:#1D9E75;color:white;border:none;padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;">Save</button>
+      <button class="child-cancel-btn" style="background:none;border:1px solid #ddd;padding:6px 12px;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit;">Cancel</button>`;
+    row.querySelector('.child-save-btn').addEventListener('click', () => saveChild(id, row));
+    row.querySelector('.child-cancel-btn').addEventListener('click', loadChildren);
+  }
+
+  async function saveChild(id, row) {
+    const display_name = row.querySelector('.edit-name-input').value.trim();
+    const age_or_grade = row.querySelector('.edit-age-input').value.trim();
+    if (!display_name) return;
+    const { error } = await _sb.from('children')
+      .update({ display_name, age_or_grade: age_or_grade || null })
+      .eq('id', id);
+    if (error) { console.error('[LPN] saveChild failed:', error.message); alert('Something went wrong saving changes — please try again.'); return; }
+    await loadChildren();
+  }
+
+  async function removeChild(id) {
+    if (!confirm('Remove this child profile? This cannot be undone.')) return;
+    const { error } = await _sb.from('children').delete().eq('id', id);
+    if (error) { console.error('[LPN] removeChild failed:', error.message); alert('Something went wrong removing this profile — please try again.'); return; }
+    await loadChildren();
+  }
+  // ── End Add a Child ──────────────────────────────────────────
+  //
+  // CHILD LOGIN — INTENTIONALLY NOT BUILT HERE.
+  // The `children` table has a `child_login_enabled` column (defaults to
+  // false) reserved for this, but nothing in this file reads or sets it,
+  // and there is no child login screen. Do not add one until (1) there's
+  // real child-facing dashboard content to show, and (2) COPPA
+  // verifiable-parental-consent is implemented — see supabase-migration.sql
+  // for the full reasoning next to that column.
   function copyInviteLink() {
     const link = document.getElementById('invite-link').value;
     navigator.clipboard.writeText(link).then(() => {

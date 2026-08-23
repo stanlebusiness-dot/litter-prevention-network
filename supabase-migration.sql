@@ -102,3 +102,91 @@ VALUES
    'Adán aporta la experiencia operativa y las relaciones comunitarias que ayudan a LPN a ampliar su alcance e impacto. Defiende la divulgación bilingüe para garantizar que cada vecino —en inglés y en español— pueda participar en la construcción de un Willis libre de basura.',
    2)
 ON CONFLICT DO NOTHING;
+
+-- ============================================================
+-- LPN Account Profiles + Child Profiles
+-- Run in Supabase SQL Editor.
+--
+-- Account holder type: every real login account (created via
+-- login.html signUp, NOT the "signups" lead-capture table used by the
+-- homepage/join forms) must self-identify as an adult or a parent/legal
+-- guardian at signup — see login.html's age-gate radio group, which
+-- blocks submission entirely for anyone who selects "under 18". Minors
+-- never get a standalone account; a parent/guardian adds them as a
+-- child profile instead (below).
+-- ============================================================
+
+-- 1. profiles — one row per auth.users row, extends it with app fields.
+--    Populated automatically by the trigger below at signup time, using
+--    the account_type passed in signUp()'s options.data — the client
+--    never inserts into this table directly.
+CREATE TABLE IF NOT EXISTS public.profiles (
+  id           UUID        PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  account_type TEXT        NOT NULL DEFAULT 'adult' CHECK (account_type IN ('adult', 'parent_guardian')),
+  is_adult     BOOLEAN     NOT NULL DEFAULT true,
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "lpn_profiles_select_own" ON public.profiles FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "lpn_profiles_insert_own" ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
+CREATE POLICY "lpn_profiles_update_own" ON public.profiles FOR UPDATE USING (auth.uid() = id) WITH CHECK (auth.uid() = id);
+
+-- Auto-create the profile row the moment a new auth user is created, so
+-- there's never a window where a logged-in user has no profile row.
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (id, account_type, is_adult)
+  VALUES (
+    NEW.id,
+    COALESCE(NEW.raw_user_meta_data->>'account_type', 'adult'),
+    COALESCE((NEW.raw_user_meta_data->>'is_adult')::boolean, true)
+  )
+  ON CONFLICT (id) DO NOTHING;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- Backfill: give every pre-existing account a default 'adult' profile row
+-- so dashboard queries never hit a missing row for older accounts.
+INSERT INTO public.profiles (id, account_type, is_adult)
+SELECT id, 'adult', true FROM auth.users
+ON CONFLICT (id) DO NOTHING;
+
+-- 2. children — profiles OWNED BY a parent/guardian account. These are
+--    NOT separate login accounts: no email, no password, no auth.users
+--    row at all. Data minimization per COPPA: store only what's needed
+--    to display a profile (a name/nickname, optional age or grade).
+--    Fully controlled by the parent — add/edit/delete only via RLS
+--    policies scoped to parent_user_id = auth.uid().
+CREATE TABLE IF NOT EXISTS public.children (
+  id                  BIGSERIAL   PRIMARY KEY,
+  parent_user_id      UUID        NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  display_name        TEXT        NOT NULL,  -- first name or nickname only, nothing more identifying
+  age_or_grade        TEXT,                   -- optional free text, e.g. "9" or "4th grade"
+  -- ── CHILD LOGIN PLACEHOLDER — INTENTIONALLY DISABLED ──────────
+  -- This column exists so a future developer has a hook to wire up child
+  -- logins without a schema change, but it is not read or set by any
+  -- app code today (no UI sets it to true; no login screen checks it).
+  -- Do NOT enable child logins until BOTH:
+  --   1. There is actual child-facing dashboard content to log in to, and
+  --   2. COPPA verifiable-parental-consent has been implemented — turning
+  --      this on creates a child-directed account, which is a separate
+  --      compliance obligation from the parent/guardian consent above.
+  child_login_enabled BOOLEAN     NOT NULL DEFAULT false,
+  created_at          TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+ALTER TABLE public.children ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "lpn_children_select_own" ON public.children FOR SELECT USING (auth.uid() = parent_user_id);
+CREATE POLICY "lpn_children_insert_own" ON public.children FOR INSERT WITH CHECK (auth.uid() = parent_user_id);
+CREATE POLICY "lpn_children_update_own" ON public.children FOR UPDATE USING (auth.uid() = parent_user_id) WITH CHECK (auth.uid() = parent_user_id);
+CREATE POLICY "lpn_children_delete_own" ON public.children FOR DELETE USING (auth.uid() = parent_user_id);

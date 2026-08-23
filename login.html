@@ -141,6 +141,33 @@
           <span onclick="togglePw('signup-password',this)" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:13px;color:#888;">Show</span>
         </div>
       </div>
+      <!-- Age gate: account holder type. Same concept as the homepage lead
+           form's parental-consent age gate (index.html #consent-group /
+           #age-msg), applied here to real login accounts: only an adult,
+           parent, or legal guardian may create one. A minor cannot
+           self-register — they're added as a child profile by a
+           parent/guardian instead (see dashboard.html "Add a Child"). -->
+      <div class="form-group" id="account-type-group">
+        <label><span class="en">I am creating this account as a...</span><span class="es">Estoy creando esta cuenta como...</span></label>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:6px;">
+          <label style="display:flex;gap:10px;align-items:flex-start;font-size:14px;font-weight:400;color:#333;cursor:pointer;">
+            <input type="radio" name="account-type" value="adult" checked style="margin-top:3px;width:16px;height:16px;flex-shrink:0;" />
+            <span><span class="en">An adult (18 or older)</span><span class="es">Un adulto (18 años o más)</span></span>
+          </label>
+          <label style="display:flex;gap:10px;align-items:flex-start;font-size:14px;font-weight:400;color:#333;cursor:pointer;">
+            <input type="radio" name="account-type" value="parent_guardian" style="margin-top:3px;width:16px;height:16px;flex-shrink:0;" />
+            <span><span class="en">A parent or legal guardian (you'll be able to add your kids as profiles after signing up)</span><span class="es">Un padre, madre o tutor legal (podrás añadir a tus hijos como perfiles después de registrarte)</span></span>
+          </label>
+          <label style="display:flex;gap:10px;align-items:flex-start;font-size:14px;font-weight:400;color:#333;cursor:pointer;">
+            <input type="radio" name="account-type" value="minor" style="margin-top:3px;width:16px;height:16px;flex-shrink:0;" />
+            <span><span class="en">I am under 18</span><span class="es">Soy menor de 18 años</span></span>
+          </label>
+        </div>
+      </div>
+      <div id="minor-block-msg" role="alert" style="display:none;margin-top:4px;margin-bottom:16px;background:#FFF8E1;border:1px solid #FFD54F;border-radius:8px;padding:14px 16px;font-size:13px;line-height:1.6;color:#7B5E00;">
+        <span class="en">Accounts can only be created by an adult, parent, or legal guardian. If you're under 18, ask a parent or guardian to create an account and add you as a child profile from their dashboard.</span>
+        <span class="es">Las cuentas solo pueden ser creadas por un adulto, padre, madre o tutor legal. Si eres menor de 18 años, pídele a un padre o tutor que cree una cuenta y te añada como perfil de hijo desde su panel.</span>
+      </div>
       <button class="btn" onclick="handleSignup()"><span class="en">Create Account</span><span class="es">Crear Cuenta</span></button>
     </div>
     <div class="message" id="msg"></div>
@@ -250,15 +277,39 @@
     if (error) return showMsg(error.message, 'error');
     showMsg('Check your email — a reset link is on its way!', 'success');
   }
+  // Age gate: toggle the warning + disable submit when "under 18" is picked.
+  // Mirrors the pattern in index.html's updateAgeGate(), applied to the
+  // real account-type question instead of a raw age number.
+  function updateAccountTypeGate() {
+    const selected = document.querySelector('input[name="account-type"]:checked');
+    const isMinor = selected && selected.value === 'minor';
+    document.getElementById('minor-block-msg').style.display = isMinor ? 'block' : 'none';
+    const btn = document.querySelector('#form-signup .btn');
+    btn.disabled = isMinor;
+    btn.style.opacity = isMinor ? '0.5' : '1';
+  }
+  document.querySelectorAll('input[name="account-type"]').forEach(r => r.addEventListener('change', updateAccountTypeGate));
+
   async function handleSignup() {
     const name = document.getElementById('signup-name').value.trim();
     const email = document.getElementById('signup-email').value.trim();
     const password = document.getElementById('signup-password').value;
+    const accountType = document.querySelector('input[name="account-type"]:checked')?.value || 'adult';
     if (!name || !email || !password) return showMsg('Please fill in all fields.', 'error');
     if (password.length < 6) return showMsg('Password must be at least 6 characters.', 'error');
+    // Only an adult, parent, or legal guardian may create a standalone
+    // account — a minor is added as a child profile by a parent/guardian
+    // instead (see dashboard.html "Add a Child"), never given their own
+    // login here.
+    if (accountType === 'minor') {
+      return showMsg('Accounts can only be created by an adult, parent, or legal guardian. Ask a parent or guardian to create an account and add you as a child profile.', 'error');
+    }
     const btn = document.querySelector('#form-signup .btn');
     btn.disabled = true;
-    const { data, error } = await _sb.auth.signUp({ email, password, options: { data: { full_name: name } } });
+    const { data, error } = await _sb.auth.signUp({
+      email, password,
+      options: { data: { full_name: name, account_type: accountType, is_adult: true } }
+    });
     btn.disabled = false;
     if (error) return showMsg(error.message, 'error');
     if (data.user && data.user.identities && data.user.identities.length === 0) {
