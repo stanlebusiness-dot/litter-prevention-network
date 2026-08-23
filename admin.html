@@ -199,6 +199,7 @@
     <button class="tab" onclick="showTab('redemptions', this)">Redemptions</button>
     <button class="tab" onclick="showTab('sponsors', this)">🤝 Sponsors</button>
     <button class="tab" onclick="showTab('messages', this)">✉️ Messages</button>
+    <button class="tab" onclick="showTab('announcements', this); initAnnouncementsTab()">📢 Announcements</button>
     <button class="tab" onclick="showTab('events', this)">📅 Events</button>
     <button class="tab" onclick="showTab('news', this)">📰 News Posts</button>
     <button class="tab" onclick="showTab('pages', this)">🖼️ Pages</button>
@@ -351,6 +352,75 @@
     <table>
       <thead><tr><th>Name</th><th>Email</th><th>Subject</th><th>Message</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
       <tbody id="body-messages"><tr><td colspan="7" class="loading">Loading...</td></tr></tbody>
+    </table>
+  </div>
+
+  <!-- 📢 Announcements — admin → member broadcasts. All reads/writes go
+       through netlify/functions/admin-announcements.js (service role,
+       gated by ADMIN_DELETE_SECRET); the anon key never touches
+       "announcements" or "announcement_recipients" for writes. -->
+  <div class="tab-content" id="tab-announcements">
+    <div class="section-title">📢 Announcements <span class="count-badge" id="count-announcements">...</span></div>
+    <div style="background:white;border-radius:12px;padding:28px;box-shadow:0 1px 8px rgba(0,0,0,0.06);margin-bottom:28px;">
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:20px;color:#0F2318;">📣 Send an Update</h3>
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:16px;">
+        <div>
+          <label style="font-size:13px;font-weight:600;color:#333;display:block;margin-bottom:6px;">Title</label>
+          <input id="ann-title" type="text" placeholder="e.g. New cleanup event this Saturday" style="width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none;" />
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:600;color:#333;display:block;margin-bottom:6px;">Type</label>
+          <select id="ann-type" style="width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none;">
+            <option value="general">General</option>
+            <option value="school">New School</option>
+            <option value="flyer">Flyer</option>
+            <option value="link">Link</option>
+            <option value="event">Event</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="font-size:13px;font-weight:600;color:#333;display:block;margin-bottom:6px;">Message</label>
+        <textarea id="ann-body" rows="6" placeholder="Write the update... paragraphs and links will display for members." style="width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none;resize:vertical;"></textarea>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+        <div>
+          <label style="font-size:13px;font-weight:600;color:#333;display:block;margin-bottom:6px;">Flyer / Image URL (optional)</label>
+          <input id="ann-image-url" type="text" placeholder="https://..." style="width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none;" />
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:600;color:#333;display:block;margin-bottom:6px;">Link URL (optional)</label>
+          <input id="ann-link-url" type="text" placeholder="https://..." style="width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none;" />
+        </div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="font-size:13px;font-weight:600;color:#333;display:block;margin-bottom:6px;">Link Label (optional)</label>
+        <input id="ann-link-label" type="text" placeholder="e.g. RSVP here" style="width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none;" />
+      </div>
+      <div style="margin-bottom:16px;">
+        <label style="font-size:13px;font-weight:600;color:#333;display:block;margin-bottom:6px;">Send To</label>
+        <div style="display:flex;gap:20px;margin-top:6px;">
+          <label style="display:flex;align-items:center;gap:6px;font-weight:400;font-size:14px;cursor:pointer;">
+            <input type="radio" name="ann-audience" value="all" checked onchange="updateAudienceUI()" /> All Members
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;font-weight:400;font-size:14px;cursor:pointer;">
+            <input type="radio" name="ann-audience" value="selected" onchange="updateAudienceUI()" /> Specific Members
+          </label>
+        </div>
+      </div>
+      <div id="ann-member-picker" style="display:none;margin-bottom:16px;max-height:220px;overflow-y:auto;border:1px solid #eee;border-radius:8px;padding:12px;">
+        <div id="ann-member-list" style="font-size:13px;color:#999;">Loading members…</div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+        <button class="btn-approve" id="ann-send-btn" onclick="sendAnnouncement()">📤 Send Update</button>
+        <span id="ann-msg" style="font-size:13px;"></span>
+      </div>
+    </div>
+
+    <div class="section-title" style="font-size:15px;">Sent History</div>
+    <table>
+      <thead><tr><th>Title</th><th>Type</th><th>Sent</th><th>Recipients</th><th>Read</th></tr></thead>
+      <tbody id="body-announcements"><tr><td colspan="5" class="loading">Loading...</td></tr></tbody>
     </table>
   </div>
 
@@ -1308,6 +1378,129 @@ async function adminTableFetch(action, table, extra = {}) {
     return { data: null, row: null, error: { message: e.message } };
   }
 }
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str ?? '';
+  return div.innerHTML;
+}
+
+// ── Announcements (admin → member broadcasts) ──────────────────
+// "announcements"/"announcement_recipients" have no anon write policy at
+// all (see supabase-migration.sql) — every send goes through this
+// service-role function, same admin-secret gate as admin-table.js.
+const ADMIN_ANNOUNCEMENTS_FN = '/.netlify/functions/admin-announcements';
+let _announcementMembersLoaded = false;
+
+async function adminAnnouncementFetch(action, extra = {}) {
+  const password = sessionStorage.getItem('lpn-admin-pw') || '';
+  const res = await fetch(ADMIN_ANNOUNCEMENTS_FN, {
+    method: 'POST',
+    body: JSON.stringify({ action, password, ...extra }),
+  });
+  const result = await res.json();
+  if (!res.ok || !result.success) throw new Error(result.error || `Request failed (${res.status})`);
+  return result;
+}
+
+function updateAudienceUI() {
+  const selected = document.querySelector('input[name="ann-audience"]:checked').value;
+  document.getElementById('ann-member-picker').style.display = selected === 'selected' ? 'block' : 'none';
+}
+
+function renderMemberPicker(members) {
+  const list = document.getElementById('ann-member-list');
+  if (!members.length) { list.textContent = 'No members yet.'; return; }
+  list.innerHTML = members.map(m => `
+    <label style="display:flex;align-items:center;gap:8px;padding:4px 0;font-weight:400;font-size:13px;cursor:pointer;">
+      <input type="checkbox" class="ann-member-cb" value="${m.id}" />
+      <span>${escapeHtml(m.full_name || m.email)} <span style="color:#999;">(${escapeHtml(m.email)})</span></span>
+    </label>`).join('');
+}
+
+async function initAnnouncementsTab() {
+  if (!_announcementMembersLoaded) {
+    _announcementMembersLoaded = true;
+    try {
+      const { members } = await adminAnnouncementFetch('list_members');
+      renderMemberPicker(members);
+    } catch (e) {
+      document.getElementById('ann-member-list').textContent = 'Could not load members: ' + e.message;
+    }
+  }
+  loadAnnouncementHistory();
+}
+
+async function sendAnnouncement() {
+  const title = document.getElementById('ann-title').value.trim();
+  const bodyText = document.getElementById('ann-body').value.trim();
+  const type = document.getElementById('ann-type').value;
+  const imageUrl = document.getElementById('ann-image-url').value.trim();
+  const linkUrl = document.getElementById('ann-link-url').value.trim();
+  const linkLabel = document.getElementById('ann-link-label').value.trim();
+  const audience = document.querySelector('input[name="ann-audience"]:checked').value;
+  const msgEl = document.getElementById('ann-msg');
+  const btn = document.getElementById('ann-send-btn');
+
+  if (!title || !bodyText) {
+    msgEl.style.color = '#e74c3c';
+    msgEl.textContent = 'Title and message are required.';
+    return;
+  }
+
+  const attachments = [];
+  if (imageUrl) attachments.push({ type: 'image', url: imageUrl, label: '' });
+  if (linkUrl) attachments.push({ type: 'link', url: linkUrl, label: linkLabel || linkUrl });
+
+  let memberIds = [];
+  if (audience === 'selected') {
+    memberIds = [...document.querySelectorAll('.ann-member-cb:checked')].map(cb => cb.value);
+    if (!memberIds.length) {
+      msgEl.style.color = '#e74c3c';
+      msgEl.textContent = 'Pick at least one member.';
+      return;
+    }
+  }
+
+  btn.disabled = true;
+  try {
+    const result = await adminAnnouncementFetch('send', { title, bodyText, type, attachments, audience, memberIds });
+    msgEl.style.color = '#0F6E56';
+    msgEl.textContent = `✅ Sent to ${result.recipientCount} member${result.recipientCount === 1 ? '' : 's'}.`;
+    document.getElementById('ann-title').value = '';
+    document.getElementById('ann-body').value = '';
+    document.getElementById('ann-image-url').value = '';
+    document.getElementById('ann-link-url').value = '';
+    document.getElementById('ann-link-label').value = '';
+    document.querySelectorAll('.ann-member-cb:checked').forEach(cb => cb.checked = false);
+    loadAnnouncementHistory();
+  } catch (e) {
+    msgEl.style.color = '#e74c3c';
+    msgEl.textContent = '❌ ' + e.message;
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+async function loadAnnouncementHistory() {
+  const tbody = document.getElementById('body-announcements');
+  try {
+    const { announcements } = await adminAnnouncementFetch('list_sent');
+    document.getElementById('count-announcements').textContent = announcements.length;
+    tbody.innerHTML = announcements.length
+      ? announcements.map(a => `<tr>
+          <td>${escapeHtml(a.title)}</td>
+          <td>${escapeHtml(a.type)}</td>
+          <td>${fmt(a.created_at)}</td>
+          <td>${a.recipient_count}</td>
+          <td>${a.read_count} / ${a.recipient_count}</td>
+        </tr>`).join('')
+      : '<tr><td colspan="5" class="empty">No announcements sent yet.</td></tr>';
+  } catch (e) {
+    tbody.innerHTML = `<tr><td colspan="5" class="empty">Could not load: ${escapeHtml(e.message)}</td></tr>`;
+  }
+}
+// ── End Announcements ───────────────────────────────────────────
 
 async function loadAll() {
   const [s, v, r, p, pts, red, sp, msg] = await Promise.all([

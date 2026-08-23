@@ -71,10 +71,28 @@
       <p class="en">You're part of the LPN Willis community.</p>
       <p class="es">Eres parte de la comunidad de LPN Willis.</p>
     </div>
-    <button class="logout-btn" onclick="handleLogout()"><span class="en">🚪 Log Out</span><span class="es">🚪 Cerrar Sesión</span></button>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <a href="#updates" style="position:relative;background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.5);padding:9px 16px;border-radius:8px;font-size:14px;color:white;font-family:'Outfit',sans-serif;font-weight:600;text-decoration:none;white-space:nowrap;">
+        🔔 <span class="en">Updates</span><span class="es">Novedades</span>
+        <span id="unread-badge" style="display:none;position:absolute;top:-8px;right:-8px;background:#e74c3c;color:white;border-radius:999px;min-width:20px;height:20px;padding:0 5px;font-size:11px;font-weight:800;line-height:20px;text-align:center;">0</span>
+      </a>
+      <button class="logout-btn" onclick="handleLogout()"><span class="en">🚪 Log Out</span><span class="es">🚪 Cerrar Sesión</span></button>
+    </div>
   </div>
 
   <div class="dash-content">
+    <!-- Updates inbox — one-way admin broadcasts. Read state is per-row in
+         "announcement_recipients" (RLS: member_id = auth.uid()), so this
+         member only ever sees their own rows. See supabase-migration.sql
+         for the "future replies" hook if two-way is added later. -->
+    <div id="updates" style="scroll-margin-top:20px;background:white;border-radius:14px;padding:28px;margin-bottom:36px;box-shadow:0 2px 12px rgba(0,0,0,0.07);">
+      <div class="section-title en" style="margin-bottom:8px;">🔔 Updates</div>
+      <div class="section-title es" style="margin-bottom:8px;">🔔 Novedades</div>
+      <div id="updates-list" style="display:flex;flex-direction:column;gap:10px;">
+        <p style="font-size:13px;color:#aaa;">Loading…</p>
+      </div>
+    </div>
+
     <!-- Invite Friends -->
     <div style="background:linear-gradient(135deg,#E1F5EE,#d0f0e4);border-radius:14px;padding:28px;margin-bottom:36px;border:1.5px solid #b5e8d0;">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:20px;">
@@ -203,7 +221,121 @@
     document.getElementById('user-name').textContent = name;
     document.getElementById('user-name-es').textContent = name;
     document.getElementById('invite-link').value = `https://litterpreventionnetwork.org/signin.html?ref=${btoa(user.email)}`;
+    initUpdates(user);
     initChildren(user);
+  }
+
+  // ── Updates inbox (admin → member, one-way for now) ───────────
+  let _updatesUser = null;
+  let _updatesCache = []; // [{ id (recipient row id), is_read, created_at, announcement:{...} }]
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str ?? '';
+    return div.innerHTML;
+  }
+
+  // Plain-text body -> safe paragraphs with clickable links. Body is
+  // stored as plain text (not HTML) specifically so there's no stored-HTML
+  // render surface here — this is the only formatting layer.
+  function formatUpdateBody(text) {
+    const escaped = escapeHtml(text);
+    const linked = escaped.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+    return linked.split(/\n{2,}/).map(p => `<p style="margin:0 0 10px;">${p.replace(/\n/g, '<br>')}</p>`).join('');
+  }
+
+  function renderAttachments(attachments) {
+    if (!Array.isArray(attachments) || !attachments.length) return '';
+    return attachments.map(a => {
+      if (a.type === 'image') return `<img src="${escapeHtml(a.url)}" alt="${escapeHtml(a.label || '')}" style="max-width:100%;border-radius:8px;margin-top:10px;display:block;" />`;
+      if (a.type === 'link') return `<a href="${escapeHtml(a.url)}" target="_blank" rel="noopener" style="display:inline-block;margin-top:10px;color:#1D9E75;font-weight:700;">🔗 ${escapeHtml(a.label || a.url)}</a>`;
+      return '';
+    }).join('');
+  }
+
+  function updateUnreadBadge() {
+    const unreadCount = _updatesCache.filter(r => !r.is_read).length;
+    const badge = document.getElementById('unread-badge');
+    badge.textContent = unreadCount;
+    badge.style.display = unreadCount > 0 ? 'inline-block' : 'none';
+  }
+
+  function renderUpdatesList() {
+    const list = document.getElementById('updates-list');
+    if (!_updatesCache.length) {
+      list.innerHTML = `<p style="font-size:13px;color:#aaa;"><span class="en">No updates yet.</span><span class="es">Aún no hay novedades.</span></p>`;
+      return;
+    }
+    list.innerHTML = _updatesCache.map(r => {
+      const a = r.announcement;
+      const weight = r.is_read ? '400' : '800';
+      return `
+      <div class="update-row" data-id="${r.id}" style="border:1px solid #eee;border-radius:10px;padding:14px 16px;cursor:pointer;">
+        <div class="update-summary" style="display:flex;justify-content:space-between;gap:12px;align-items:baseline;">
+          <span style="font-weight:${weight};color:#0F2318;font-size:14px;">${!r.is_read ? '● ' : ''}${escapeHtml(a.title)}</span>
+          <span style="font-size:12px;color:#999;white-space:nowrap;">${fmtDate(a.created_at)}</span>
+        </div>
+        <div class="update-detail" style="display:none;margin-top:12px;font-size:14px;color:#333;line-height:1.6;"></div>
+      </div>`;
+    }).join('');
+    list.querySelectorAll('.update-row').forEach(row => {
+      row.querySelector('.update-summary').addEventListener('click', () => toggleUpdate(row));
+    });
+  }
+
+  function fmtDate(d) {
+    return new Date(d).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  async function toggleUpdate(row) {
+    const id = row.dataset.id;
+    const detail = row.querySelector('.update-detail');
+    const isOpen = detail.style.display === 'block';
+    document.querySelectorAll('.update-detail').forEach(d => d.style.display = 'none');
+    if (isOpen) return;
+    const recipientRow = _updatesCache.find(r => String(r.id) === id);
+    if (!recipientRow) return;
+    const a = recipientRow.announcement;
+    detail.innerHTML = formatUpdateBody(a.body) + renderAttachments(a.attachments);
+    detail.style.display = 'block';
+    if (!recipientRow.is_read) {
+      recipientRow.is_read = true;
+      updateUnreadBadge();
+      renderUpdatesList();
+      // Re-open the one just clicked after the re-render replaces it.
+      const freshRow = document.querySelector(`.update-row[data-id="${id}"]`);
+      if (freshRow) freshRow.querySelector('.update-detail').style.display = 'block';
+      const { error } = await _sb.from('announcement_recipients')
+        .update({ is_read: true, read_at: new Date().toISOString() })
+        .eq('id', id);
+      if (error) console.error('[LPN] mark-read failed:', error.message);
+    }
+  }
+
+  async function loadUpdates() {
+    const { data, error } = await _sb.from('announcement_recipients')
+      .select('id, is_read, read_at, created_at, announcement:announcements(id, title, body, type, attachments, created_at)')
+      .eq('member_id', _updatesUser.id)
+      .order('created_at', { ascending: false });
+    if (error) { console.error('[LPN] loadUpdates failed:', error.message); return; }
+    _updatesCache = data || [];
+    updateUnreadBadge();
+    renderUpdatesList();
+  }
+
+  async function initUpdates(user) {
+    _updatesUser = user;
+    await loadUpdates();
+    // Live delivery: requires "announcement_recipients" to be added to the
+    // supabase_realtime publication (see supabase-migration.sql) — until
+    // that's enabled on the Supabase side, this subscription simply never
+    // fires and the inbox just reflects whatever loaded on page load.
+    _sb.channel('lpn-updates-' + user.id)
+      .on('postgres_changes', {
+        event: 'INSERT', schema: 'public', table: 'announcement_recipients',
+        filter: `member_id=eq.${user.id}`,
+      }, () => { loadUpdates(); })
+      .subscribe();
   }
 
   // ── Add a Child ──────────────────────────────────────────────
@@ -255,12 +387,7 @@
       btn.addEventListener('click', () => removeChild(btn.closest('.child-row').dataset.id));
     });
   }
-
-  function escapeHtml(str) {
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-  }
+  // escapeHtml is defined once, above, in the Updates inbox module.
 
   async function addChild() {
     const nameInput = document.getElementById('child-name-input');

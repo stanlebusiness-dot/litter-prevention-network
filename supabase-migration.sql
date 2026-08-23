@@ -252,3 +252,115 @@ AS $$
 $$;
 REVOKE ALL ON FUNCTION public.get_signup_count() FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION public.get_signup_count() TO anon, authenticated;
+
+-- ============================================================
+-- LPN Admin → Member Announcements / Notifications
+-- Run in Supabase SQL Editor.
+--
+-- One-way broadcast now; designed so two-way replies can be added later
+-- without touching either table below — see the FUTURE REPLIES HOOK
+-- comment.
+--
+--   announcements           — the content (admin-authored, one row per
+--                              broadcast). No anon/authenticated writes;
+--                              only netlify/functions/admin-announcements.js
+--                              (service role, gated by ADMIN_DELETE_SECRET)
+--                              creates these.
+--   announcement_recipients — per-member delivery + read state. One row
+--                              per (announcement, targeted member). This
+--                              is what powers a member's inbox list,
+--                              unread badge, and bold/read styling — and
+--                              is also how targeting works: an "all" send
+--                              creates one row per current member at send
+--                              time; a "selected" send creates rows only
+--                              for the chosen member ids. New members who
+--                              join after a send simply have no row for
+--                              it (never "sent to" them), same as any
+--                              ordinary broadcast/notification system.
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS public.announcements (
+  id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+  title       TEXT        NOT NULL,
+  body        TEXT        NOT NULL,
+  type        TEXT        NOT NULL DEFAULT 'general' CHECK (type IN ('general','school','flyer','link','event')),
+  -- [{ "type": "image"|"link", "url": "...", "label": "..." }, ...] — an
+  -- array so one send can carry a flyer image AND a link (or more later)
+  -- without a schema change.
+  attachments JSONB       NOT NULL DEFAULT '[]'::jsonb,
+  audience    TEXT        NOT NULL DEFAULT 'all' CHECK (audience IN ('all','selected')),
+  created_by  TEXT        NOT NULL DEFAULT 'admin',
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS public.announcement_recipients (
+  id              BIGSERIAL   PRIMARY KEY,
+  announcement_id UUID        NOT NULL REFERENCES public.announcements(id) ON DELETE CASCADE,
+  member_id       UUID        NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  is_read         BOOLEAN     NOT NULL DEFAULT false,
+  read_at         TIMESTAMPTZ,
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE (announcement_id, member_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_announcement_recipients_member ON public.announcement_recipients (member_id, is_read);
+
+-- ── FUTURE REPLIES HOOK (not built) ──────────────────────────
+-- Two-way replies can be added later with one new table — nothing above
+-- needs to change:
+--   CREATE TABLE public.announcement_replies (
+--     id BIGSERIAL PRIMARY KEY,
+--     announcement_id UUID NOT NULL REFERENCES public.announcements(id) ON DELETE CASCADE,
+--     member_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+--     body TEXT NOT NULL,
+--     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+--   );
+-- RLS would mirror announcement_recipients (member_id = auth.uid() to
+-- insert/read their own replies), plus a WITH CHECK that the member is
+-- actually a recipient of that announcement:
+--   WITH CHECK (EXISTS (SELECT 1 FROM public.announcement_recipients ar
+--     WHERE ar.announcement_id = announcement_replies.announcement_id
+--       AND ar.member_id = auth.uid()))
+-- Admin would read replies the same way admin-announcements.js already
+-- reads/sends announcements — a new action on that same service-role
+-- function, not a new access pattern.
+
+ALTER TABLE public.announcements           ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.announcement_recipients ENABLE ROW LEVEL SECURITY;
+
+-- A member can read an announcement's content ONLY if they were actually
+-- sent it (i.e. they have a recipient row) — never other members' sends.
+CREATE POLICY "lpn_announcements_select_recipient" ON public.announcements
+  FOR SELECT USING (
+    EXISTS (
+      SELECT 1 FROM public.announcement_recipients ar
+      WHERE ar.announcement_id = announcements.id
+        AND ar.member_id = auth.uid()
+    )
+  );
+-- Deliberately no anon/authenticated INSERT/UPDATE/DELETE — content is
+-- admin-only, created solely by the service-role Netlify function.
+
+-- A member sees only their own recipient rows (their inbox + unread count).
+CREATE POLICY "lpn_announcement_recipients_select_own" ON public.announcement_recipients
+  FOR SELECT USING (auth.uid() = member_id);
+
+-- A member may mark their OWN row read (dashboard.html does this directly
+-- with the authenticated key — no server function needed, since it's
+-- scoped to exactly one row the member already owns).
+CREATE POLICY "lpn_announcement_recipients_update_own" ON public.announcement_recipients
+  FOR UPDATE USING (auth.uid() = member_id) WITH CHECK (auth.uid() = member_id);
+
+-- Deliberately no anon/authenticated INSERT/DELETE — recipient rows (who
+-- an announcement was sent to) are created only by
+-- netlify/functions/admin-announcements.js at send time.
+
+-- ── REALTIME ─────────────────────────────────────────────────
+-- For the member-side unread badge/inbox to update live when a new
+-- announcement arrives, "announcement_recipients" needs to be added to
+-- the supabase_realtime publication. NOT run here — enable it from the
+-- Supabase dashboard (Database → Replication) or run:
+--   ALTER PUBLICATION supabase_realtime ADD TABLE public.announcement_recipients;
+-- The client subscribes with the member's own JWT, so Realtime enforces
+-- the same "select_own" RLS policy above — a member is only ever pushed
+-- events for their own rows.
