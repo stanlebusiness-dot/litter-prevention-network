@@ -249,7 +249,9 @@
       const el = document.getElementById('join-count');
       if (!el) return;
       try {
-        const { count } = await _sb.from('signups').select('*', { count: 'exact', head: true });
+        // signups has no anon SELECT policy — count via a SECURITY DEFINER
+        // RPC that returns only the number, never the underlying rows.
+        const { data: count } = await _sb.rpc('get_signup_count');
         const value = (count || 0).toLocaleString();
         el.innerHTML = `👥 ${value}`;
       } catch (e) {

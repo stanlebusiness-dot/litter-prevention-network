@@ -12,7 +12,8 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: 'Invalid JSON body' }) };
   }
 
-  const { signupId, email, password } = body;
+  const { signupId, password } = body;
+  let { email } = body;
 
   if (!password || password !== process.env.ADMIN_DELETE_SECRET) {
     return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized' }) };
@@ -22,6 +23,14 @@ exports.handler = async (event) => {
   }
 
   const sb = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
+
+  // signups has no anon SELECT policy (admin.html only has the anon key),
+  // so the caller can no longer look up the email itself — resolve it
+  // here with the service-role client instead.
+  if (signupId && !email) {
+    const { data: row } = await sb.from('signups').select('email').eq('id', signupId).maybeSingle();
+    email = row?.email || null;
+  }
 
   let deletedSignup = false;
   let deletedAuthUser = false;

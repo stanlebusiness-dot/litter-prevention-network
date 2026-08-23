@@ -1207,6 +1207,12 @@ function checkAdminPw() {
   const pw = document.getElementById('admin-pw').value;
   if (pw === 'PreventLitter9102!') {
     sessionStorage.setItem('lpn-admin', '1');
+    // Stored so admin-table.js (signups/volunteers reads+writes, which no
+    // longer allow the anon key to SELECT) can be called without
+    // re-prompting on every page load. Assumes this page password matches
+    // ADMIN_DELETE_SECRET in Netlify — same assumption the existing
+    // "re-enter admin password" delete-member prompt already relies on.
+    sessionStorage.setItem('lpn-admin-pw', pw);
     document.getElementById('login').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
     loadAll();
@@ -1278,10 +1284,35 @@ function exportCSV(bodyId, filename) {
   a.click();
 }
 
+// signups/volunteers have no anon SELECT policy (see supabase-migration.sql)
+// — the anon key can insert but not read the member/volunteer list, closing
+// the exposure where anyone with the anon key could read every name+email.
+// admin.html reads/edits/deletes those two tables through this
+// service-role-backed function instead, gated by the same admin secret.
+const ADMIN_TABLE_FN = '/.netlify/functions/admin-table';
+const SERVICE_ROLE_TABLES = ['signups', 'volunteers'];
+
+async function adminTableFetch(action, table, extra = {}) {
+  try {
+    const password = sessionStorage.getItem('lpn-admin-pw') || '';
+    const res = await fetch(ADMIN_TABLE_FN, {
+      method: 'POST',
+      body: JSON.stringify({ action, table, password, ...extra }),
+    });
+    const result = await res.json();
+    if (!res.ok || !result.success) {
+      return { data: null, row: null, error: { message: result.error || `Request failed (${res.status})` } };
+    }
+    return { data: result.rows || null, row: result.row || null, error: null };
+  } catch (e) {
+    return { data: null, row: null, error: { message: e.message } };
+  }
+}
+
 async function loadAll() {
   const [s, v, r, p, pts, red, sp, msg] = await Promise.all([
-    _sb.from('signups').select('*').order('created_at', { ascending: false }),
-    _sb.from('volunteers').select('*').order('created_at', { ascending: false }),
+    adminTableFetch('list', 'signups'),
+    adminTableFetch('list', 'volunteers'),
     _sb.from('litter_reports').select('*').order('created_at', { ascending: false }),
     _sb.from('proof_submissions').select('*').order('created_at', { ascending: false }),
     _sb.from('points').select('*').order('total_earned', { ascending: false }),
@@ -1404,23 +1435,26 @@ async function loadAll() {
 async function deleteRow(table, id, label) {
   if (!confirm(`Delete this ${label}? This cannot be undone.`)) return;
   if (table === 'signups') { await deleteMember(id); return; }
+  if (SERVICE_ROLE_TABLES.includes(table)) {
+    const { error } = await adminTableFetch('delete', table, { id });
+    if (error) { alert('Error deleting record: ' + error.message); return; }
+    loadAll();
+    return;
+  }
   const { error } = await _sb.from(table).delete().eq('id', id);
   if (error) { alert('Error deleting record: ' + error.message); return; }
   loadAll();
 }
 
 async function deleteMember(id) {
-  const { data: row, error: lookupError } = await _sb.from('signups').select('email').eq('id', id).single();
-  if (lookupError && lookupError.code !== 'PGRST116') {
-    alert('Error looking up member: ' + lookupError.message);
-    return;
-  }
+  // Email no longer looked up here — signups has no anon SELECT policy.
+  // delete-member.js resolves the email itself (service role) from signupId.
   const password = prompt('This removes both the sign-up record AND their account (if any). Re-enter admin password to confirm:');
   if (!password) return;
   try {
     const res = await fetch('/.netlify/functions/delete-member', {
       method: 'POST',
-      body: JSON.stringify({ signupId: id, email: row?.email, password }),
+      body: JSON.stringify({ signupId: id, password }),
     });
     const result = await res.json();
     if (!res.ok || !result.success) throw new Error(result.error || `Request failed (${res.status})`);
@@ -1491,7 +1525,12 @@ let _editTable = null;
 let _editId = null;
 
 async function openEditById(table, id) {
-  const { data, error } = await _sb.from(table).select('*').eq('id', id).single();
+  let data, error;
+  if (SERVICE_ROLE_TABLES.includes(table)) {
+    ({ row: data, error } = await adminTableFetch('get', table, { id }));
+  } else {
+    ({ data, error } = await _sb.from(table).select('*').eq('id', id).single());
+  }
   if (error || !data) { alert('Could not load record.'); return; }
   _editTable = table;
   _editId = id;
@@ -1524,7 +1563,9 @@ async function saveEdit() {
     updates[f.key] = f.type === 'number' ? (parseFloat(el.value) || 0) : el.value.trim();
   });
   const msgEl = document.getElementById('edit-modal-msg');
-  const { error } = await _sb.from(_editTable).update(updates).eq('id', _editId);
+  const { error } = SERVICE_ROLE_TABLES.includes(_editTable)
+    ? await adminTableFetch('update', _editTable, { id: _editId, updates })
+    : await _sb.from(_editTable).update(updates).eq('id', _editId);
   if (error) { msgEl.style.color = '#e74c3c'; msgEl.textContent = '❌ ' + error.message; return; }
   msgEl.style.color = '#1D9E75';
   msgEl.textContent = '✅ Saved!';

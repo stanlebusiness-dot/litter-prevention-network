@@ -1497,7 +1497,9 @@
     const statEl  = document.getElementById('member-count');
     const heroEl  = document.getElementById('hero-member-count');
     try {
-      const { count } = await _sb.from('signups').select('*', { count: 'exact', head: true });
+      // signups has no anon SELECT policy — count via a SECURITY DEFINER
+      // RPC that returns only the number, never the underlying rows.
+      const { data: count } = await _sb.rpc('get_signup_count');
       if (count == null) return;
       const target = count;
       const dur = 1200;

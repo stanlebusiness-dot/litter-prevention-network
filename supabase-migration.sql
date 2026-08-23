@@ -190,3 +190,58 @@ CREATE POLICY "lpn_children_select_own" ON public.children FOR SELECT USING (aut
 CREATE POLICY "lpn_children_insert_own" ON public.children FOR INSERT WITH CHECK (auth.uid() = parent_user_id);
 CREATE POLICY "lpn_children_update_own" ON public.children FOR UPDATE USING (auth.uid() = parent_user_id) WITH CHECK (auth.uid() = parent_user_id);
 CREATE POLICY "lpn_children_delete_own" ON public.children FOR DELETE USING (auth.uid() = parent_user_id);
+
+-- ============================================================
+-- Close anon read exposure on signups + volunteers
+-- Run in Supabase SQL Editor.
+--
+-- Mapped access pattern (from the actual front-end/Netlify code):
+--   signups —
+--     anon INSERT:  index.html #signup form, join/index.html form (both
+--                    insert into "signups", the lead-capture table — this
+--                    is separate from real login accounts, see login.html).
+--     anon SELECT:  was `.select('*', {count:'exact', head:true})` for the
+--                    public member counter (index.html, join/index.html)
+--                    — the ONLY anon read, and it never needed row data,
+--                    just a number. Replaced below by get_signup_count().
+--     admin read/edit/delete: admin.html's list, edit-modal, and
+--                    delete/edit buttons used to run on the anon key
+--                    (`_sb.from('signups')...`) gated only by a
+--                    client-side password prompt — anyone with the
+--                    (public, page-source-visible) anon key could already
+--                    read AND rewrite AND delete every member row. Moved
+--                    to netlify/functions/admin-table.js (list/get/update/
+--                    delete) and the existing delete-member.js (member +
+--                    auth-account delete), both service-role and gated by
+--                    ADMIN_DELETE_SECRET.
+--   volunteers —
+--     anon INSERT:  index.html volunteer form.
+--     anon SELECT/UPDATE/DELETE: admin.html only, same anon-key pattern
+--                    as signups above — same fix, same admin-table.js.
+--
+-- Net effect: the anon key can add a signup/volunteer row but can no
+-- longer read, edit, or delete ANY row in either table (closing both the
+-- read leak the user flagged and a write/delete exposure that came with
+-- it). service_role (Netlify functions) bypasses RLS entirely as before.
+-- ============================================================
+
+ALTER TABLE public.signups    ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.volunteers ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "lpn_signups_anon_insert"    ON public.signups    FOR INSERT WITH CHECK (true);
+CREATE POLICY "lpn_volunteers_anon_insert" ON public.volunteers FOR INSERT WITH CHECK (true);
+-- Deliberately no SELECT/UPDATE/DELETE policy for anon on either table.
+
+-- Count-only RPC for the public member counter. SECURITY DEFINER runs as
+-- the function owner, which (as the table owner) bypasses signups' RLS —
+-- but the function only ever returns a count, never row data.
+CREATE OR REPLACE FUNCTION public.get_signup_count()
+RETURNS bigint
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT count(*) FROM public.signups;
+$$;
+REVOKE ALL ON FUNCTION public.get_signup_count() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.get_signup_count() TO anon, authenticated;
