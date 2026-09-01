@@ -2,6 +2,7 @@
   "name": "litter-prevention-network",
   "private": true,
   "dependencies": {
-    "@supabase/supabase-js": "^2"
+    "@supabase/supabase-js": "^2",
+    "stripe": "^17"
   }
 }

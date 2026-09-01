@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1D9E75" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thank You – Litter Prevention Network</title>
+  <meta name="robots" content="noindex" />
+  <link rel="stylesheet" href="shared.css?v=20260715" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <script src="shared.js?v=20260715"></script>
+  <style>
+    .result-wrap { max-width: 520px; margin: 0 auto; padding: 56px 24px 80px; text-align: center; }
+    .result-card { background: white; border-radius: 20px; padding: 44px 32px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+    .result-icon { font-size: 48px; margin-bottom: 12px; }
+    .result-title { font-size: 24px; font-weight: 800; font-family: 'Outfit', sans-serif; color: #0F2318; margin-bottom: 10px; }
+    .result-amt { font-size: 32px; font-weight: 800; color: #1D9E75; font-family: 'Outfit', sans-serif; margin-bottom: 14px; }
+    .result-sub { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 24px; }
+    .result-btn { display: inline-block; padding: 13px 28px; background: linear-gradient(135deg, #1D9E75, #0F6E56); color: white; border-radius: 12px; font-weight: 800; text-decoration: none; font-family: 'Outfit', sans-serif; letter-spacing: 0.5px; }
+    .lpn-tax-note { display: none; font-size: 11px; color: #999; margin-top: 18px; }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div class="lang-bar">
+    <button class="active" onclick="setLang('en')">English</button>
+    <button onclick="setLang('es')">Español</button>
+  </div>
+
+  <nav aria-label="Main navigation">
+    <a href="index.html" class="nav-logo">
+      <img src="litter-prevention-network-logo.svg" alt="Litter Prevention Network logo" />
+      <span class="nav-logo-label">Litter Prevention Network</span>
+    </a>
+    <div class="nav-links-desktop">
+      <a href="index.html">Home</a>
+      <a href="our-work.html">Trash Rangers / Schools</a>
+      <a href="signin.html" class="nav-signin-btn" id="desktop-nav-auth">Sign In</a>
+    </div>
+    <button class="hamburger" onclick="openDrawer()" aria-label="Open navigation menu"><span></span><span></span><span></span></button>
+  </nav>
+
+  <div class="result-wrap" id="main-content">
+    <div class="result-card">
+      <div class="result-icon">🎉</div>
+      <div class="result-title"><span class="en">Thank you for your donation!</span><span class="es">¡Gracias por tu donación!</span></div>
+      <div class="result-amt" id="result-amt"></div>
+      <div class="result-sub">
+        <span class="en">A payment receipt is on its way to your email. Your support helps fund the Trash Rangers youth program and litter prevention efforts in Willis, TX.</span>
+        <span class="es">Un recibo de pago está en camino a tu correo. Tu apoyo ayuda a financiar el programa juvenil Trash Rangers y los esfuerzos de prevención de basura en Willis, TX.</span>
+      </div>
+      <a href="index.html" class="result-btn"><span class="en">Back to Home</span><span class="es">Volver al Inicio</span></a>
+      <p class="lpn-tax-note"></p>
+    </div>
+  </div>
+
+  <script>
+    renderTaxDeductibleNote();
+    (async function () {
+      const params = new URLSearchParams(window.location.search);
+      const sessionId = params.get('session_id');
+      if (!sessionId) return;
+      try {
+        const res = await fetch('/.netlify/functions/get-checkout-session?session_id=' + encodeURIComponent(sessionId));
+        const data = await res.json();
+        if (res.ok && typeof data.amount_total === 'number') {
+          document.getElementById('result-amt').textContent = '$' + (data.amount_total / 100).toFixed(2);
+        }
+      } catch (e) { /* amount is a nice-to-have; page still works without it */ }
+    })();
+  </script>
+  <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js');</script>
+</body>
+</html>

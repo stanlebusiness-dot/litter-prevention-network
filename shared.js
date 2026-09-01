@@ -1,3 +1,19 @@
+// LPN's 501(c)(3) status is pending — leave this empty until it's confirmed.
+// Single source of truth for donate.html / donate-success.html tax wording;
+// update this one line (and only this line) once status is confirmed, e.g.:
+//   "LPN is a registered 501(c)(3); your donation may be tax-deductible to the extent allowed by law."
+window.LPN_TAX_DEDUCTIBLE_NOTE = '';
+function renderTaxDeductibleNote() {
+  document.querySelectorAll('.lpn-tax-note').forEach(el => {
+    if (window.LPN_TAX_DEDUCTIBLE_NOTE) {
+      el.textContent = window.LPN_TAX_DEDUCTIBLE_NOTE;
+      el.style.display = '';
+    } else {
+      el.style.display = 'none';
+    }
+  });
+}
+
 // Mobile slide-down nav panel toggle
 function toggleMobileNav() {
   const nav = document.querySelector('nav');

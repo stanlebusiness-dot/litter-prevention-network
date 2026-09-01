@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1D9E75" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Donation Cancelled – Litter Prevention Network</title>
+  <meta name="robots" content="noindex" />
+  <link rel="stylesheet" href="shared.css?v=20260715" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <script src="shared.js?v=20260715"></script>
+  <style>
+    .result-wrap { max-width: 520px; margin: 0 auto; padding: 56px 24px 80px; text-align: center; }
+    .result-card { background: white; border-radius: 20px; padding: 44px 32px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+    .result-icon { font-size: 48px; margin-bottom: 12px; }
+    .result-title { font-size: 24px; font-weight: 800; font-family: 'Outfit', sans-serif; color: #0F2318; margin-bottom: 10px; }
+    .result-sub { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 24px; }
+    .result-btn { display: inline-block; padding: 13px 28px; background: linear-gradient(135deg, #1D9E75, #0F6E56); color: white; border-radius: 12px; font-weight: 800; text-decoration: none; font-family: 'Outfit', sans-serif; letter-spacing: 0.5px; }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div class="lang-bar">
+    <button class="active" onclick="setLang('en')">English</button>
+    <button onclick="setLang('es')">Español</button>
+  </div>
+
+  <nav aria-label="Main navigation">
+    <a href="index.html" class="nav-logo">
+      <img src="litter-prevention-network-logo.svg" alt="Litter Prevention Network logo" />
+      <span class="nav-logo-label">Litter Prevention Network</span>
+    </a>
+    <div class="nav-links-desktop">
+      <a href="index.html">Home</a>
+      <a href="our-work.html">Trash Rangers / Schools</a>
+      <a href="signin.html" class="nav-signin-btn" id="desktop-nav-auth">Sign In</a>
+    </div>
+    <button class="hamburger" onclick="openDrawer()" aria-label="Open navigation menu"><span></span><span></span><span></span></button>
+  </nav>
+
+  <div class="result-wrap" id="main-content">
+    <div class="result-card">
+      <div class="result-icon">💛</div>
+      <div class="result-title"><span class="en">No donation was made</span><span class="es">No se realizó ninguna donación</span></div>
+      <div class="result-sub">
+        <span class="en">Your card was not charged. If this was a mistake, you're welcome to try again — every bit helps LPN keep Willis, TX litter-free.</span>
+        <span class="es">No se realizó ningún cargo a tu tarjeta. Si esto fue un error, puedes intentarlo de nuevo — cada aporte ayuda a LPN a mantener Willis, TX libre de basura.</span>
+      </div>
+      <a href="donate.html" class="result-btn"><span class="en">Try Again</span><span class="es">Intentar de Nuevo</span></a>
+    </div>
+  </div>
+
+  <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js');</script>
+</body>
+</html>

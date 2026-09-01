@@ -34,6 +34,9 @@
     .impact-item { background: #f9f9f7; border-radius: 14px; padding: 22px 18px; border: 1px solid #e8f0ec; }
     .impact-item .amt { font-size: 22px; font-weight: 800; color: #0F6E56; font-family: 'Outfit', sans-serif; margin-bottom: 6px; }
     .impact-item p { font-size: 13px; color: #666; line-height: 1.6; margin: 0; }
+    .donate-error { display: none; background: #FDECEC; border: 1px solid #F5C2C2; color: #B3261E; font-size: 13px; font-weight: 600; padding: 10px 12px; border-radius: 8px; margin-bottom: 14px; text-align: center; }
+    .lpn-tax-note { display: none; font-size: 11px; color: #999; text-align: center; margin-top: 8px; }
+    .donate-btn[disabled] { opacity: 0.6; cursor: not-allowed; }
     @media (max-width: 520px) { .donate-card { padding: 28px 20px; } .impact-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
@@ -91,16 +94,18 @@
 
       <input class="donate-custom" type="number" id="donate-custom" placeholder="Custom amount $" oninput="setCustomAmt(this.value)" min="1" />
 
-      <button class="donate-btn" onclick="handleDonate()"><span class="en">DONATE NOW</span><span class="es">DONAR AHORA</span></button>
+      <div class="donate-error" id="donate-error"></div>
+
+      <button class="donate-btn" id="donate-btn" onclick="handleDonate()"><span class="en">DONATE NOW</span><span class="es">DONAR AHORA</span></button>
 
       <div class="donate-methods">
         <span class="pay-badge">VISA</span>
         <span class="pay-badge">MC</span>
-        <span class="pay-badge">PayPal</span>
         <span class="pay-badge">G Pay</span>
         <span class="pay-badge">Apple Pay</span>
       </div>
-      <div class="donate-secure">🔒 Secure · No account required</div>
+      <div class="donate-secure">🔒 Secure checkout via Stripe · No account required</div>
+      <p class="lpn-tax-note"></p>
     </div>
 
   </div>
@@ -196,9 +201,47 @@
     _donateAmt = parseFloat(val) || 0;
     document.querySelectorAll('.donate-amt').forEach(b => b.classList.remove('active'));
   }
-  function handleDonate() {
-    alert('Thank you for your support! Payment processing coming soon.');
+  function showDonateError(msg) {
+    const el = document.getElementById('donate-error');
+    el.textContent = msg;
+    el.style.display = 'block';
   }
+  async function handleDonate() {
+    const errEl = document.getElementById('donate-error');
+    errEl.style.display = 'none';
+
+    if (_donateFreq === 'monthly') {
+      showDonateError('Monthly giving is coming soon — please choose One-Time for now. Thank you for your interest!');
+      return;
+    }
+    if (!_donateAmt || _donateAmt < 1) {
+      showDonateError('Please choose or enter a donation amount of at least $1.');
+      return;
+    }
+
+    const btn = document.getElementById('donate-btn');
+    btn.disabled = true;
+    const originalHtml = btn.innerHTML;
+    btn.innerHTML = '<span class="en">Redirecting…</span><span class="es">Redirigiendo…</span>';
+
+    try {
+      const res = await fetch('/.netlify/functions/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: _donateAmt, frequency: _donateFreq }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.url) {
+        throw new Error(data.error || 'Something went wrong starting checkout.');
+      }
+      window.location.href = data.url;
+    } catch (e) {
+      showDonateError(e.message || 'Something went wrong. Please try again.');
+      btn.disabled = false;
+      btn.innerHTML = originalHtml;
+    }
+  }
+  renderTaxDeductibleNote();
   </script>
   <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js');</script>
 </body>
