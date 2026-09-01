@@ -1517,13 +1517,19 @@ async function loadAll() {
   loadNewsPosts();
   loadReferrals();
 
+  if (s.error) console.error('signups load failed:', s.error.message);
   document.getElementById('count-signups').textContent = s.data?.length || 0;
-  document.getElementById('body-signups').innerHTML = s.data?.length
+  document.getElementById('body-signups').innerHTML = s.error
+    ? `<tr><td colspan="8" class="empty">Could not load: ${escapeHtml(s.error.message)}</td></tr>`
+    : s.data?.length
     ? s.data.map(r => `<tr><td>#${r.member_number||'—'}</td><td>${r.full_name}</td><td>${r.email}</td><td>${r.zip_code||'—'}</td><td>${r.language||'—'}</td><td>${fmt(r.created_at)}</td><td>${r.signup_source === 'event' ? '🎪 Event' : '🌐 Main'}</td><td><button class="btn-edit" onclick="openEditById('signups','${r.id}')">✏️ Edit</button><button class="btn-delete" onclick="deleteRow('signups','${r.id}','sign-up')">🗑 Delete</button></td></tr>`).join('')
     : '<tr><td colspan="8" class="empty">No sign-ups yet.</td></tr>';
 
+  if (v.error) console.error('volunteers load failed:', v.error.message);
   document.getElementById('count-volunteers').textContent = v.data?.length || 0;
-  document.getElementById('body-volunteers').innerHTML = v.data?.length
+  document.getElementById('body-volunteers').innerHTML = v.error
+    ? `<tr><td colspan="8" class="empty">Could not load: ${escapeHtml(v.error.message)}</td></tr>`
+    : v.data?.length
     ? v.data.map(r => `<tr><td>${r.full_name}</td><td>${r.email}</td><td>${r.phone||'—'}</td><td>${r.help_type}</td><td>${r.availability}</td><td>${r.vest_request||'—'}</td><td>${fmt(r.created_at)}</td><td><button class="btn-edit" onclick="openEditById('volunteers','${r.id}')">✏️ Edit</button><button class="btn-delete" onclick="deleteRow('volunteers','${r.id}','volunteer')">🗑 Delete</button></td></tr>`).join('')
     : '<tr><td colspan="8" class="empty">No volunteers yet.</td></tr>';
 
