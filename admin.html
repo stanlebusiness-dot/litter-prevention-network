@@ -1273,6 +1273,18 @@ const _sb = window.supabase.createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsZ3pmcHBtbHNycm1za2dsb2VvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ2NTkxNTYsImV4cCI6MjA5MDIzNTE1Nn0.ec9avLt7Zz-41k2hOTFBs6KH0D5GmW6tCpdlcDSXRJc'
 );
 
+// signups/volunteers have no anon SELECT policy (see supabase-migration.sql)
+// — the anon key can insert but not read the member/volunteer list, closing
+// the exposure where anyone with the anon key could read every name+email.
+// admin.html reads/edits/deletes those two tables through this
+// service-role-backed function instead, gated by the same admin secret.
+// Declared here (before checkAdminPw/initAdmin) because initAdmin() below
+// can call loadAll() synchronously on page load for an already-logged-in
+// admin — if these were declared after that point in the script, loadAll()
+// would reference them while still in their temporal dead zone.
+const ADMIN_TABLE_FN = '/.netlify/functions/admin-table';
+const SERVICE_ROLE_TABLES = ['signups', 'volunteers'];
+
 function checkAdminPw() {
   const pw = document.getElementById('admin-pw').value;
   if (pw === 'PreventLitter9102!') {
@@ -1353,14 +1365,6 @@ function exportCSV(bodyId, filename) {
   a.download = `lpn-${filename}-${new Date().toISOString().slice(0,10)}.csv`;
   a.click();
 }
-
-// signups/volunteers have no anon SELECT policy (see supabase-migration.sql)
-// — the anon key can insert but not read the member/volunteer list, closing
-// the exposure where anyone with the anon key could read every name+email.
-// admin.html reads/edits/deletes those two tables through this
-// service-role-backed function instead, gated by the same admin secret.
-const ADMIN_TABLE_FN = '/.netlify/functions/admin-table';
-const SERVICE_ROLE_TABLES = ['signups', 'volunteers'];
 
 async function adminTableFetch(action, table, extra = {}) {
   try {
