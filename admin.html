@@ -1309,7 +1309,12 @@ function checkAdminPw() {
 }
 
 function initAdmin() {
-  if (sessionStorage.getItem('lpn-admin') === '1') {
+  // Both keys are always set together in checkAdminPw() — if 'lpn-admin' is
+  // set without 'lpn-admin-pw' (e.g. a tab session that predates the pw key
+  // being introduced), trusting it would send an empty password to
+  // admin-table.js/admin-announcements.js and fail with a silent-looking
+  // "Unauthorized". Require both, or force back to the login screen.
+  if (sessionStorage.getItem('lpn-admin') === '1' && sessionStorage.getItem('lpn-admin-pw')) {
     document.getElementById('login').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
     loadAll();
@@ -1317,6 +1322,8 @@ function initAdmin() {
     loadPagesTab();
     loadPhotosTab();
   } else {
+    sessionStorage.removeItem('lpn-admin');
+    sessionStorage.removeItem('lpn-admin-pw');
     document.getElementById('login').style.display = 'block';
   }
 }
