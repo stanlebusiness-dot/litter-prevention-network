@@ -1285,6 +1285,10 @@
         <input type="text" id="signup-zip" placeholder="77378" />
       </div>
     </div>
+    <div class="form-group">
+      <label for="signup-state"><span class="en">State/Province</span><span class="es">Estado/Provincia</span></label>
+      <input type="text" id="signup-state" list="state-province-list" placeholder="Texas, Nuevo León..." />
+    </div>
     <!-- Age gate enforcement — parental consent required for under 18, mandatory for under 13 -->
     <div id="consent-group" style="display:none;margin-bottom:20px;background:#FFF8E1;border:1px solid #FFD54F;border-radius:8px;padding:14px 16px;">
       <label style="display:flex;gap:12px;align-items:flex-start;cursor:pointer;font-size:14px;line-height:1.6;color:#555;">
@@ -2071,6 +2075,7 @@
       'signup-email':       isEs ? 'tu@correo.com'  : 'you@email.com',
       'signup-age':         isEs ? 'Tu edad'        : 'Your age',
       'signup-zip':         'ZIP / Código Postal',
+      'signup-state':       'Texas, Nuevo León...',
       'signup-phone':       isEs ? 'xxx-xxx-xxxx'   : 'xxx-xxx-xxxx',
       'signup-referral-name': isEs ? 'Nombre o # de miembro' : 'Name or member #',
     };
@@ -2081,6 +2086,7 @@
   }
   _syncPlaceholders();
   document.addEventListener('lpn-lang-change', _syncPlaceholders);
+  injectStateProvinceDatalist();
 
   document.getElementById('signup-btn').addEventListener('click', async () => {
     const first_name    = document.getElementById('first-name').value.trim();
@@ -2088,6 +2094,7 @@
     const email         = document.getElementById('signup-email').value.trim();
     const age           = document.getElementById('signup-age').value.trim();
     const zip_code      = document.getElementById('signup-zip').value.trim();
+    const state_province = document.getElementById('signup-state').value.trim();
     const phone         = document.getElementById('signup-phone').value.trim();
     const referral_type = document.getElementById('signup-referral-type').value;
     const referral_name = document.getElementById('signup-referral-name').value.trim();
@@ -2135,7 +2142,7 @@
     btn.textContent = _t('Submitting…', 'Enviando…');
 
     const { error } = await insertSignupRecord({
-      full_name, email, zip_code, language, phone,
+      full_name, email, zip_code, state_province, language, phone,
       age: age ? parseInt(age) : null,
       referral_type, referral_name,
       signup_source: getSignupSource(),

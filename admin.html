@@ -225,8 +225,8 @@
       </div>
       <button class="btn-csv" onclick="exportCSV('body-signups', 'signups')">⬇ Export CSV</button>
     </div>
-    <table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Zip Code</th><th>Language</th><th>Date</th><th>Source</th><th>Actions</th></tr></thead>
-    <tbody id="body-signups"><tr><td colspan="8" class="loading">Loading...</td></tr></tbody></table>
+    <table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Zip Code</th><th>State/Province</th><th>Language</th><th>Date</th><th>Source</th><th>Actions</th></tr></thead>
+    <tbody id="body-signups"><tr><td colspan="9" class="loading">Loading...</td></tr></tbody></table>
   </div>
 
   <!-- Volunteers -->
@@ -1365,8 +1365,11 @@ function exportCSV(bodyId, filename) {
     .filter(r => r.style.display !== 'none')
     .map(row => [...row.cells].map(td => `"${td.textContent.trim().replace(/"/g, '""')}"`).join(','))
     .join('\n');
-  const csv = headers + '\n' + rows;
-  const blob = new Blob([csv], { type: 'text/csv' });
+  // Leading BOM + explicit charset — without it, Excel on Windows guesses
+  // Windows-1252 for the file and garbles accented characters (á, é, ñ, etc.)
+  // in state/province names like "Nuevo León" or "Yucatán".
+  const csv = '﻿' + headers + '\n' + rows;
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = `lpn-${filename}-${new Date().toISOString().slice(0,10)}.csv`;
@@ -1531,10 +1534,10 @@ async function loadAll() {
   if (s.error) console.error('signups load failed:', s.error.message);
   document.getElementById('count-signups').textContent = s.data?.length || 0;
   document.getElementById('body-signups').innerHTML = s.error
-    ? `<tr><td colspan="8" class="empty">Could not load: ${escapeHtml(s.error.message)}</td></tr>`
+    ? `<tr><td colspan="9" class="empty">Could not load: ${escapeHtml(s.error.message)}</td></tr>`
     : s.data?.length
-    ? s.data.map(r => `<tr><td>#${r.member_number||'—'}</td><td>${r.full_name}</td><td>${r.email}</td><td>${r.zip_code||'—'}</td><td>${r.language||'—'}</td><td>${fmt(r.created_at)}</td><td>${r.signup_source === 'event' ? '🎪 Event' : '🌐 Main'}</td><td><button class="btn-edit" onclick="openEditById('signups','${r.id}')">✏️ Edit</button><button class="btn-delete" onclick="deleteRow('signups','${r.id}','sign-up')">🗑 Delete</button></td></tr>`).join('')
-    : '<tr><td colspan="8" class="empty">No sign-ups yet.</td></tr>';
+    ? s.data.map(r => `<tr><td>#${r.member_number||'—'}</td><td>${r.full_name}</td><td>${r.email}</td><td>${r.zip_code||'—'}</td><td>${r.state_province||'—'}</td><td>${r.language||'—'}</td><td>${fmt(r.created_at)}</td><td>${r.signup_source === 'event' ? '🎪 Event' : '🌐 Main'}</td><td><button class="btn-edit" onclick="openEditById('signups','${r.id}')">✏️ Edit</button><button class="btn-delete" onclick="deleteRow('signups','${r.id}','sign-up')">🗑 Delete</button></td></tr>`).join('')
+    : '<tr><td colspan="9" class="empty">No sign-ups yet.</td></tr>';
 
   if (v.error) console.error('volunteers load failed:', v.error.message);
   document.getElementById('count-volunteers').textContent = v.data?.length || 0;
@@ -1681,6 +1684,7 @@ const EDIT_FIELDS = {
     { key: 'full_name',     label: 'Full Name',  type: 'text' },
     { key: 'email',         label: 'Email',       type: 'email' },
     { key: 'zip_code',      label: 'Zip Code',    type: 'text' },
+    { key: 'state_province', label: 'State/Province', type: 'text' },
     { key: 'phone',         label: 'Phone',       type: 'text' },
     { key: 'language',      label: 'Language',    type: 'select', options: ['English','Español'] },
     { key: 'signup_source', label: 'Source',      type: 'select', options: ['main','event'] },

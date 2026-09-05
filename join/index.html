@@ -192,6 +192,10 @@
           </div>
         </div>
         <div class="field">
+          <label for="signup-state"><span class="en">State/Province</span><span class="es">Estado/Provincia</span></label>
+          <input id="signup-state" name="state_province" type="text" list="state-province-list" placeholder="Texas, Nuevo León..." />
+        </div>
+        <div class="field">
           <label for="signup-phone"><span class="en">Phone Number (optional)</span><span class="es">Teléfono (opcional)</span></label>
           <input id="signup-phone" name="phone" type="tel" />
         </div>
@@ -311,6 +315,7 @@
       const email = document.getElementById('signup-email').value.trim();
       const age = document.getElementById('signup-age').value.trim();
       const zipCode = document.getElementById('signup-zip').value.trim();
+      const stateProvince = document.getElementById('signup-state').value.trim();
       const phone = document.getElementById('signup-phone').value.trim();
       const referralType = document.getElementById('signup-referral-type').value;
       const langRaw = document.getElementById('signup-language').value;
@@ -331,6 +336,7 @@
           full_name: fullName,
           email,
           zip_code: zipCode,
+          state_province: stateProvince,
           language,
           phone,
           age: age ? parseInt(age) : null,
@@ -369,6 +375,7 @@
 
     syncLangButtons();
     refreshCount();
+    injectStateProvinceDatalist();
   </script>
 </body>
 </html>

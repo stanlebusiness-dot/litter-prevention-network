@@ -14,6 +14,36 @@ function renderTaxDeductibleNote() {
   });
 }
 
+// State/Province suggestions shared by index.html + join/index.html so the
+// two signup forms can't drift from each other (see the earlier duplicate-
+// email-detection lesson). Free text, not a locked dropdown — LPN members
+// span the US, Mexico, and Latin America, so a fixed list can't cover every
+// region. This just nudges the two most common regions toward one
+// consistent spelling via a <datalist>; anything else can still be typed.
+const LPN_STATE_PROVINCE_OPTIONS = [
+  // United States
+  'Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware',
+  'Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky',
+  'Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi','Missouri',
+  'Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico','New York',
+  'North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania','Rhode Island',
+  'South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont','Virginia','Washington',
+  'West Virginia','Wisconsin','Wyoming','District of Columbia',
+  // México
+  'Aguascalientes','Baja California','Baja California Sur','Campeche','Chiapas','Chihuahua',
+  'Ciudad de México','Coahuila','Colima','Durango','Guanajuato','Guerrero','Hidalgo','Jalisco',
+  'Estado de México','Michoacán','Morelos','Nayarit','Nuevo León','Oaxaca','Puebla','Querétaro',
+  'Quintana Roo','San Luis Potosí','Sinaloa','Sonora','Tabasco','Tamaulipas','Tlaxcala',
+  'Veracruz','Yucatán','Zacatecas',
+];
+function injectStateProvinceDatalist() {
+  if (document.getElementById('state-province-list')) return;
+  const dl = document.createElement('datalist');
+  dl.id = 'state-province-list';
+  dl.innerHTML = LPN_STATE_PROVINCE_OPTIONS.map(s => `<option value="${s}"></option>`).join('');
+  document.body.appendChild(dl);
+}
+
 // Mobile slide-down nav panel toggle
 function toggleMobileNav() {
   const nav = document.querySelector('nav');

@@ -2,13 +2,22 @@
   Source-of-truth copy for Supabase Dashboard → Authentication → Email Templates → "Confirm signup".
   Supabase does NOT read this file automatically — paste the <body> content below into the
   dashboard's template editor manually, and set the Subject field as noted underneath.
+  THE SUPABASE DASHBOARD IS THE LIVE SOURCE. This file is a versioned mirror kept in sync by
+  hand — if the template is ever edited directly in the dashboard, copy that change back here too.
 
   Subject:
     Welcome to the Litter Prevention Network! / ¡Bienvenido a la Red de Prevención de Basura!
 
   Supabase template variables used: {{ .ConfirmationURL }}
   (Per-user language isn't reliably available inside native Supabase templates, so both
-  English and Spanish are always shown, stacked — see plan notes for why.)
+  English and Spanish are always shown, stacked.)
+
+  Structure per language block (2026-09-05: merged the client's separate thank-you
+  request into this email instead of sending two): brief greeting → prominent Confirm
+  button → fuller thank-you copy below. The button stays the first interactive element
+  a reader reaches, so the email's functional job (verifying the address) isn't buried
+  under the longer welcome copy. English copy is the client/Vanessa-approved wording,
+  used as written; Spanish is a natural translation, not a literal one.
 -->
 <div style="max-width:560px;margin:0 auto;padding:32px 24px;font-family:Arial,Helvetica,sans-serif;color:#222;">
 
@@ -19,28 +28,41 @@
   <!-- English -->
   <h1 style="font-size:22px;color:#1D9E75;margin:0 0 12px;">Welcome to the Litter Prevention Network!</h1>
   <p style="font-size:15px;line-height:1.6;margin:0 0 20px;">
-    You're officially a member — thanks for joining us in keeping Willis, TX litter-free.
-    Please confirm your email to finish setting up your account.
+    You're officially a member — please confirm your email to finish setting up your account.
   </p>
   <div style="text-align:center;margin:0 0 28px;">
     <a href="{{ .ConfirmationURL }}" style="display:inline-block;background:#1D9E75;color:#ffffff;padding:12px 28px;border-radius:8px;font-weight:bold;text-decoration:none;font-size:15px;">
       Confirm My Email
     </a>
   </div>
+  <p style="font-size:15px;line-height:1.6;margin:0 0 28px;">
+    Thank you for registering with Litter Prevention Network! We're excited to have you with us.
+    Our organization is growing, and we are currently developing new educational programs,
+    community events, and resources. We'll keep you informed about our progress and upcoming
+    opportunities to participate. Together, we can help create cleaner communities and teach
+    future generations the importance of not littering and trash containment.
+  </p>
 
   <hr style="border:none;border-top:1px solid #e5e5e5;margin:0 0 28px;" />
 
   <!-- Español -->
   <h1 style="font-size:22px;color:#1D9E75;margin:0 0 12px;">¡Bienvenido a la Red de Prevención de Basura!</h1>
   <p style="font-size:15px;line-height:1.6;margin:0 0 20px;">
-    Ya eres parte de nuestra comunidad — gracias por unirte para mantener Willis, TX libre de basura.
-    Por favor confirma tu correo para terminar de configurar tu cuenta.
+    Ya eres parte de nuestra comunidad — por favor confirma tu correo para terminar de configurar tu cuenta.
   </p>
   <div style="text-align:center;margin:0 0 28px;">
     <a href="{{ .ConfirmationURL }}" style="display:inline-block;background:#1D9E75;color:#ffffff;padding:12px 28px;border-radius:8px;font-weight:bold;text-decoration:none;font-size:15px;">
       Confirmar Mi Correo
     </a>
   </div>
+  <p style="font-size:15px;line-height:1.6;margin:0 0 28px;">
+    ¡Gracias por registrarte en la Red de Prevención de Basura (Litter Prevention Network)! Nos
+    entusiasma tenerte con nosotros. Nuestra organización está creciendo, y actualmente estamos
+    desarrollando nuevos programas educativos, eventos comunitarios y recursos. Te mantendremos
+    al tanto de nuestro progreso y de las próximas oportunidades para participar. Juntos, podemos
+    ayudar a crear comunidades más limpias y enseñar a las futuras generaciones la importancia de
+    no tirar basura y de mantener los desechos debidamente contenidos.
+  </p>
 
   <hr style="border:none;border-top:1px solid #e5e5e5;margin:0 0 20px;" />
 
@@ -52,4 +74,3 @@
   </p>
 
 </div>
-
