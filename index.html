@@ -326,6 +326,13 @@
     .signup > p { color: #666; margin-bottom: 32px; font-size: 16px; text-align: center; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .age-notice { background: #FFF8E1; border: 1px solid #FFD54F; border-radius: 8px; padding: 12px 16px; font-size: 13px; color: #7B5E00; margin-bottom: 20px; line-height: 1.6; }
+    .mode-toggle { display: flex; gap: 8px; margin-bottom: 20px; }
+    .mode-toggle button {
+      flex: 1; border: 1.5px solid #ddd; background: white; color: #333;
+      border-radius: 8px; padding: 10px 12px; font-size: 14px; font-weight: 700;
+      cursor: pointer; text-align: center; font-family: inherit;
+    }
+    .mode-toggle button.active { background: #1D9E75; color: white; border-color: #1D9E75; }
 
     /* How You Can Help */
     .help-section { padding: 64px 40px; background: white; text-align: center; }
@@ -1260,6 +1267,23 @@
     </p>
     <p id="signup-social-proof" style="font-size:14px;font-weight:700;color:#1A6B2F;text-align:center;margin:-8px 0 20px;min-height:20px;"></p>
 
+    <!-- Honeypot — invisible to real users; bots that fill hidden fields get
+         silently no-opped instead of alerted, per Task 1's abuse-mitigation ask. -->
+    <div style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;" aria-hidden="true">
+      <label for="hp-website">Website</label>
+      <input type="text" id="hp-website" name="website" tabindex="-1" autocomplete="off" />
+    </div>
+    <div class="form-group">
+      <label><span class="en">How would you like to sign up?</span><span class="es">¿Cómo te gustaría registrarte?</span></label>
+      <div class="mode-toggle" role="radiogroup" aria-label="Sign-up method">
+        <button type="button" class="mode-btn active" data-mode="email" onclick="setSignupMode('email')">
+          <span class="en">📧 Email</span><span class="es">📧 Correo</span>
+        </button>
+        <button type="button" class="mode-btn" data-mode="phone" onclick="setSignupMode('phone')">
+          <span class="en">📱 Phone Only</span><span class="es">📱 Solo Teléfono</span>
+        </button>
+      </div>
+    </div>
     <div class="form-row">
       <div class="form-group">
         <label for="first-name"><span class="en">First Name</span><span class="es">Nombre</span></label>
@@ -1271,7 +1295,7 @@
       </div>
     </div>
     <div class="form-group">
-      <label for="signup-email"><span class="en">Email Address</span><span class="es">Correo Electrónico</span></label>
+      <label for="signup-email"><span class="en">Email Address</span><span class="es">Correo Electrónico</span> <span id="email-req-note" style="font-weight:400;color:#888;"></span></label>
       <input type="email" id="signup-email" placeholder="you@email.com" />
     </div>
     <div class="form-row">
@@ -1289,6 +1313,10 @@
       <label for="signup-state"><span class="en">State/Province</span><span class="es">Estado/Provincia</span></label>
       <input type="text" id="signup-state" list="state-province-list" placeholder="Texas, Nuevo León..." />
     </div>
+    <div class="form-group">
+      <label for="signup-country"><span class="en">Country</span><span class="es">País</span></label>
+      <input type="text" id="signup-country" list="country-list" placeholder="United States, México..." />
+    </div>
     <!-- Age gate enforcement — parental consent required for under 18, mandatory for under 13 -->
     <div id="consent-group" style="display:none;margin-bottom:20px;background:#FFF8E1;border:1px solid #FFD54F;border-radius:8px;padding:14px 16px;">
       <label style="display:flex;gap:12px;align-items:flex-start;cursor:pointer;font-size:14px;line-height:1.6;color:#555;">
@@ -1300,7 +1328,7 @@
       </label>
     </div>
     <div class="form-group">
-      <label><span class="en">Phone Number (optional)</span><span class="es">Teléfono (opcional)</span></label>
+      <label for="signup-phone"><span class="en">Phone Number</span><span class="es">Teléfono</span> <span id="phone-req-note" style="font-weight:400;color:#888;"></span></label>
       <input type="tel" id="signup-phone" placeholder="xxx-xxx-xxxx" />
     </div>
     <div class="form-group">
@@ -1977,6 +2005,30 @@
     msgEl.style.display = 'block';
   });
 
+  // ── Sign-up mode: email (default) vs phone-only ──────────────────
+  // Phone-only registrants get no Supabase Auth account (see
+  // lpnSendWelcomeConfirmation guard below) and no unique-phone
+  // enforcement — households here legitimately share one phone number
+  // across parent + children signups, so phone can never be a hard key.
+  let _signupMode = 'email';
+  function setSignupMode(mode) {
+    _signupMode = mode;
+    document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.mode === mode));
+    updateContactLabels();
+  }
+  function updateContactLabels() {
+    const emailNote = document.getElementById('email-req-note');
+    const phoneNote = document.getElementById('phone-req-note');
+    if (_signupMode === 'phone') {
+      emailNote.textContent = _t('(optional)', '(opcional)');
+      phoneNote.textContent = _t('(required)', '(requerido)');
+    } else {
+      emailNote.textContent = '';
+      phoneNote.textContent = _t('(optional)', '(opcional)');
+    }
+  }
+  document.addEventListener('lpn-lang-change', updateContactLabels);
+
   // Age gate enforcement — inline validation
   function updateAgeGate() {
     const ageVal = parseInt(document.getElementById('signup-age').value);
@@ -2076,6 +2128,7 @@
       'signup-age':         isEs ? 'Tu edad'        : 'Your age',
       'signup-zip':         'ZIP / Código Postal',
       'signup-state':       'Texas, Nuevo León...',
+      'signup-country':     'United States, México...',
       'signup-phone':       isEs ? 'xxx-xxx-xxxx'   : 'xxx-xxx-xxxx',
       'signup-referral-name': isEs ? 'Nombre o # de miembro' : 'Name or member #',
     };
@@ -2087,14 +2140,30 @@
   _syncPlaceholders();
   document.addEventListener('lpn-lang-change', _syncPlaceholders);
   injectStateProvinceDatalist();
+  injectCountryDatalist();
+  updateContactLabels();
 
   document.getElementById('signup-btn').addEventListener('click', async () => {
+    // Honeypot — a real visitor never sees or fills this field. Pretend
+    // success and stop, rather than alerting the bot that it was caught.
+    if (document.getElementById('hp-website').value) {
+      document.querySelector('.signup').innerHTML = `
+        <div style="text-align:center;padding:40px 20px">
+          <div style="font-size:64px;margin-bottom:16px">🎉</div>
+          <h2 style="font-size:28px;margin-bottom:12px;color:#1D9E75;font-family:'Outfit',sans-serif;">
+            <span class="en">You're in!</span><span class="es">¡Ya eres parte!</span>
+          </h2>
+        </div>`;
+      return;
+    }
+
     const first_name    = document.getElementById('first-name').value.trim();
     const last_name     = document.getElementById('last-name').value.trim();
     const email         = document.getElementById('signup-email').value.trim();
     const age           = document.getElementById('signup-age').value.trim();
     const zip_code      = document.getElementById('signup-zip').value.trim();
     const state_province = document.getElementById('signup-state').value.trim();
+    const country       = document.getElementById('signup-country').value.trim();
     const phone         = document.getElementById('signup-phone').value.trim();
     const referral_type = document.getElementById('signup-referral-type').value;
     const referral_name = document.getElementById('signup-referral-name').value.trim();
@@ -2103,14 +2172,20 @@
     const language      = langRaw === 'Español' ? 'es' : 'en';
     const full_name     = `${first_name} ${last_name}`.trim();
 
-    if (!first_name || !email) {
+    if (_signupMode === 'phone') {
+      const phoneDigits = phone.replace(/\D/g, '');
+      if (!first_name || phoneDigits.length < 7) {
+        alert(_t('Please enter your first name and a valid phone number.', 'Por favor ingresa tu nombre y un número de teléfono válido.'));
+        return;
+      }
+    } else if (!first_name || !email) {
       alert(_t(
         'Please enter your first name and email address.',
         'Por favor ingresa tu nombre y correo electrónico.'
       ));
       return;
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       alert(_t(
         'Please enter a valid email address.',
         'Por favor ingresa un correo electrónico válido.'
@@ -2141,8 +2216,15 @@
     btn.disabled = true;
     btn.textContent = _t('Submitting…', 'Enviando…');
 
+    // Blank optional fields must go in as NULL, not '' — an empty string
+    // still satisfies "email is not null", which would defeat both the
+    // signups_has_contact_method check and the partial unique index on
+    // email (two blank-email rows would collide with each other).
+    const email_value = email || null;
+    const phone_value = phone || null;
+
     const { error } = await insertSignupRecord({
-      full_name, email, zip_code, state_province, language, phone,
+      full_name, email: email_value, zip_code, state_province, country, language, phone: phone_value,
       age: age ? parseInt(age) : null,
       referral_type, referral_name,
       signup_source: getSignupSource(),
@@ -2163,7 +2245,12 @@
              'Algo salió mal — por favor intenta de nuevo en un momento.')
       );
     } else {
-      lpnSendWelcomeConfirmation(_sb, { email, fullName: full_name, language }); // fire-and-forget — must not block the success UI
+      // Phone-only registrants get no Auth account — signUp() requires an
+      // email, and Task 1's decision was list-only membership for them
+      // (no login, no confirmation email, on-screen confirmation only).
+      if (email_value) {
+        lpnSendWelcomeConfirmation(_sb, { email: email_value, fullName: full_name, language }); // fire-and-forget — must not block the success UI
+      }
       document.querySelector('.signup').innerHTML = `
         <div style="text-align:center;padding:40px 20px">
           <div style="font-size:64px;margin-bottom:16px">🎉</div>

@@ -44,6 +44,25 @@ function injectStateProvinceDatalist() {
   document.body.appendChild(dl);
 }
 
+// Country suggestions — same free-text + datalist approach as state/province
+// above, for the same reason (a locked dropdown can't cover every country a
+// member might register from). United States and México are listed first
+// since they're the expected majority; the field stays fully editable.
+const LPN_COUNTRY_OPTIONS = [
+  'United States', 'México',
+  'Canada',
+  'Guatemala', 'Honduras', 'El Salvador', 'Nicaragua', 'Costa Rica', 'Panamá',
+  'Colombia', 'Venezuela', 'Ecuador', 'Perú', 'Bolivia', 'Chile', 'Argentina', 'Paraguay', 'Uruguay',
+  'Brasil', 'República Dominicana', 'Cuba', 'Puerto Rico',
+];
+function injectCountryDatalist() {
+  if (document.getElementById('country-list')) return;
+  const dl = document.createElement('datalist');
+  dl.id = 'country-list';
+  dl.innerHTML = LPN_COUNTRY_OPTIONS.map(c => `<option value="${c}"></option>`).join('');
+  document.body.appendChild(dl);
+}
+
 // Mobile slide-down nav panel toggle
 function toggleMobileNav() {
   const nav = document.querySelector('nav');

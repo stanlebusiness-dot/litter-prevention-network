@@ -225,8 +225,8 @@
       </div>
       <button class="btn-csv" onclick="exportCSV('body-signups', 'signups')">⬇ Export CSV</button>
     </div>
-    <table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Zip Code</th><th>State/Province</th><th>Language</th><th>Date</th><th>Source</th><th>Actions</th></tr></thead>
-    <tbody id="body-signups"><tr><td colspan="9" class="loading">Loading...</td></tr></tbody></table>
+    <table><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Zip Code</th><th>State/Province</th><th>Country</th><th>Language</th><th>Opt-Out</th><th>Date</th><th>Source</th><th>Actions</th></tr></thead>
+    <tbody id="body-signups"><tr><td colspan="11" class="loading">Loading...</td></tr></tbody></table>
   </div>
 
   <!-- Volunteers -->
@@ -1533,11 +1533,34 @@ async function loadAll() {
 
   if (s.error) console.error('signups load failed:', s.error.message);
   document.getElementById('count-signups').textContent = s.data?.length || 0;
+  // Possible-duplicate flag for phone-only signups: phone has no unique
+  // constraint (families legitimately share one household number), so this
+  // is purely informational — same normalized phone AND same name, surfaced
+  // for a human to review/merge. Never blocks a signup or auto-deletes.
+  const dupePhoneIds = (() => {
+    const groups = new Map();
+    (s.data || []).forEach(r => {
+      const normPhone = (r.phone || '').replace(/\D/g, '');
+      const normName = (r.full_name || '').trim().toLowerCase();
+      if (!normPhone || !normName) return;
+      const key = normPhone + '|' + normName;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(r.id);
+    });
+    const flagged = new Set();
+    groups.forEach(ids => { if (ids.length > 1) ids.forEach(id => flagged.add(id)); });
+    return flagged;
+  })();
   document.getElementById('body-signups').innerHTML = s.error
-    ? `<tr><td colspan="9" class="empty">Could not load: ${escapeHtml(s.error.message)}</td></tr>`
+    ? `<tr><td colspan="11" class="empty">Could not load: ${escapeHtml(s.error.message)}</td></tr>`
     : s.data?.length
-    ? s.data.map(r => `<tr><td>#${r.member_number||'—'}</td><td>${r.full_name}</td><td>${r.email}</td><td>${r.zip_code||'—'}</td><td>${r.state_province||'—'}</td><td>${r.language||'—'}</td><td>${fmt(r.created_at)}</td><td>${r.signup_source === 'event' ? '🎪 Event' : '🌐 Main'}</td><td><button class="btn-edit" onclick="openEditById('signups','${r.id}')">✏️ Edit</button><button class="btn-delete" onclick="deleteRow('signups','${r.id}','sign-up')">🗑 Delete</button></td></tr>`).join('')
-    : '<tr><td colspan="9" class="empty">No sign-ups yet.</td></tr>';
+    ? s.data.map(r => {
+        const optOuts = [r.email_opt_out ? '📧 Email' : null, r.sms_opt_out ? '📱 SMS' : null].filter(Boolean);
+        const optOutLabel = optOuts.length ? optOuts.join(', ') : '—';
+        const dupeTag = dupePhoneIds.has(r.id) ? ' <span title="Same name and phone as another row — review before treating as separate members" style="cursor:help;">⚠️</span>' : '';
+        return `<tr><td>#${r.member_number||'—'}</td><td>${r.full_name}${dupeTag}</td><td>${r.email||'—'}</td><td>${r.zip_code||'—'}</td><td>${r.state_province||'—'}</td><td>${r.country||'—'}</td><td>${r.language||'—'}</td><td>${optOutLabel}</td><td>${fmt(r.created_at)}</td><td>${r.signup_source === 'event' ? '🎪 Event' : '🌐 Main'}</td><td><button class="btn-edit" onclick="openEditById('signups','${r.id}')">✏️ Edit</button><button class="btn-delete" onclick="deleteRow('signups','${r.id}','sign-up')">🗑 Delete</button></td></tr>`;
+      }).join('')
+    : '<tr><td colspan="11" class="empty">No sign-ups yet.</td></tr>';
 
   if (v.error) console.error('volunteers load failed:', v.error.message);
   document.getElementById('count-volunteers').textContent = v.data?.length || 0;
@@ -1685,9 +1708,12 @@ const EDIT_FIELDS = {
     { key: 'email',         label: 'Email',       type: 'email' },
     { key: 'zip_code',      label: 'Zip Code',    type: 'text' },
     { key: 'state_province', label: 'State/Province', type: 'text' },
+    { key: 'country',       label: 'Country',     type: 'text' },
     { key: 'phone',         label: 'Phone',       type: 'text' },
     { key: 'language',      label: 'Language',    type: 'select', options: ['English','Español'] },
     { key: 'signup_source', label: 'Source',      type: 'select', options: ['main','event'] },
+    { key: 'email_opt_out', label: 'Opted out of emails', type: 'boolean' },
+    { key: 'sms_opt_out',   label: 'Opted out of texts (SMS)', type: 'boolean' },
   ],
   volunteers: [
     { key: 'full_name',    label: 'Full Name',     type: 'text' },
@@ -1758,6 +1784,10 @@ async function openEditById(table, id) {
       const opts = f.options.map(o => `<option value="${o}"${val===o?' selected':''}>${o}</option>`).join('');
       return `<div class="edit-field"><label>${f.label}</label><select id="ef-${f.key}">${opts}</select></div>`;
     }
+    if (f.type === 'boolean') {
+      const checked = data[f.key] === true ? 'checked' : '';
+      return `<div class="edit-field"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;"><input id="ef-${f.key}" type="checkbox" ${checked} style="width:16px;height:16px;" /> ${f.label}</label></div>`;
+    }
     return `<div class="edit-field"><label>${f.label}</label><input id="ef-${f.key}" type="${f.type}" value="${val.replace(/"/g,'&quot;')}" /></div>`;
   }).join('');
   document.getElementById('edit-modal-msg').textContent = '';
@@ -1774,7 +1804,15 @@ async function saveEdit() {
   fields.forEach(f => {
     const el = document.getElementById('ef-' + f.key);
     if (!el) return;
-    updates[f.key] = f.type === 'number' ? (parseFloat(el.value) || 0) : el.value.trim();
+    if (f.type === 'boolean') { updates[f.key] = el.checked; return; }
+    if (f.type === 'number') { updates[f.key] = parseFloat(el.value) || 0; return; }
+    const trimmed = el.value.trim();
+    // email/phone must be NULL when blank, not '' — signups has a partial
+    // unique index on lower(email) and a check requiring at least one of
+    // email/phone, both of which an empty string would silently satisfy
+    // or collide with (two blanked-out rows would both be '', which the
+    // unique index treats as a duplicate since '' is not null).
+    updates[f.key] = ((f.key === 'email' || f.key === 'phone') && trimmed === '') ? null : trimmed;
   });
   const msgEl = document.getElementById('edit-modal-msg');
   const { error } = SERVICE_ROLE_TABLES.includes(_editTable)
