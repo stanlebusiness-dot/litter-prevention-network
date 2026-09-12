@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#1D9E75" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage Communication Preferences – Litter Prevention Network</title>
+  <meta name="robots" content="noindex" />
+  <link rel="stylesheet" href="shared.css?v=20260715" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <script src="shared.js?v=20260715"></script>
+  <style>
+    .result-wrap { max-width: 520px; margin: 0 auto; padding: 56px 24px 80px; text-align: center; }
+    .result-card { background: white; border-radius: 20px; padding: 44px 32px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+    .result-icon { font-size: 48px; margin-bottom: 12px; }
+    .result-title { font-size: 24px; font-weight: 800; font-family: 'Outfit', sans-serif; color: #0F2318; margin-bottom: 10px; }
+    .result-sub { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 24px; }
+    .result-btn { display: inline-block; padding: 13px 28px; background: linear-gradient(135deg, #1D9E75, #0F6E56); color: white; border-radius: 12px; font-weight: 800; text-decoration: none; font-family: 'Outfit', sans-serif; letter-spacing: 0.5px; border: none; cursor: pointer; font-size: 15px; }
+    .result-btn:disabled { opacity: 0.6; cursor: progress; }
+    .result-btn-secondary { display: inline-block; margin-top: 14px; font-size: 13px; color: #1D9E75; text-decoration: none; font-weight: 700; cursor: pointer; background: none; border: none; }
+    .result-link-row { margin-top: 8px; font-size: 13px; color: #888; }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div class="lang-bar">
+    <button class="active" onclick="setLang('en')">English</button>
+    <button onclick="setLang('es')">Español</button>
+  </div>
+
+  <nav aria-label="Main navigation">
+    <a href="index.html" class="nav-logo">
+      <img src="litter-prevention-network-logo.svg" alt="Litter Prevention Network logo" />
+      <span class="nav-logo-label">Litter Prevention Network</span>
+    </a>
+    <div class="nav-links-desktop">
+      <a href="index.html">Home</a>
+      <a href="our-work.html">Trash Rangers / Schools</a>
+      <a href="signin.html" class="nav-signin-btn" id="desktop-nav-auth">Sign In</a>
+    </div>
+    <button class="hamburger" onclick="openDrawer()" aria-label="Open navigation menu"><span></span><span></span><span></span></button>
+  </nav>
+
+  <div class="result-wrap" id="main-content">
+    <div class="result-card" id="unsub-card">
+      <!-- Populated by JS below depending on link state -->
+    </div>
+  </div>
+
+  <script>
+    function _t(en, es) { return document.body.classList.contains('spanish') ? es : en; }
+
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    const scope = ['email', 'sms', 'all'].includes(params.get('scope')) ? params.get('scope') : 'all';
+
+    const SCOPE_LABEL = {
+      email: { en: 'emails', es: 'correos' },
+      sms:   { en: 'text messages', es: 'mensajes de texto' },
+      all:   { en: 'emails and text messages', es: 'correos y mensajes de texto' },
+    };
+
+    async function callUnsubscribeFn(action, forScope) {
+      const res = await fetch('/.netlify/functions/unsubscribe', {
+        method: 'POST',
+        body: JSON.stringify({ token, scope: forScope, action }),
+      });
+      let result = {};
+      try { result = await res.json(); } catch (e) {}
+      return { ok: res.ok, result };
+    }
+
+    function renderMissingToken() {
+      document.getElementById('unsub-card').innerHTML = `
+        <div class="result-icon">🔗</div>
+        <div class="result-title"><span class="en">Link Missing Information</span><span class="es">Enlace Incompleto</span></div>
+        <div class="result-sub">
+          <span class="en">This link is missing the information needed to find your account. Please use the unsubscribe link from an LPN email or text message, or contact us directly.</span>
+          <span class="es">A este enlace le falta la información necesaria para encontrar tu cuenta. Usa el enlace de cancelación de un correo o mensaje de texto de LPN, o contáctanos directamente.</span>
+        </div>
+        <a href="mailto:stanley@litterpreventionnetwork.org" class="result-btn"><span class="en">Contact Us</span><span class="es">Contáctanos</span></a>`;
+    }
+
+    function renderConfirm() {
+      const label = SCOPE_LABEL[scope];
+      document.getElementById('unsub-card').innerHTML = `
+        <div class="result-icon">✉️</div>
+        <div class="result-title"><span class="en">Manage Your Communication Preferences</span><span class="es">Administra tus Preferencias de Comunicación</span></div>
+        <div class="result-sub">
+          <span class="en">You'll remain a full Litter Prevention Network member either way — this only changes whether we ${label.en} you updates.</span>
+          <span class="es">De cualquier forma, seguirás siendo miembro de la Red de Prevención de Basura — esto solo cambia si te enviamos ${label.es}.</span>
+        </div>
+        <button type="button" class="result-btn" id="confirm-unsub-btn">
+          <span class="en">Yes, Stop Sending Me ${label.en.charAt(0).toUpperCase() + label.en.slice(1)}</span>
+          <span class="es">Sí, Deja de Enviarme ${label.es}</span>
+        </button>
+        <div class="result-link-row">
+          <span class="en">Changed your mind about this link? Just close this page — nothing changes until you click above.</span>
+          <span class="es">¿No era tu intención? Solo cierra esta página — nada cambia hasta que hagas clic arriba.</span>
+        </div>`;
+      document.getElementById('confirm-unsub-btn').addEventListener('click', doUnsubscribe);
+    }
+
+    async function doUnsubscribe() {
+      const btn = document.getElementById('confirm-unsub-btn');
+      btn.disabled = true;
+      btn.innerHTML = _t('Working…', 'Procesando…');
+      const { ok, result } = await callUnsubscribeFn('unsubscribe', scope);
+      if (!ok) {
+        renderError(result.error);
+        return;
+      }
+      renderSuccess();
+    }
+
+    function renderSuccess() {
+      const label = SCOPE_LABEL[scope];
+      document.getElementById('unsub-card').innerHTML = `
+        <div class="result-icon">✅</div>
+        <div class="result-title"><span class="en">You're Unsubscribed</span><span class="es">Cancelaste tu Suscripción</span></div>
+        <div class="result-sub">
+          <span class="en">You won't receive ${label.en} from LPN anymore. You're still a full member — this doesn't remove you from the community.</span>
+          <span class="es">Ya no recibirás ${label.es} de LPN. Sigues siendo miembro por completo — esto no te elimina de la comunidad.</span>
+        </div>
+        <button type="button" class="result-btn-secondary" id="undo-unsub-btn">
+          <span class="en">Didn't mean to do that? Undo</span><span class="es">¿No era tu intención? Deshacer</span>
+        </button>`;
+      document.getElementById('undo-unsub-btn').addEventListener('click', doResubscribe);
+    }
+
+    async function doResubscribe() {
+      const btn = document.getElementById('undo-unsub-btn');
+      btn.disabled = true;
+      const { ok, result } = await callUnsubscribeFn('resubscribe', scope);
+      if (!ok) { renderError(result.error); return; }
+      document.getElementById('unsub-card').innerHTML = `
+        <div class="result-icon">↩️</div>
+        <div class="result-title"><span class="en">Undone</span><span class="es">Deshecho</span></div>
+        <div class="result-sub">
+          <span class="en">You're back to receiving updates from LPN. Thanks for staying with us.</span>
+          <span class="es">Volviste a recibir novedades de LPN. Gracias por seguir con nosotros.</span>
+        </div>`;
+    }
+
+    function renderError(message) {
+      document.getElementById('unsub-card').innerHTML = `
+        <div class="result-icon">⚠️</div>
+        <div class="result-title"><span class="en">Something Went Wrong</span><span class="es">Algo Salió Mal</span></div>
+        <div class="result-sub">
+          <span class="en">We couldn't process this request${message ? '' : ''}. Please try again, or contact us directly and we'll take care of it by hand.</span>
+          <span class="es">No pudimos procesar esta solicitud. Intenta de nuevo, o contáctanos directamente y lo resolveremos manualmente.</span>
+        </div>
+        <a href="mailto:stanley@litterpreventionnetwork.org" class="result-btn"><span class="en">Contact Us</span><span class="es">Contáctanos</span></a>`;
+    }
+
+    if (!token) {
+      renderMissingToken();
+    } else {
+      renderConfirm();
+    }
+
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js');
+  </script>
+</body>
+</html>

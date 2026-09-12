@@ -1393,6 +1393,18 @@ async function adminTableFetch(action, table, extra = {}) {
   }
 }
 
+// Lets staff hand a member their own unsubscribe link by hand (phone call,
+// text, etc.) ahead of any actual mass-messaging platform — the link/token
+// itself has worked since the unsubscribe feature shipped, this just saves
+// someone from having to read the raw uuid out of the database.
+function copyUnsubscribeLink(token) {
+  const url = `${window.location.origin}/unsubscribe.html?token=${token}`;
+  navigator.clipboard.writeText(url).then(
+    () => alert('Unsubscribe link copied:\n' + url),
+    () => prompt('Copy this link:', url)
+  );
+}
+
 function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = str ?? '';
@@ -1558,7 +1570,10 @@ async function loadAll() {
         const optOuts = [r.email_opt_out ? '📧 Email' : null, r.sms_opt_out ? '📱 SMS' : null].filter(Boolean);
         const optOutLabel = optOuts.length ? optOuts.join(', ') : '—';
         const dupeTag = dupePhoneIds.has(r.id) ? ' <span title="Same name and phone as another row — review before treating as separate members" style="cursor:help;">⚠️</span>' : '';
-        return `<tr><td>#${r.member_number||'—'}</td><td>${r.full_name}${dupeTag}</td><td>${r.email||'—'}</td><td>${r.zip_code||'—'}</td><td>${r.state_province||'—'}</td><td>${r.country||'—'}</td><td>${r.language||'—'}</td><td>${optOutLabel}</td><td>${fmt(r.created_at)}</td><td>${r.signup_source === 'event' ? '🎪 Event' : '🌐 Main'}</td><td><button class="btn-edit" onclick="openEditById('signups','${r.id}')">✏️ Edit</button><button class="btn-delete" onclick="deleteRow('signups','${r.id}','sign-up')">🗑 Delete</button></td></tr>`;
+        const unsubBtn = r.unsubscribe_token
+          ? `<button class="btn-edit" onclick="copyUnsubscribeLink('${r.unsubscribe_token}')" title="Copy this member's unsubscribe link">🔗 Link</button>`
+          : '';
+        return `<tr><td>#${r.member_number||'—'}</td><td>${r.full_name}${dupeTag}</td><td>${r.email||'—'}</td><td>${r.zip_code||'—'}</td><td>${r.state_province||'—'}</td><td>${r.country||'—'}</td><td>${r.language||'—'}</td><td>${optOutLabel}</td><td>${fmt(r.created_at)}</td><td>${r.signup_source === 'event' ? '🎪 Event' : '🌐 Main'}</td><td><button class="btn-edit" onclick="openEditById('signups','${r.id}')">✏️ Edit</button>${unsubBtn}<button class="btn-delete" onclick="deleteRow('signups','${r.id}','sign-up')">🗑 Delete</button></td></tr>`;
       }).join('')
     : '<tr><td colspan="11" class="empty">No sign-ups yet.</td></tr>';
 
